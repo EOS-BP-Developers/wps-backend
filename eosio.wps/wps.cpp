@@ -5,9 +5,9 @@ using eosio::indexed_by;
 using eosio::const_mem_fun;
 using std::string;
 
-class proposers : public eosio::contract {
+class wps : public eosio::contract {
 	public:
-		explicit proposers(action_name self)
+		explicit wps(action_name self)
 			: contract(self){
 		}
 
@@ -29,7 +29,7 @@ class proposers : public eosio::contract {
 			eosio_assert(website.size() > 0, "not a valid website URL");
 			eosio_assert(linkedin.size() > 0, "not a valid linkedin URL");
 
-			//verify that the inputs aren't too long
+			//verify that the inputs are not too long
 			eosio_assert(first_name.size() < 128, "first name should be shorter than 128 characters.");
 			eosio_assert(last_name.size() < 128, "last name should be shorter than 128 characters.");
 			eosio_assert(img_url.size() < 128, "image URL should be shorter than 128 characters.");
@@ -49,7 +49,7 @@ class proposers : public eosio::contract {
 
 			// add to the table
 			// storage is billed to the contract account
-			proposers.emplace(_self, [&](auto& proposer){
+			proposers.emplace(account, [&](auto& proposer){
 				proposer.account_name = account;
 				proposer.first_name = first_name;
 				proposer.last_name = last_name;
@@ -68,7 +68,7 @@ class proposers : public eosio::contract {
 						 const string& website, const string& linkedin){
 			// authority of the user's account is required
 			require_auth(account);
-			
+
 			//verify that the inputs are not too short
 			eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
 			eosio_assert(last_name.size() > 0, "last name should be more than 0 characters long");
@@ -79,7 +79,7 @@ class proposers : public eosio::contract {
 			eosio_assert(website.size() > 0, "not a valid website URL");
 			eosio_assert(linkedin.size() > 0, "not a valid linkedin URL");
 
-			//verify that the inputs aren't too long
+			//verify that the inputs are not too long
 			eosio_assert(first_name.size() < 128, "first name should be shorter than 128 characters.");
 			eosio_assert(last_name.size() < 128, "last name should be shorter than 128 characters.");
 			eosio_assert(img_url.size() < 128, "image URL should be shorter than 128 characters.");
@@ -89,6 +89,7 @@ class proposers : public eosio::contract {
 			eosio_assert(website.size() < 128, "website URL should be shorter than 128 characters.");
 			eosio_assert(linkedin.size() < 128, "linked URL should be shorter than 128 characters.");
 
+
 			proposer_index proposers(_self, _self);
 
 			auto itr = proposers.find(account);
@@ -96,7 +97,7 @@ class proposers : public eosio::contract {
 			eosio_assert(itr != proposers.end(), "Account not found in proposer table");
 
 			// modify value in the table
-			proposers.modify(_self, [&](auto& proposer){
+			proposers.modify(account, [&](auto& proposer){
 				proposer.account_name = account;
 				proposer.first_name = first_name;
 				proposer.last_name = last_name;
@@ -118,12 +119,99 @@ class proposers : public eosio::contract {
 
 			// verify that the account already exists in the proposer table
 			auto itr = proposers.find(account);
-			eosio_assert(itr != addresses.end(), "Account not found in proposer table");
+			eosio_assert(itr != addresses.end(), "Account not found in proposers table");
 
 			proposers.erase( itr );
 		}
 
+		//@abi action
+		void setreviewer(account_name account, const string& first_name, const string& last_name, const string& committee){
+
+			//Require permission of contract account
+			require_auth(_self);
+
+			//verify that the account exists
+			eosio_assert(is_account(account), "The account does not exist");
+
+			//verify that the inputs are not too short
+			eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
+			eosio_assert(last_name.size() > 0, "last name should be more than 0 characters long");
+			eosio_assert(committee.size() > 0, "committee name should be more than 0 characters long");
+
+			//verify that the inputs are not too long
+			eosio_assert(first_name.size() < 128, "first name should be shorter than 128 characters.");
+			eosio_assert(last_name.size() < 128, "last name should be shorter than 128 characters.");
+			eosio_assert(committee.size() < 64, "committee name should be shorter than 64 charactrs.");
+
+			//creates the reviewers table if it there isn't one already
+			reviewer_index reviewers(_self, _self);
+
+			auto itr = reviewers.find(account);
+			// verify that the account doesn't already exist in the table
+			eosio_assert(itr == reviewers.end(), "This account has already been registered as a reviewer");
+
+			//add to the table
+			reviewers.emplace(account, [&](auto& reviewer){
+				reviewer.account_name = account;
+				reviewer.first_name = first_name;
+				reviewer.last_name = last_name;
+				reviewer.committee = committee;
+			});
+		}
+
+		//@abi action
+		void editreviewer(){
+			//Require permission of contract account
+			require_auth(_self);
+
+			//verify that the account exists
+			eosio_assert(is_account(account), "The account does not exist");
+
+			//verify that the inputs are not too short
+			eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
+			eosio_assert(last_name.size() > 0, "last name should be more than 0 characters long");
+			eosio_assert(committee.size() > 0, "committee name should be more than 0 characters long");
+
+			//verify that the inputs are not too long
+			eosio_assert(first_name.size() < 128, "first name should be shorter than 128 characters.");
+			eosio_assert(last_name.size() < 128, "last name should be shorter than 128 characters.");
+			eosio_assert(committee.size() < 64, "committee name should be shorter than 64 charactrs.");
+
+			//creates the reviewers table if it there isn't one already
+			reviewer_index reviewers(_self, _self);
+
+			auto itr = reviewers.find(account);
+			// verify that the account already exists in the table
+			eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+
+			//add to the table
+			reviewers.modify(account, [&](auto& reviewer){
+				reviewer.account_name = account;
+				reviewer.first_name = first_name;
+				reviewer.last_name = last_name;
+				reviewer.committee = committee;
+			});
+		}
+
+		//@abi action
+		void rmvreviewer(const account_name account){
+			// needs authority of the contract account
+			require_auth(_self);
+
+			//verify that the account exists
+			eosio_assert(is_account(account), "The account does not exist");
+
+			reviewer_index reviewers(_self, _self);
+
+			// verify that the account already exists in the reviewers table
+			auto itr = reviewers.find(account);
+			eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+
+			reviewers.erase( itr );
+		}
+
 	private:
+
 		struct proposer {
 			uint64_t account_name;
 			string first_name;
@@ -141,6 +229,19 @@ class proposers : public eosio::contract {
 		};
 
 		typedef eosio::multi_index< N(proposer), proposer> proposer_index;
+
+		struct reviewer {
+			uint64_t account_name;
+			string first_name;
+			string last_name;
+			string committee;
+
+			uint64_t primary_key() const { return account_name; }
+
+			EOSLIB_SERIALIZE( reviewer, (account_name)(first_name)(last_name)(committee) )
+		};
+
+		typedef eosio::multi_index< N(reviewer), reviewer> reviewer_index;
 };
 
-EOSIO_ABI( proposers, (regproposer)(editproposer)(removeproposer) )
+EOSIO_ABI( proposers, (regproposer)(editproposer)(removeproposer)(setreviewer)(editreviewer)(rmvreviewer) )
