@@ -1,1 +1,0 @@
-/usr/local/bin/eosio-ld  CMakeFiles/eosio.wps.wasm.dir/src/eosio.wps.cpp.o -o ../../eosio.wps/bin/eosio.wps/eosio.wps.wasm 

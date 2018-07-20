@@ -1,6 +1,0 @@
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/CMakeFiles/rebuild_cache.dir
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/CMakeFiles/edit_cache.dir
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/CMakeFiles/contracts_unit_tests.dir
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/eosio.wps/CMakeFiles/rebuild_cache.dir
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/eosio.wps/CMakeFiles/edit_cache.dir
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/eosio.wps/CMakeFiles/eosio.wps.wasm.dir

@@ -1,5 +1,0 @@
-unit_test_binaryen 0 0
-unit_test_wavm 0 0
----
-unit_test_binaryen
-unit_test_wavm

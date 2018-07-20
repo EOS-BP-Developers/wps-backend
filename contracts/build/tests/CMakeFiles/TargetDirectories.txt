@@ -1,4 +1,0 @@
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/tests/CMakeFiles/rebuild_cache.dir
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/tests/CMakeFiles/edit_cache.dir
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/tests/CMakeFiles/test.dir
-/Users/yepp4you/Work/blockchain/wps-backend/contracts/build/tests/CMakeFiles/unit_test.dir
