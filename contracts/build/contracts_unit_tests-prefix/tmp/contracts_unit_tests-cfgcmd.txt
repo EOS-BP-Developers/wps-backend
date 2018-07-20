@@ -1,0 +1,1 @@
+cmd='/usr/local/Cellar/cmake/3.9.4_1/bin/cmake;-DCMAKE_BUILD_TYPE=;-DROOT_DIR=/Users/yepp4you/Work/blockchain/wps-backend/contracts;-DEOSIO_INSTALL_PREFIX=/usr/local;-DOPENSSL_INSTALL_PREFIX=/usr/local/opt/openssl;-DSECP256K1_INSTALL_LIB=/usr/local;-DBOOST_ROOT=/usr/local/include;-DCMAKE_CXX_COMPILER=g++;-GUnix Makefiles;<SOURCE_DIR><SOURCE_SUBDIR>'

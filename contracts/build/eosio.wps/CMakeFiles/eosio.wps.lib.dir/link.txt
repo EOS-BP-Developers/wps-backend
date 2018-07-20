@@ -1,0 +1,2 @@
+/usr/local/bin/eosio-ar qc libeosio.wps.lib.a  CMakeFiles/eosio.wps.lib.dir/src/proposal.cpp.o CMakeFiles/eosio.wps.lib.dir/src/proposer.cpp.o
+/usr/local/bin/eosio-ranlib libeosio.wps.lib.a
