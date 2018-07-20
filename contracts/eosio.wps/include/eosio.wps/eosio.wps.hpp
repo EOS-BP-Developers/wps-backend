@@ -5,9 +5,11 @@
 #include <eosiolib/contract.hpp>
 #include <eosiolib/asset.hpp>
 
+/*
 #include "proposal.hpp"
 #include "proposer.hpp"
 #include "reviewer.hpp"
+*/
 
 #include <string>
 #include <vector>
