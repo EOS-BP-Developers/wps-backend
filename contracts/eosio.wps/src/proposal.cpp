@@ -13,7 +13,7 @@ namespace eosiowps {
         const string& subtitle,
         const string& project_img_url,
         const string& project_overview,
-        const string& financial_loadmap,
+        const string& financial_roadmap,
         const vector<string>& members,
 		const asset& funding_goal,
 		uint16_t duration
@@ -28,7 +28,7 @@ namespace eosiowps {
 		eosio_assert(subtitle.size() > 0, "subtitle should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
 		eosio_assert(project_overview.size() > 4, "project_overview should be more than 0 characters long");
-		eosio_assert(financial_loadmap.size() > 0, "financial_loadmap should be more than 0 characters long");
+		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
 		eosio_assert(members.size() > 0, "member should be more than 0");
 
 		//verify that the inputs aren't too long
@@ -36,7 +36,7 @@ namespace eosiowps {
 		eosio_assert(subtitle.size() < 256, "subtitle should be shorter than 128 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
 		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 64 characters.");
-		eosio_assert(financial_loadmap.size() < 256, "financial_loadmap should be shorter than 64 characters.");
+		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 64 characters.");
 		eosio_assert(members.size() < 50, "members should be shortter than shorter than 100.");
 
 		// creates the proposal table if there isn't one already
