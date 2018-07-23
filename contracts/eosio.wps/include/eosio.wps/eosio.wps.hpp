@@ -5,7 +5,7 @@
 #include <eosiolib/contract.hpp>
 #include <eosiolib/asset.hpp>
 
-/*
+/* to generate abi, comment out
 #include "proposal.hpp"
 #include "proposer.hpp"
 #include "reviewer.hpp"
