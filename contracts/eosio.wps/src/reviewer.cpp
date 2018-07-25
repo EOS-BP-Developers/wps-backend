@@ -1,5 +1,6 @@
 // #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/reviewer.hpp>
+#include <eosio.wps/proposal.hpp>
 
 // extern struct permission_level;
 // extern void require_auth(const permission_level& level);
@@ -88,6 +89,48 @@ namespace eosiowps {
 		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
 
 		reviewers.erase( itr );
+	}
+
+	void wps_contract::acceptproposal(const account_name reviewer, const uint64_t& proposal_id){
+		require_auth(_self);
+
+		eosio_assert(is_account(reviewer), "The account does not exist");
+
+		auto itr = reviewers.find(reviewer);
+		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+
+		proposal_table proposals(_self, _self);
+
+		auto id_index = proposals.get_index<N(idx)>();
+		auto iter = id_index.lower_bound(proposal_id);
+		for(; iter != id_index.end() && iter->id == proposal_id; ++iter){
+			id_index.modify(iter, 0, [&](auto &proposal){
+				proposal.status = 1;
+			});
+		}
+
+		eosio_assert(iter != id_index.end(), "proposal with given ID doesn't exist");
+	}
+
+	void wps_contract::rejectproposal(const account_name reviewer, const uint64_t& proposal_id){
+		require_auth(_self);
+
+		eosio_assert(is_account(reviewer), "The account does not exist");
+
+		auto itr = reviewers.find(reviewer);
+		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+
+		proposal_table proposals(_self, _self);
+
+		auto id_index = proposals.get_index<N(idx)>();
+		auto iter = id_index.lower_bound(proposal_id);
+		for(; iter != id_index.end() && iter->id == proposal_id; ++iter) {
+			id_index.modify(iter, 0, [&](auto &proposal) {
+				proposal.status = 2;
+			});
+		}
+
+		eosio_assert(iter != id_index.end(), "proposal with given ID doesn't exist");
 	}
 
 } // eosiowps
