@@ -23,15 +23,15 @@ namespace eosiowps {
         string subtitle;           // subtitle
         string project_img_url;    // project image or video url
         string project_overview;   // overview
-        string financial_loadmap;  // financial
+        string financial_roadmap;  // financial
         vector<string> members;    // linkedin
         asset funding_goal;         // amount of EOS
         uint16_t duration;          // voting duration
         uint32_t total_votes;
-        uint32_t status;
+        uint32_t status;            // review status
         uint64_t primary_key() const { return owner; }
         uint64_t by_id() const { return static_cast<uint64_t>(id); }
-        EOSLIB_SERIALIZE( proposal, (owner)(id)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_loadmap)(members)(total_votes)(status) )
+        EOSLIB_SERIALIZE( proposal, (owner)(id)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(total_votes)(status) )
     };
 
     typedef eosio::multi_index< N(proposals), proposal,

@@ -22,22 +22,27 @@ namespace eosiowps {
 		require_auth(owner);
 
 		//verify that the inputs are not too short
-		eosio_assert(category > 0, "category should be more than 0");
-		eosio_assert(subcategory > 0, "subcategory should be more than 0");
+		eosio_assert(category > 0, "invalid category");
+		//subcategory is not required
+		//eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
 		eosio_assert(title.size() > 0, "title should be more than 0 characters long");
 		eosio_assert(subtitle.size() > 0, "subtitle should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
 		eosio_assert(project_overview.size() > 4, "project_overview should be more than 0 characters long");
 		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
 		eosio_assert(members.size() > 0, "member should be more than 0");
+		eosio_assert(duration > 0, "duration must be greater than 0 days");
 
 		//verify that the inputs aren't too long
+		eosio_assert(category < 6, "invalid category");
+		eosio_assert(subcategory < 10, "invalid sub-category");
 		eosio_assert(title.size() < 256, "title should be shorter than 128 characters.");
 		eosio_assert(subtitle.size() < 256, "subtitle should be shorter than 128 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
 		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 64 characters.");
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 64 characters.");
-		eosio_assert(members.size() < 50, "members should be shortter than shorter than 100.");
+		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
+		eosio_assert(duration < 61, "duration should be less than 60 days.");
 
 		// creates the proposal table if there isn't one already
 		uint64_t id = 1;
@@ -67,6 +72,7 @@ namespace eosiowps {
 			proposal.funding_goal = funding_goal;
 			proposal.id = id;
 			proposal.duration = duration;
+			proposal.status = 0; //initialize status to pending
 		});
 	}
 
@@ -87,22 +93,26 @@ namespace eosiowps {
 		require_auth(owner);
 
 		//verify that the inputs are not too short
-		eosio_assert(category > 0, "category should be more than 0");
-		eosio_assert(subcategory > 0, "subcategory should be more than 0");
+        eosio_assert(category > 0, "invalid category. Category must be an integer between 1 and 5.");
+        //eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
 		eosio_assert(title.size() > 0, "title should be more than 0 characters long");
 		eosio_assert(subtitle.size() > 0, "subtitle should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
 		eosio_assert(project_overview.size() > 4, "project_overview should be more than 0 characters long");
 		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
 		eosio_assert(members.size() > 0, "member should be more than 0");
+        eosio_assert(duration > 0, "duration must be greater than 0 days");
 
 		//verify that the inputs aren't too long
+		eosio_assert(category < 6, "invalid category");
+		eosio_assert(subcategory < 10, "invalid sub-category");
 		eosio_assert(title.size() < 128, "title should be shorter than 128 characters.");
 		eosio_assert(subtitle.size() < 128, "subtitle should be shorter than 128 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
 		eosio_assert(project_overview.size() < 64, "project_overview should be shorter than 64 characters.");
 		eosio_assert(financial_roadmap.size() < 64, "financial_roadmap should be shorter than 64 characters.");
 		eosio_assert(members.size() < 100, "members should be shortter than shorter than 100.");
+        eosio_assert(duration < 61, "duration should be less than 60 days.");
 
 		proposal_table proposals(_self, _self);
 
