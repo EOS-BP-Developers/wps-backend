@@ -105,6 +105,13 @@ namespace eosiowps {
             //@abi action
             void rejectproposal(account_name reviewer, uint64_t proposal_id);
 
+            // vote
+            //@abi action
+            void vote(account_name voter, uint64_t proposal_id);
+
+            //@abi action
+            void unvote(account_name voter, uint64_t proposal_id);
+
         private:
             wps_info_singleton _wps_info_global;
     };
