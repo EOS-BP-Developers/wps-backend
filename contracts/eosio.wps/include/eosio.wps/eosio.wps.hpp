@@ -18,6 +18,7 @@
 namespace eosiowps {
     using std::string;
     using std::vector;
+    using std::set;
 
     using eosio::asset;
     using eosio::indexed_by;
@@ -26,7 +27,7 @@ namespace eosiowps {
     //@abi table
     struct voter_info {
         account_name owner;
-        vector<uint64_t> proposals;
+        set<uint64_t> proposals;
         uint64_t primary_key() const { return owner; }
         EOSLIB_SERIALIZE( voter_info, (owner)(proposals) )
     };
@@ -34,6 +35,7 @@ namespace eosiowps {
     struct wps_info {
         uint32_t lower_bound_total_voting = 0;
         uint64_t proposal_current_index = 0;
+        uint32_t max_duration = 60;             //days
     };
 
     typedef eosio::multi_index< N(voter), voter_info > voter_table;

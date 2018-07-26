@@ -4,6 +4,7 @@
 #include "proposer.cpp"
 #include "proposal.cpp"
 #include "reviewer.cpp"
+#include "vote.cpp"
 
 namespace eosiowps {
 	wps_contract::wps_contract(action_name self) : contract(self), _wps_info_global(self, self) {

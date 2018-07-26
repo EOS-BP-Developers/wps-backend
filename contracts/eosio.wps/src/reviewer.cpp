@@ -122,7 +122,7 @@ namespace eosiowps {
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		// eosio_assert((*itr_proposal).status == proposal_status::PENDING, "Proposal::status is not proposal_status::PENDING");
 
-		proposals.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
 			proposal.status = proposal_status::REJECT;
 		});
 
@@ -130,11 +130,11 @@ namespace eosiowps {
 		proposal_table rejected_proposals(_self, _self);
 
 		//add to the table
-		rejected_proposals.emplace(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+		rejected_proposals.emplace((*itr_proposal).owner, [&](auto& proposal){
 			proposal = (*itr_proposal);
 		});
 
-		proposals.erase(itr_proposal);
+		idx_index.erase(itr_proposal);
 	}
 
 } // eosiowps

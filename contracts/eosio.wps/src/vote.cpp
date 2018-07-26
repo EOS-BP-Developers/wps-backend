@@ -22,21 +22,21 @@ namespace eosiowps {
 		voter_table	voters(_self, _self);
 		auto itr = voters.find(voter);
 		if (itr == voters.end()) {
-			voters.emplace(_self, [&](vote_info) {
-				vote_info.owner = voter;
-				vote_info.proposals.emplace(proposal_id);
+			voters.emplace(_self, [&](auto& _voter_info) {
+				_voter_info.owner = voter;
+				_voter_info.proposals.emplace(proposal_id);
 			});
 			voting_delta = 1;
 		} else {
-			voters.modify(itr, _self, [&](vote_info) {
-				if (vote_info.proposals.find(proposal_id) == vote_info.proposals.end()) {
+			voters.modify(itr, _self, [&](auto& _voter_info) {
+				if (_voter_info.proposals.find(proposal_id) == _voter_info.proposals.end()) {
 					voting_delta = 1;
-					vote_info.proposals.emplace(proposal_id);
+					_voter_info.proposals.emplace(proposal_id);
 				}
 			});
 		}
 
-		idx_index.modify(itr_proposal, (*itr_proposal).owne, [&](proposal) {
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal) {
 			proposal.total_votes += voting_delta;
 			if (proposal.total_votes >= _wps_info.lower_bound_total_voting) {
 				proposal.status = proposal_status::FUNDED;
@@ -47,11 +47,11 @@ namespace eosiowps {
 		proposal_table funded_proposals(_self, _self);
 
 		//add to the table
-		funded_proposals.emplace(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+		funded_proposals.emplace((*itr_proposal).owner, [&](auto& proposal){
 			proposal = (*itr_proposal);
 		});
 
-		proposals.erase(itr_proposal);
+		idx_index.erase(itr_proposal);
 	}
 
 	// @abi action
@@ -71,13 +71,14 @@ namespace eosiowps {
 		auto itr = voters.find(voter);
 		eosio_assert(itr != voters.end(), "Proposal not found in voter table");
 
-		voters.modify(itr, _self, [&](vote_info) {
-			if (vote_info.proposals.find(proposal_id) != vote_info.proposals.end()) {
+		voters.modify(itr, _self, [&](auto& _voter_info) {
+			if (_voter_info.proposals.find(proposal_id) != _voter_info.proposals.end()) {
 				voting_delta = 1;
-				vote_info.proposals.remove(proposal_id);
-			});
+				_voter_info.proposals.erase(proposal_id);
+			}
+		});
 
-		idx_index.modify(itr_proposal, (*itr_proposal).owne, [&](proposal) {
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal) {
 			proposal.total_votes -= voting_delta;
 		});
 	}
