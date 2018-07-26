@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(eosio_wps_contracts VERSION 1.1.0)
 
+include( GNUInstallDirs )
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
    set(TEST_BUILD_TYPE "Debug")
    set(CMAKE_BUILD_TYPE "Release")

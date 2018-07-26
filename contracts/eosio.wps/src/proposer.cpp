@@ -5,6 +5,7 @@
 // extern void require_auth(const permission_level& level);
 
 namespace eosiowps {
+
 	// @abi action
 	void wps_contract::regproposer(account_name owner,
 		const string& first_name,

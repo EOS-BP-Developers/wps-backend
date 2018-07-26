@@ -13,6 +13,8 @@ namespace eosiowps {
     using std::string;
     using std::vector;
 
+    enum class proposal_status { PENDING, IN_REVIEW, REJECT, ON_GOING, FUNDED };
+
     //@abi table
     struct proposal {
         account_name owner;        // proposer
@@ -28,13 +30,13 @@ namespace eosiowps {
         asset funding_goal;         // amount of EOS
         uint16_t duration;          // voting duration
         uint32_t total_votes;
-        uint32_t status;            // review status
+        proposal_status status;     // review status
         uint64_t primary_key() const { return owner; }
         uint64_t by_id() const { return static_cast<uint64_t>(id); }
         EOSLIB_SERIALIZE( proposal, (owner)(id)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(total_votes)(status) )
     };
 
     typedef eosio::multi_index< N(proposals), proposal,
-                               indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
-                               > proposal_table;
+        indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
+    > proposal_table;
 } // eosiowps

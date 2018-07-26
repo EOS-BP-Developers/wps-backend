@@ -53,16 +53,14 @@ namespace eosiowps {
 		eosio_assert(itr != proposers.end(), "This account is not a registered proposer");
 
 		// creates the proposal table if there isn't one already
-		uint64_t id = 1;
 		proposal_table proposals(_self, _self);
-		auto iter = proposals.find(owner);
+		auto itr_proposal = proposals.find(owner);
 		// verify that the account doesn't already exist in the table
-		eosio_assert(iter == proposals.end(), "This account has already registered a proposal");
+		eosio_assert(itr_proposal == proposals.end(), "This account has already registered a proposal");
 
-		auto idIndex = proposals.get_index<N(idx)>();
-		auto revItr = idIndex.rbegin();
-		if (revItr != idIndex.rend()) {
-			id = revItr->id + 1;
+		wps_info _wps_info;
+		if (this->_wps_info_global.exists()) {
+			_wps_info = this->_wps_info_global.get();
 		}
 
 		// add to the table
@@ -78,9 +76,9 @@ namespace eosiowps {
 			proposal.financial_roadmap = financial_roadmap;
 			proposal.members = members;
 			proposal.funding_goal = funding_goal;
-			proposal.id = id;
+			proposal.id = _wps_info.proposal_current_index + 1;
 			proposal.duration = duration;
-			proposal.status = 0; //initialize status to pending
+			proposal.status = proposal_status::PENDING; //initialize status to pending
 		});
 	}
 
@@ -131,12 +129,12 @@ namespace eosiowps {
 
 		proposal_table proposals(_self, _self);
 
-		auto iter = proposals.find(owner);
+		auto itr_proposal = proposals.find(owner);
 		// verify that the account already exists in the proposals table
-		eosio_assert(iter != proposals.end(), "Account not found in proposal table");
+		eosio_assert(itr_proposal != proposals.end(), "Account not found in proposal table");
 
 		// modify value in the table
-		proposals.modify(itr, owner, [&](auto& proposal){
+		proposals.modify(itr_proposal, owner, [&](auto& proposal){
 			proposal.owner = owner;
 			proposal.category = category;
 			proposal.subcategory = subcategory;
@@ -159,9 +157,9 @@ namespace eosiowps {
 		proposal_table proposals(_self, _self);
 
 		// verify that the account already exists in the proposer table
-		auto itr = proposals.find(owner);
-		eosio_assert(itr != proposals.end(), "Account not found in proposal table");
+		auto itr_proposal = proposals.find(owner);
+		eosio_assert(itr_proposal != proposals.end(), "Account not found in proposal table");
 
-		proposals.erase(itr);
+		proposals.erase(itr_proposal);
 	}
 } // eosiowps

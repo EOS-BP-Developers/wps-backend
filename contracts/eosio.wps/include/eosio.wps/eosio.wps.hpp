@@ -2,6 +2,7 @@
 #include <eosiolib/types.hpp>
 #include <eosiolib/print.hpp>
 #include <eosiolib/multi_index.hpp>
+#include <eosiolib/singleton.hpp>
 #include <eosiolib/contract.hpp>
 #include <eosiolib/asset.hpp>
 
@@ -25,21 +26,22 @@ namespace eosiowps {
     //@abi table
     struct voter_info {
         account_name owner;
-        vector<uint32_t> proposals;
+        vector<uint64_t> proposals;
         uint64_t primary_key() const { return owner; }
         EOSLIB_SERIALIZE( voter_info, (owner)(proposals) )
     };
 
     struct wps_info {
-        uint32_t lower_bound_total_voting;
+        uint32_t lower_bound_total_voting = 0;
+        uint64_t proposal_current_index = 0;
     };
 
     typedef eosio::multi_index< N(voter), voter_info > voter_table;
+    typedef eosio::singleton< N(wpsglobal), wps_info > wps_info_singleton;
 
     class wps_contract : public eosio::contract {
         public:
-            explicit wps_contract(action_name self) : contract(self){
-            }
+            explicit wps_contract(action_name self);
 
             // proposer
             // @abi action
@@ -96,5 +98,14 @@ namespace eosiowps {
 
             //@abi action
             void rmvreviewer(const account_name account);
+
+            //@abi action
+            void acceptproposal(account_name reviewer, uint64_t proposal_id);
+
+            //@abi action
+            void rejectproposal(account_name reviewer, uint64_t proposal_id);
+
+        private:
+            wps_info_singleton _wps_info_global;
     };
 } // eosiowps

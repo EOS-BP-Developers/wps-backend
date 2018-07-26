@@ -91,46 +91,40 @@ namespace eosiowps {
 		reviewers.erase( itr );
 	}
 
-	void wps_contract::acceptproposal(const account_name reviewer, const uint64_t& proposal_id){
-		require_auth(_self);
+	void wps_contract::acceptproposal(account_name reviewer, uint64_t proposal_id) {
+		require_auth(reviewer);
 
-		eosio_assert(is_account(reviewer), "The account does not exist");
-
+		reviewer_table reviewers(_self, _self);
 		auto itr = reviewers.find(reviewer);
 		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
 
 		proposal_table proposals(_self, _self);
+		auto idx_index = proposals.get_index<N(idx)>();
+		auto itr_proposal = idx_index.find(proposal_id);
+		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
+		eosio_assert((*itr_proposal).status == proposal_status::PENDING, "Proposal::status is not proposal_status::PENDING");
 
-		auto id_index = proposals.get_index<N(idx)>();
-		auto iter = id_index.lower_bound(proposal_id);
-		for(; iter != id_index.end() && iter->id == proposal_id; ++iter){
-			id_index.modify(iter, 0, [&](auto &proposal){
-				proposal.status = 1;
-			});
-		}
-
-		eosio_assert(iter != id_index.end(), "proposal with given ID doesn't exist");
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+			proposal.status = proposal_status::ON_GOING ;
+		});
 	}
 
-	void wps_contract::rejectproposal(const account_name reviewer, const uint64_t& proposal_id){
-		require_auth(_self);
+	void wps_contract::rejectproposal(account_name reviewer, uint64_t proposal_id) {
+		require_auth(reviewer);
 
-		eosio_assert(is_account(reviewer), "The account does not exist");
-
+		reviewer_table reviewers(_self, _self);
 		auto itr = reviewers.find(reviewer);
 		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
 
 		proposal_table proposals(_self, _self);
+		auto idx_index = proposals.get_index<N(idx)>();
+		auto itr_proposal = idx_index.find(proposal_id);
+		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
+		eosio_assert((*itr_proposal).status == proposal_status::PENDING, "Proposal::status is not proposal_status::PENDING");
 
-		auto id_index = proposals.get_index<N(idx)>();
-		auto iter = id_index.lower_bound(proposal_id);
-		for(; iter != id_index.end() && iter->id == proposal_id; ++iter) {
-			id_index.modify(iter, 0, [&](auto &proposal) {
-				proposal.status = 2;
-			});
-		}
-
-		eosio_assert(iter != id_index.end(), "proposal with given ID doesn't exist");
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+			proposal.status = proposal_status::REJECT;
+		});
 	}
 
 } // eosiowps
