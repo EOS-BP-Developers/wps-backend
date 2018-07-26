@@ -1,5 +1,6 @@
 // #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/proposal.hpp>
+#include <eosio.wps/proposer.hpp>
 
 // extern struct permission_level;
 // extern void require_auth(const permission_level& level);
@@ -44,12 +45,19 @@ namespace eosiowps {
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
 		eosio_assert(duration < 61, "duration should be less than 60 days.");
 
+		//initializing the proposer table
+		proposer_table proposers(_self, _self);
+
+		auto itr = proposers.find(owner);
+		// verify that the account is a registered proposer
+		eosio_assert(itr != proposers.end(), "This account is not a registered proposer");
+
 		// creates the proposal table if there isn't one already
 		uint64_t id = 1;
 		proposal_table proposals(_self, _self);
-		auto itr = proposals.find(owner);
+		auto iter = proposals.find(owner);
 		// verify that the account doesn't already exist in the table
-		eosio_assert(itr == proposals.end(), "This account has already been registered as a proposal");
+		eosio_assert(iter == proposals.end(), "This account has already registered a proposal");
 
 		auto idIndex = proposals.get_index<N(idx)>();
 		auto revItr = idIndex.rbegin();
@@ -114,11 +122,18 @@ namespace eosiowps {
 		eosio_assert(members.size() < 100, "members should be shortter than shorter than 100.");
         eosio_assert(duration < 61, "duration should be less than 60 days.");
 
+		//initializing the proposer table
+		proposer_table proposers(_self, _self);
+
+		auto itr = proposers.find(owner);
+		// verify that the account is a registered proposer
+		eosio_assert(itr != proposers.end(), "This account is not a registered proposer");
+
 		proposal_table proposals(_self, _self);
 
-		auto itr = proposals.find(owner);
-		// verify that the account doesn't already exist in the table
-		eosio_assert(itr != proposals.end(), "Account not found in proposal table");
+		auto iter = proposals.find(owner);
+		// verify that the account already exists in the proposals table
+		eosio_assert(iter != proposals.end(), "Account not found in proposal table");
 
 		// modify value in the table
 		proposals.modify(itr, owner, [&](auto& proposal){
