@@ -7,7 +7,8 @@
 #include "vote.cpp"
 
 namespace eosiowps {
-	wps_contract::wps_contract(action_name self) : contract(self), _wps_info_global(self, self) {
+	wps_contract::wps_contract(action_name self) : contract(self), m_wps_info_global(self, self) {
+		m_wps_info = m_wps_info_global.exists() ? m_wps_info_global.get() : wps_info();
 	}
 };
 

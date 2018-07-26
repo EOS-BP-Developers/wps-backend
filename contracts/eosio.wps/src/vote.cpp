@@ -16,8 +16,6 @@ namespace eosiowps {
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == proposal_status::ON_VOTE, "Proposal::status is not proposal_status::ON_VOTE");
 
-		wps_info _wps_info = this->_wps_info_global.get();
-
 		uint64_t voting_delta = 0;
 		voter_table	voters(_self, _self);
 		auto itr = voters.find(voter);
@@ -38,7 +36,7 @@ namespace eosiowps {
 
 		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal) {
 			proposal.total_votes += voting_delta;
-			if (proposal.total_votes >= _wps_info.lower_bound_total_voting) {
+			if (proposal.total_votes >= m_wps_info.lower_bound_total_voting) {
 				proposal.status = proposal_status::FUNDED;
 			}
 		});
@@ -63,8 +61,6 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == proposal_status::ON_VOTE, "Proposal::status is not proposal_status::ON_VOTE");
-
-		wps_info _wps_info = this->_wps_info_global.get();
 
 		uint64_t voting_delta = 0;
 		voter_table	voters(_self, _self);

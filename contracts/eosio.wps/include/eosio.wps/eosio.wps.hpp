@@ -33,9 +33,9 @@ namespace eosiowps {
     };
 
     struct wps_info {
-        uint32_t lower_bound_total_voting = 0;
+        uint32_t lower_bound_total_voting = 50000; // sample
         uint64_t proposal_current_index = 0;
-        uint32_t max_duration = 60;             //days
+        uint32_t max_duration = 60;                // days
     };
 
     typedef eosio::multi_index< N(voter), voter_info > voter_table;
@@ -115,6 +115,7 @@ namespace eosiowps {
             void unvote(account_name voter, uint64_t proposal_id);
 
         private:
-            wps_info_singleton _wps_info_global;
+            wps_info_singleton m_wps_info_global;
+            wps_info m_wps_info;
     };
 } // eosiowps

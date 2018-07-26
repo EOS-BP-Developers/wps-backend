@@ -58,10 +58,8 @@ namespace eosiowps {
 		// verify that the account doesn't already exist in the table
 		eosio_assert(itr_proposal == proposals.end(), "This account has already registered a proposal");
 
-		wps_info _wps_info;
-		if (this->_wps_info_global.exists()) {
-			_wps_info = this->_wps_info_global.get();
-		}
+		m_wps_info.proposal_current_index += 1;
+		m_wps_info_global.set( m_wps_info, _self );
 
 		// add to the table
 		// storage is billed to the contract account
@@ -76,7 +74,7 @@ namespace eosiowps {
 			proposal.financial_roadmap = financial_roadmap;
 			proposal.members = members;
 			proposal.funding_goal = funding_goal;
-			proposal.id = _wps_info.proposal_current_index + 1;
+			proposal.id = m_wps_info.proposal_current_index;
 			proposal.duration = duration;
 			proposal.status = proposal_status::PENDING; //initialize status to pending
 		});
@@ -118,7 +116,7 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() < 64, "project_overview should be shorter than 64 characters.");
 		eosio_assert(financial_roadmap.size() < 64, "financial_roadmap should be shorter than 64 characters.");
 		eosio_assert(members.size() < 100, "members should be shortter than shorter than 100.");
-        eosio_assert(duration < 61, "duration should be less than 60 days.");
+        eosio_assert(duration <= m_wps_info.max_duration, "duration should be less than 60 days.");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
