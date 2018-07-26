@@ -42,6 +42,16 @@ namespace eosiowps {
 				proposal.status = proposal_status::FUNDED;
 			}
 		});
+
+		//Create the funded proposals table if it does not exist already
+		proposal_table funded_proposals(_self, _self);
+
+		//add to the table
+		funded_proposals.emplace(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+			proposal = (*itr_proposal);
+		});
+
+		proposals.erase(itr_proposal);
 	}
 
 	// @abi action
