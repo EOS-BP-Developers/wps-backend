@@ -13,7 +13,7 @@ namespace eosiowps {
     using std::string;
     using std::vector;
 
-    enum class proposal_status { PENDING, IN_REVIEW, REJECT, ON_GOING, FUNDED };
+    enum class proposal_status { PENDING, REJECT, ON_VOTE, FUNDED };
 
     //@abi table
     struct proposal {

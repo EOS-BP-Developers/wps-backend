@@ -105,7 +105,7 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).status == proposal_status::PENDING, "Proposal::status is not proposal_status::PENDING");
 
 		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
-			proposal.status = proposal_status::ON_GOING ;
+			proposal.status = proposal_status::ON_VOTE ;
 		});
 	}
 
