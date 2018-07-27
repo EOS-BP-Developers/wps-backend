@@ -115,6 +115,7 @@ namespace eosiowps {
 		reviewers.erase( iter );
 	}
 
+	//@abi action
 	void wps_contract::acceptproposal(account_name reviewer, uint64_t proposal_id) {
 		require_auth(reviewer);
 
@@ -127,13 +128,14 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == proposal_status::PENDING, "Proposal::status is not proposal_status::PENDING");
-		//eosio_assert((*itr_proposal).category==(*itr).committee)
+		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 
 		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
 			proposal.status = proposal_status::ON_VOTE;
 		});
 	}
 
+	//@abi action
 	void wps_contract::rejectproposal(account_name reviewer, uint64_t proposal_id) {
 		require_auth(reviewer);
 
@@ -145,6 +147,7 @@ namespace eosiowps {
 		auto idx_index = proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
+		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 		// eosio_assert((*itr_proposal).status == proposal_status::PENDING, "Proposal::status is not proposal_status::PENDING");
 
 		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
@@ -157,6 +160,30 @@ namespace eosiowps {
 		rejected_proposals.emplace((*itr_proposal).owner, [&](auto& proposal){
 			proposal = std::move(*itr_proposal);
 		});
+
+		idx_index.erase(itr_proposal);
+	}
+
+	//@abi action
+	void wps_contract::approve(account_name reviewer, uint64_t proposal_id){
+		require_auth(reviewer);
+
+		reviewer_table reviewers(_self, _self);
+		auto itr = reviewers.find(reviewer);
+		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+
+		proposal_table proposals(_self, _self);
+		auto idx_index = proposals.get_index<N(idx)>();
+		auto itr_proposal = idx_index.find(proposal_id);
+		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
+		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
+		eosio_assert((*itr_proposal).status == proposal_status::FUNDED, "Proposal::status is not proposal_status::FUNDED");
+
+		//inline action transfer
+		eosio::action(
+				std::vector<eosio::permission_level>(1, {_self, N(active)}),
+				N(eosio.token), N(transfer), _self, (*itr_proposal).owner, (*itr_proposal).funding_goal, "Your worker proposal has been approved."
+				).send();
 
 		idx_index.erase(itr_proposal);
 	}

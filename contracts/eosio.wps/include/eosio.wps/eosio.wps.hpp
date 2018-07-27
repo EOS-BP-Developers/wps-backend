@@ -62,7 +62,8 @@ namespace eosiowps {
             // proposal
             // @abi action
             void regproposal(account_name owner,
-                uint16_t category,                // category
+                account_name committee,         // committee
+                string category,                // category
                 uint16_t subcategory,             // subcategory
                 const string& title,              // title
                 const string& subtitle,           // subtitle
@@ -76,7 +77,8 @@ namespace eosiowps {
 
             //@abi action
             void editproposal(account_name owner,
-                uint16_t category,                // category
+                account_name committee,          // committee
+                string category,                // category
                 uint16_t subcategory,             // subcategory
                 const string& title,              // title
                 const string& subtitle,           // subtitle
@@ -93,19 +95,22 @@ namespace eosiowps {
 
             // reviewer
             //@abi action
-            void regreviewer(account_name account, const string& first_name, const string& last_name, const string& committee);
+            void regreviewer(account_name committee, account_name reviewer, const string& first_name, const string& last_name);
 
             //@abi action
-            void editreviewer(account_name account, const string& first_name, const string& last_name, const string& committee);
+            void editreviewer(account_name committee, account_name reviewer, const string& first_name, const string& last_name);
 
             //@abi action
-            void rmvreviewer(const account_name account);
+            void rmvreviewer(const account_name committee, const account_name reviewer);
 
             //@abi action
             void acceptproposal(account_name reviewer, uint64_t proposal_id);
 
             //@abi action
             void rejectproposal(account_name reviewer, uint64_t proposal_id);
+
+            //@abi action
+            void approve(account_name reviewer, uint64_t proposal_id);
 
             // vote
             //@abi action
