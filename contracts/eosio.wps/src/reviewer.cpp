@@ -1,39 +1,45 @@
 // #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/reviewer.hpp>
 #include <eosio.wps/proposal.hpp>
+#include <eosio.wps/committee.hpp>
 
 // extern struct permission_level;
 // extern void require_auth(const permission_level& level);
 
 namespace eosiowps {
 	// @abi action
-	void wps_contract::regreviewer(account_name owner, const string& first_name, const string& last_name, const string& committee) {
-		//Require permission of contract account
-		require_auth(_self);
+	void wps_contract::regreviewer(account_name committee, account_name reviewer, const string& first_name, const string& last_name) {
+		//Require permission of committee account
+		require_auth(committee);
 
 		//verify that the account exists
-		eosio_assert(is_account(owner), "The account does not exist");
+		eosio_assert(is_account(reviewer), "The account does not exist");
 
 		//verify that the inputs are not too short
 		eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
 		eosio_assert(last_name.size() > 0, "last name should be more than 0 characters long");
-		eosio_assert(committee.size() > 0, "committee name should be more than 0 characters long");
 
 		//verify that the inputs are not too long
 		eosio_assert(first_name.size() < 128, "first name should be shorter than 128 characters.");
 		eosio_assert(last_name.size() < 128, "last name should be shorter than 128 characters.");
-		eosio_assert(committee.size() < 64, "committee name should be shorter than 64 charactrs.");
+
+        //creates the committee table if it doesn't exist already
+        committee_table committees(_self, _self);
+
+        auto itr = committees.find(committee);
+        // verify that the committee is on committee table
+        eosio_assert(itr != committees.end(), "Account not found in committee table");
 
 		//creates the reviewers table if it there isn't one already
 		reviewer_table reviewers(_self, _self);
 
-		auto itr = reviewers.find(owner);
+		auto itr = reviewers.find(reviewer);
 		// verify that the account doesn't already exist in the table
 		eosio_assert(itr == reviewers.end(), "This account has already been registered as a reviewer");
 
 		//add to the table
-		reviewers.emplace(owner, [&](auto& reviewer){
-			reviewer.owner = owner;
+		reviewers.emplace(reviewer, [&](auto& reviewer){
+			reviewer.owner = reviewer;
 			reviewer.first_name = first_name;
 			reviewer.last_name = last_name;
 			reviewer.committee = committee;
@@ -41,33 +47,41 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::editreviewer(account_name owner, const string& first_name, const string& last_name, const string& committee) {
-		//Require permission of contract account
-		require_auth(_self);
+	void wps_contract::editreviewer(account_name committee, account_name reviewer, const string& first_name, const string& last_name) {
+		//Require permission of committee account
+		require_auth(committee);
 
 		//verify that the account exists
-		eosio_assert(is_account(owner), "The account does not exist");
+		eosio_assert(is_account(reviewer), "The account does not exist");
 
 		//verify that the inputs are not too short
 		eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
 		eosio_assert(last_name.size() > 0, "last name should be more than 0 characters long");
-		eosio_assert(committee.size() > 0, "committee name should be more than 0 characters long");
 
 		//verify that the inputs are not too long
 		eosio_assert(first_name.size() < 128, "first name should be shorter than 128 characters.");
 		eosio_assert(last_name.size() < 128, "last name should be shorter than 128 characters.");
-		eosio_assert(committee.size() < 64, "committee name should be shorter than 64 charactrs.");
+
+        //creates the committee table if it doesn't exist already
+        committee_table committees(_self, _self);
+
+        auto itr = committees.find(committee);
+        // verify that the committee is on committee table
+        eosio_assert(itr != committees.end(), "Account not found in committee table");
 
 		//creates the reviewers table if it there isn't one already
 		reviewer_table reviewers(_self, _self);
 
-		auto itr = reviewers.find(owner);
+		auto iter = reviewers.find(reviewer);
 		// verify that the account already exists in the table
-		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+		eosio_assert(iter != reviewers.end(), "Account not found in reviewers table");
+
+		// verify that the reviewer is part of the committee
+        eosio_assert((*iter).committee==committee, "The given reviewer is not part of this committee");
 
 		//add to the table
-		reviewers.modify(itr, owner, [&](auto& reviewer){
-			reviewer.owner = owner;
+		reviewers.modify(iter, 0, [&](auto& reviewer){
+			reviewer.owner = reviewer;
 			reviewer.first_name = first_name;
 			reviewer.last_name = last_name;
 			reviewer.committee = committee;
@@ -75,20 +89,30 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::rmvreviewer(const account_name owner){
-		// needs authority of the contract account
-		require_auth(_self);
+	void wps_contract::rmvreviewer(const account_name committee, const account_name reviewer){
+		// needs authority of the committee account
+		require_auth(committee);
 
 		//verify that the account exists
-		eosio_assert(is_account(owner), "The account does not exist");
+		eosio_assert(is_account(reviewer), "The account does not exist");
+
+        //creates the committee table if it doesn't exist already
+        committee_table committees(_self, _self);
+
+        auto itr = committees.find(committee);
+        // verify that the committee is on committee table
+        eosio_assert(itr != committees.end(), "Account not found in committee table");
 
 		reviewer_table reviewers(_self, _self);
 
-		// verify that the account already exists in the reviewers table
-		auto itr = reviewers.find(owner);
-		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+		auto iter = reviewers.find(reviewer);
+        // verify that the account already exists in the reviewers table
+		eosio_assert(iter != reviewers.end(), "Account not found in reviewers table");
 
-		reviewers.erase( itr );
+        // verify that the reviewer is part of the committee
+        eosio_assert((*iter).committee==committee, "The given reviewer is not part of this committee");
+
+		reviewers.erase( iter );
 	}
 
 	void wps_contract::acceptproposal(account_name reviewer, uint64_t proposal_id) {
@@ -103,6 +127,7 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == proposal_status::PENDING, "Proposal::status is not proposal_status::PENDING");
+		//eosio_assert((*itr_proposal).category==(*itr).committee)
 
 		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
 			proposal.status = proposal_status::ON_VOTE;

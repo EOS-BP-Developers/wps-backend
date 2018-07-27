@@ -14,7 +14,7 @@ namespace eosiowps {
         account_name owner;
         string first_name;
         string last_name;
-        string committee;
+        account_name committee;
         uint64_t primary_key() const { return owner; }
         EOSLIB_SERIALIZE( reviewer, (owner)(first_name)(last_name)(committee) )
     };

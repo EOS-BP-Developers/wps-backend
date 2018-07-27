@@ -132,7 +132,7 @@ namespace eosiowps {
 		eosio_assert(itr_proposal != proposals.end(), "Account not found in proposal table");
 
 		// modify value in the table
-		proposals.modify(itr_proposal, owner, [&](auto& proposal){
+		proposals.modify(itr_proposal, 0, [&](auto& proposal){
 			proposal.owner = owner;
 			proposal.category = category;
 			proposal.subcategory = subcategory;
