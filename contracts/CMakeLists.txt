@@ -14,7 +14,7 @@ if(CXX_COMPILER STREQUAL "" OR NOT CXX_COMPILER)
 endif()
 
 if(EOSIO_INSTALL_PREFIX STREQUAL "" OR NOT EOSIO_INSTALL_PREFIX)
-   set(EOSIO_INSTALL_PREFIX "/usr/local")
+   set(EOSIO_INSTALL_PREFIX "/usr/local/eosio")
 endif()
 
 # if no wasm root is given use default path

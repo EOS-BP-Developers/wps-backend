@@ -40,7 +40,7 @@ public:
       const auto& accnt = control->db().get<account_object,by_name>( N(eosio.wps) );
       abi_def abi;
       BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
-      abi_ser.set_abi(abi);
+      abi_ser.set_abi(abi, fc::seconds(1));
    }
 
    transaction_trace_ptr create_account_with_resources( account_name a, account_name creator, asset ramfunds, bool multisig,
@@ -170,7 +170,7 @@ transaction eosio_wps_tester::reqauth( account_name from, const vector<permissio
                })
       );
    transaction trx;
-   abi_serializer::from_variant(pretty_trx, trx, get_resolver());
+   abi_serializer::from_variant(pretty_trx, trx, get_resolver(), fc::seconds(1));
    return trx;
 }
 
