@@ -8,7 +8,7 @@
 namespace eosiowps {
 	// @abi action
 	void wps_contract::regproposal(account_name owner,
-        uint16_t category,
+        account_name committee,
         uint16_t subcategory,
         const string& title,
         const string& subtitle,
@@ -22,28 +22,29 @@ namespace eosiowps {
 		// authority of the user's account is required
 		require_auth(owner);
 
+		// verify that the committee account exists
+		eosio_assert(is_account(committee), "committee account doesn't exist");
+
 		//verify that the inputs are not too short
-		eosio_assert(category > 0, "invalid category");
 		//subcategory is not required
 		//eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
 		eosio_assert(title.size() > 0, "title should be more than 0 characters long");
 		eosio_assert(subtitle.size() > 0, "subtitle should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
-		eosio_assert(project_overview.size() > 4, "project_overview should be more than 0 characters long");
+		eosio_assert(project_overview.size() > 0, "project_overview should be more than 0 characters long");
 		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
 		eosio_assert(members.size() > 0, "member should be more than 0");
 		eosio_assert(duration > 0, "duration must be greater than 0 days");
 
 		//verify that the inputs aren't too long
-		eosio_assert(category < 6, "invalid category");
 		eosio_assert(subcategory < 10, "invalid sub-category");
-		eosio_assert(title.size() < 256, "title should be shorter than 128 characters.");
-		eosio_assert(subtitle.size() < 256, "subtitle should be shorter than 128 characters.");
+		eosio_assert(title.size() < 256, "title should be shorter than 256 characters.");
+		eosio_assert(subtitle.size() < 256, "subtitle should be shorter than 256 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
-		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 64 characters.");
-		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 64 characters.");
+		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
+		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-		eosio_assert(duration < 61, "duration should be less than 60 days.");
+		eosio_assert(duration <= m_wps_info.max_duration, "duration should be less than 60 days.");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
@@ -58,6 +59,13 @@ namespace eosiowps {
 		// verify that the account doesn't already exist in the table
 		eosio_assert(itr_proposal == proposals.end(), "This account has already registered a proposal");
 
+		//creates the committee table if it doesn't exist already
+		committee_table committees(_self, _self);
+
+		auto committee_itr = committees.find(committee);
+		// verify that the committee is on committee table
+		eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
+
 		m_wps_info.proposal_current_index += 1;
 		m_wps_info_global.set( m_wps_info, _self );
 
@@ -65,7 +73,8 @@ namespace eosiowps {
 		// storage is billed to the contract account
 		proposals.emplace(owner, [&](auto& proposal) {
 			proposal.owner = owner;
-			proposal.category = category;
+			proposal.committee = committee;
+			proposal.category = (*committee_itr).category;
 			proposal.subcategory = subcategory;
 			proposal.title = title;
 			proposal.subtitle = subtitle;
@@ -82,7 +91,7 @@ namespace eosiowps {
 
 	//@abi action
 	void wps_contract::editproposal(account_name owner,
-        uint16_t category,
+        account_name committee,
         uint16_t subcategory,
         const string& title,
         const string& subtitle,
@@ -96,26 +105,28 @@ namespace eosiowps {
 		// authority of the user's account is required
 		require_auth(owner);
 
+		// verify that the committee account exists
+		eosio_assert(is_account(committee), "committee account doesn't exist");
+
 		//verify that the inputs are not too short
-        eosio_assert(category > 0, "invalid category. Category must be an integer between 1 and 5.");
-        //eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
+		//subcategory is not required
+		//eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
 		eosio_assert(title.size() > 0, "title should be more than 0 characters long");
 		eosio_assert(subtitle.size() > 0, "subtitle should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
-		eosio_assert(project_overview.size() > 4, "project_overview should be more than 0 characters long");
+		eosio_assert(project_overview.size() > 0, "project_overview should be more than 0 characters long");
 		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
 		eosio_assert(members.size() > 0, "member should be more than 0");
-        eosio_assert(duration > 0, "duration must be greater than 0 days");
+		eosio_assert(duration > 0, "duration must be greater than 0 days");
 
 		//verify that the inputs aren't too long
-		eosio_assert(category < 6, "invalid category");
 		eosio_assert(subcategory < 10, "invalid sub-category");
-		eosio_assert(title.size() < 128, "title should be shorter than 128 characters.");
-		eosio_assert(subtitle.size() < 128, "subtitle should be shorter than 128 characters.");
+		eosio_assert(title.size() < 256, "title should be shorter than 256 characters.");
+		eosio_assert(subtitle.size() < 256, "subtitle should be shorter than 256 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
-		eosio_assert(project_overview.size() < 64, "project_overview should be shorter than 64 characters.");
-		eosio_assert(financial_roadmap.size() < 64, "financial_roadmap should be shorter than 64 characters.");
-		eosio_assert(members.size() < 100, "members should be shortter than shorter than 100.");
+		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
+		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
+		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
         eosio_assert(duration <= m_wps_info.max_duration, "duration should be less than 60 days.");
 
 		//initializing the proposer table
@@ -131,10 +142,18 @@ namespace eosiowps {
 		// verify that the account already exists in the proposals table
 		eosio_assert(itr_proposal != proposals.end(), "Account not found in proposal table");
 
+		//creates the committee table if it doesn't exist already
+		committee_table committees(_self, _self);
+
+		auto committee_itr = committees.find(committee);
+		// verify that the committee is on committee table
+		eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
+
 		// modify value in the table
 		proposals.modify(itr_proposal, 0, [&](auto& proposal){
 			proposal.owner = owner;
-			proposal.category = category;
+			proposal.committee = committee;
+			proposal.category = (*committee_itr).category;
 			proposal.subcategory = subcategory;
 			proposal.title = title;
 			proposal.subtitle = subtitle;

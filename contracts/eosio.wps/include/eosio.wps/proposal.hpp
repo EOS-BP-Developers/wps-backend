@@ -19,7 +19,8 @@ namespace eosiowps {
     struct proposal {
         account_name owner;        // proposer
         uint64_t id;
-        uint16_t category;         // category
+        account_name committee;  // committee
+        string category;         // category
         uint16_t subcategory;      // subcategory
         string title;              // title
         string subtitle;           // subtitle
@@ -33,7 +34,7 @@ namespace eosiowps {
         proposal_status status;     // review status
         uint64_t primary_key() const { return owner; }
         uint64_t by_id() const { return static_cast<uint64_t>(id); }
-        EOSLIB_SERIALIZE( proposal, (owner)(id)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(total_votes)(status) )
+        EOSLIB_SERIALIZE( proposal, (owner)(id)(committee)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(total_votes)(status) )
     };
 
     typedef eosio::multi_index< N(proposals), proposal,
