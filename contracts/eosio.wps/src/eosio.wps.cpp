@@ -19,4 +19,6 @@ EOSIO_ABI( eosiowps::wps_contract,
 	(regproposal)(editproposal)(rmvproposal)
 	// reviewer.hpp
 	(regreviewer)(editreviewer)(rmvreviewer)(acceptproposal)(rejectproposal)
+	// vote.hpp
+	(vote)(unvote) // (stake)(unstake)
 )

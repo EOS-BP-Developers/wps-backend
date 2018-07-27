@@ -105,7 +105,7 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).status == proposal_status::PENDING, "Proposal::status is not proposal_status::PENDING");
 
 		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
-			proposal.status = proposal_status::ON_VOTE ;
+			proposal.status = proposal_status::ON_VOTE;
 		});
 	}
 
@@ -126,12 +126,11 @@ namespace eosiowps {
 			proposal.status = proposal_status::REJECT;
 		});
 
-		// Create the rejected proposals table if it doesn't exist already
-		proposal_table rejected_proposals(_self, _self);
+		rejected_proposal_table rejected_proposals(_self, _self);
 
 		//add to the table
 		rejected_proposals.emplace((*itr_proposal).owner, [&](auto& proposal){
-			proposal = (*itr_proposal);
+			proposal = std::move(*itr_proposal);
 		});
 
 		idx_index.erase(itr_proposal);

@@ -39,4 +39,13 @@ namespace eosiowps {
     typedef eosio::multi_index< N(proposals), proposal,
         indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
     > proposal_table;
+
+    typedef eosio::multi_index< N(fundedprop), proposal,
+        indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
+    > funded_proposal_table;
+
+    typedef eosio::multi_index< N(rejectedprop), proposal,
+        indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
+    > rejected_proposal_table;
+
 } // eosiowps
