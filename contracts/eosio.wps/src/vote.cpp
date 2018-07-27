@@ -36,7 +36,7 @@ namespace eosiowps {
 			});
 		}
 
-		idx_index.modify(itr_proposal, (*itr_proposal).owne, [&](proposal) {
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](proposal) {
 			proposal.total_votes += voting_delta;
 			if (proposal.total_votes >= _wps_info.lower_bound_total_voting) {
 				proposal.status = proposal_status::FUNDED;
