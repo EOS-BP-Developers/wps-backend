@@ -136,8 +136,11 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::rejectproposal(account_name reviewer, uint64_t proposal_id) {
+	void wps_contract::rejectproposal(account_name reviewer, uint64_t proposal_id, const string& reason) {
 		require_auth(reviewer);
+
+		eosio_assert(reason.size() > 0, "must provide a brief reason");
+		eosio_assert(reason.size() < 256, "reason is too long");
 
 		reviewer_table reviewers(_self, _self);
 		auto itr = reviewers.find(reviewer);
