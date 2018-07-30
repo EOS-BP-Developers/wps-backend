@@ -24,14 +24,28 @@ using mvo = fc::mutable_variant_object;
 class eosio_wps_tester : public tester {
 public:
    eosio_wps_tester() {
-      create_accounts( { N(eosio.wps), N(eosio.saving), N(alice), N(bob), N(carol) } );
+      create_accounts( {N(eosio.token), N(eosio.wps), N(eosio.saving), N(alice), N(bob), N(carol) } );
       produce_block();
 
-      auto trace = base_tester::push_action(config::system_account_name, N(setpriv),
+      auto trace1 = base_tester::push_action(config::system_account_name, N(setpriv),
+                                            config::system_account_name, mutable_variant_object()
+                                            ("account", "eosio.token")
+                                            ("is_priv", 1)
+      );
+
+      auto trace2 = base_tester::push_action(config::system_account_name, N(setpriv),
                                             config::system_account_name, mutable_variant_object()
                                             ("account", "eosio.wps")
                                             ("is_priv", 1)
       );
+
+      auto trace3 = base_tester::push_action(config::system_account_name, N(setpriv),
+                                            config::system_account_name, mutable_variant_object()
+                                            ("account", "eosio.saving")
+                                            ("is_priv", 1)
+      );
+      set_code( N(eosio.token), contracts::util::token_wasm() );
+      set_abi( N(eosio.token), contracts::util::token_abi().data() );
 
       set_code( N(eosio.wps), contracts::wps_wasm() );
       set_abi( N(eosio.wps), contracts::wps_abi().data() );
@@ -41,6 +55,8 @@ public:
       abi_def abi;
       BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
       abi_ser.set_abi(abi, fc::seconds(1));
+
+      // BOOST_TEST_MESSAGE( "Current time:" << fc::json::to_pretty_string(trace1) );
    }
 
    transaction_trace_ptr create_account_with_resources( account_name a, account_name creator, asset ramfunds, bool multisig,
@@ -177,7 +193,6 @@ transaction eosio_wps_tester::reqauth( account_name from, const vector<permissio
 BOOST_AUTO_TEST_SUITE(eosio_wps_tests)
 
 BOOST_FIXTURE_TEST_CASE( register_proposer, eosio_wps_tester ) try {
-  BOOST_CHECK(true);
 } FC_LOG_AND_RETHROW()
 
 
