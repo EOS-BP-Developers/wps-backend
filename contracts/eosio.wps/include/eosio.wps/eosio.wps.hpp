@@ -118,6 +118,16 @@ namespace eosiowps {
             //@abi action
             void unvote(account_name voter, uint64_t proposal_id);
 
+            // committee
+            // @abi action
+            void regcommittee(const account_name owner, const string& category);
+
+            // @abi action
+            void editcommittee(const account_name owner, const string& category);
+
+            // @abi action
+            void rmvcommittee(const account_name owner);
+
         private:
             wps_info_singleton m_wps_info_global;
             wps_info m_wps_info;

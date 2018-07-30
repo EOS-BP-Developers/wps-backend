@@ -56,9 +56,9 @@ namespace eosiowps {
 
 		// creates the proposal table if there isn't one already
 		proposal_table proposals(_self, _self);
-		auto itr_proposal = proposals.find(owner);
+		auto proposal_itr = proposals.find(owner);
 		// verify that the account doesn't already exist in the table
-		eosio_assert(itr_proposal == proposals.end(), "This account has already registered a proposal");
+		eosio_assert(proposal_itr == proposals.end(), "This account has already registered a proposal");
 
 		//creates the committee table if it doesn't exist already
 		committee_table committees(_self, _self);
@@ -139,9 +139,9 @@ namespace eosiowps {
 
 		proposal_table proposals(_self, _self);
 
-		auto itr_proposal = proposals.find(owner);
+		auto proposal_itr = proposals.find(owner);
 		// verify that the account already exists in the proposals table
-		eosio_assert(itr_proposal != proposals.end(), "Account not found in proposal table");
+		eosio_assert(proposal_itr != proposals.end(), "Account not found in proposal table");
 
 		//creates the committee table if it doesn't exist already
 		committee_table committees(_self, _self);
@@ -151,7 +151,7 @@ namespace eosiowps {
 		eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
 
 		// modify value in the table
-		proposals.modify(itr_proposal, 0, [&](auto& proposal){
+		proposals.modify(proposal_itr, 0, [&](auto& proposal){
 			proposal.owner = owner;
 			proposal.committee = committee;
 			proposal.category = (*committee_itr).category;
@@ -175,9 +175,9 @@ namespace eosiowps {
 		proposal_table proposals(_self, _self);
 
 		// verify that the account already exists in the proposer table
-		auto itr_proposal = proposals.find(owner);
-		eosio_assert(itr_proposal != proposals.end(), "Account not found in proposal table");
+		auto itr = proposals.find(owner);
+		eosio_assert(itr != proposals.end(), "Account not found in proposal table");
 
-		proposals.erase(itr_proposal);
+		proposals.erase(itr);
 	}
 } // eosiowps

@@ -33,9 +33,9 @@ namespace eosiowps {
 		//creates the reviewers table if it there isn't one already
 		reviewer_table reviewers(_self, _self);
 
-		auto itr_reviewer = reviewers.find(reviewer);
+		auto reviewer_itr = reviewers.find(reviewer);
 		// verify that the account doesn't already exist in the table
-		eosio_assert(itr_reviewer == reviewers.end(), "This account has already been registered as a reviewer");
+		eosio_assert(reviewer_itr == reviewers.end(), "This account has already been registered as a reviewer");
 
 		//add to the table
 		reviewers.emplace(reviewer, [&](auto& _reviewer){
@@ -65,22 +65,22 @@ namespace eosiowps {
         //creates the committee table if it doesn't exist already
         committee_table committees(_self, _self);
 
-        auto itr = committees.find(committee);
+        auto committee_itr = committees.find(committee);
         // verify that the committee is on committee table
-        eosio_assert(itr != committees.end(), "Account not found in committee table");
+        eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
 
 		//creates the reviewers table if it there isn't one already
 		reviewer_table reviewers(_self, _self);
 
-		auto iter = reviewers.find(reviewer);
+		auto itr = reviewers.find(reviewer);
 		// verify that the account already exists in the table
-		eosio_assert(iter != reviewers.end(), "Account not found in reviewers table");
+		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
 
 		// verify that the reviewer is part of the committee
-        eosio_assert((*iter).committee==committee, "The given reviewer is not part of this committee");
+        eosio_assert((*itr).committee == committee, "The given reviewer is not part of this committee");
 
 		//add to the table
-		reviewers.modify(iter, 0, [&](auto& _reviewer){
+		reviewers.modify(itr, 0, [&](auto& _reviewer){
 			_reviewer.owner = reviewer;
 			_reviewer.first_name = first_name;
 			_reviewer.last_name = last_name;
@@ -99,20 +99,20 @@ namespace eosiowps {
         //creates the committee table if it doesn't exist already
         committee_table committees(_self, _self);
 
-        auto itr = committees.find(committee);
+        auto committee_itr = committees.find(committee);
         // verify that the committee is on committee table
-        eosio_assert(itr != committees.end(), "Account not found in committee table");
+        eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
 
 		reviewer_table reviewers(_self, _self);
 
-		auto iter = reviewers.find(reviewer);
+		auto itr = reviewers.find(reviewer);
         // verify that the account already exists in the reviewers table
-		eosio_assert(iter != reviewers.end(), "Account not found in reviewers table");
+		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
 
         // verify that the reviewer is part of the committee
-        eosio_assert((*iter).committee==committee, "The given reviewer is not part of this committee");
+        eosio_assert((*itr).committee==committee, "The given reviewer is not part of this committee");
 
-		reviewers.erase( iter );
+		reviewers.erase( itr );
 	}
 
 	//@abi action
