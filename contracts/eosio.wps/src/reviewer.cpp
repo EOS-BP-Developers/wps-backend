@@ -33,16 +33,16 @@ namespace eosiowps {
 		//creates the reviewers table if it there isn't one already
 		reviewer_table reviewers(_self, _self);
 
-		auto itr = reviewers.find(reviewer);
+		auto itr_reviewer = reviewers.find(reviewer);
 		// verify that the account doesn't already exist in the table
-		eosio_assert(itr == reviewers.end(), "This account has already been registered as a reviewer");
+		eosio_assert(itr_reviewer == reviewers.end(), "This account has already been registered as a reviewer");
 
 		//add to the table
-		reviewers.emplace(reviewer, [&](auto& reviewer){
-			reviewer.owner = reviewer;
-			reviewer.first_name = first_name;
-			reviewer.last_name = last_name;
-			reviewer.committee = committee;
+		reviewers.emplace(reviewer, [&](auto& _reviewer){
+			_reviewer.owner = reviewer;
+			_reviewer.first_name = first_name;
+			_reviewer.last_name = last_name;
+			_reviewer.committee = committee;
 		});
 	}
 
@@ -80,11 +80,11 @@ namespace eosiowps {
         eosio_assert((*iter).committee==committee, "The given reviewer is not part of this committee");
 
 		//add to the table
-		reviewers.modify(iter, 0, [&](auto& reviewer){
-			reviewer.owner = reviewer;
-			reviewer.first_name = first_name;
-			reviewer.last_name = last_name;
-			reviewer.committee = committee;
+		reviewers.modify(iter, 0, [&](auto& _reviewer){
+			_reviewer.owner = reviewer;
+			_reviewer.first_name = first_name;
+			_reviewer.last_name = last_name;
+			_reviewer.committee = committee;
 		});
 	}
 
@@ -183,10 +183,11 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).status == proposal_status::FUNDED, "Proposal::status is not proposal_status::FUNDED");
 
 		//inline action transfer
-		eosio::action(
-				std::vector<eosio::permission_level>(1, {_self, N(active)}),
-				N(eosio.token), N(transfer), _self, (*itr_proposal).owner, (*itr_proposal).funding_goal, "Your worker proposal has been approved."
-				).send();
+        eosio::action(
+            eosio::permission_level{ _self, N(active) },
+            N(eosio.token), N(transfer),
+            std::make_tuple( _self, (*itr_proposal).owner, (*itr_proposal).funding_goal, std::string("Your worker proposal has been approved."))
+         ).send();
 
 		idx_index.erase(itr_proposal);
 	}

@@ -19,8 +19,8 @@ namespace eosiowps {
     struct proposal {
         account_name owner;        // proposer
         uint64_t id;
-        account_name committee;  // committee
-        string category;         // category
+        account_name committee;    // committee
+        string category;           // category
         uint16_t subcategory;      // subcategory
         string title;              // title
         string subtitle;           // subtitle
@@ -28,10 +28,10 @@ namespace eosiowps {
         string project_overview;   // overview
         string financial_roadmap;  // financial
         vector<string> members;    // linkedin
-        asset funding_goal;         // amount of EOS
-        uint16_t duration;          // voting duration
+        asset funding_goal;        // amount of EOS
+        uint16_t duration;         // voting duration
         uint32_t total_votes;
-        proposal_status status;     // review status
+        proposal_status status;    // review status
         uint64_t primary_key() const { return owner; }
         uint64_t by_id() const { return static_cast<uint64_t>(id); }
         EOSLIB_SERIALIZE( proposal, (owner)(id)(committee)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(total_votes)(status) )

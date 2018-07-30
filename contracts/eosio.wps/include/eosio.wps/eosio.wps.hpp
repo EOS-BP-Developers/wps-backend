@@ -10,6 +10,7 @@
 #include "proposal.hpp"
 #include "proposer.hpp"
 #include "reviewer.hpp"
+#include "committee.hpp"
 */
 
 #include <string>
@@ -62,8 +63,7 @@ namespace eosiowps {
             // proposal
             // @abi action
             void regproposal(account_name owner,
-                account_name committee,         // committee
-                string category,                // category
+                account_name committee,           // committee
                 uint16_t subcategory,             // subcategory
                 const string& title,              // title
                 const string& subtitle,           // subtitle
@@ -77,8 +77,7 @@ namespace eosiowps {
 
             //@abi action
             void editproposal(account_name owner,
-                account_name committee,          // committee
-                string category,                // category
+                account_name committee,           // committee
                 uint16_t subcategory,             // subcategory
                 const string& title,              // title
                 const string& subtitle,           // subtitle
@@ -107,7 +106,7 @@ namespace eosiowps {
             void acceptproposal(account_name reviewer, uint64_t proposal_id);
 
             //@abi action
-            void rejectproposal(account_name reviewer, uint64_t proposal_id);
+            void rejectproposal(account_name reviewer, uint64_t proposal_id, const string& reason);
 
             //@abi action
             void approve(account_name reviewer, uint64_t proposal_id);

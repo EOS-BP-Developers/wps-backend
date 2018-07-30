@@ -1,6 +1,7 @@
 // #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/proposal.hpp>
 #include <eosio.wps/proposer.hpp>
+#include <eosio.wps/committee.hpp>
 
 // extern struct permission_level;
 // extern void require_auth(const permission_level& level);
