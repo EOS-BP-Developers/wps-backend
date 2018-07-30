@@ -116,7 +116,7 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::acceptproposal(account_name reviewer, uint64_t proposal_id) {
+	void wps_contract::acceptprop(account_name reviewer, uint64_t proposal_id) {
 		require_auth(reviewer);
 
 		reviewer_table reviewers(_self, _self);
@@ -136,7 +136,7 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::rejectproposal(account_name reviewer, uint64_t proposal_id, const string& reason) {
+	void wps_contract::rejectprop(account_name reviewer, uint64_t proposal_id, const string& reason) {
 		require_auth(reviewer);
 
 		eosio_assert(reason.size() > 0, "must provide a brief reason");
@@ -188,6 +188,14 @@ namespace eosiowps {
             N(eosio.token), N(transfer),
             std::make_tuple( _self, (*itr_proposal).owner, (*itr_proposal).funding_goal, std::string("Your worker proposal has been approved."))
          ).send();
+
+		approved_proposal_table approved_proposals(_self, _self);
+
+		//add to the table
+		approved_proposals.emplace((*itr_proposal).owner, [&](auto& proposal){
+			proposal = std::move(*itr_proposal);
+			proposal.status = proposal_status::APPROVED;
+		});
 
 		idx_index.erase(itr_proposal);
 	}

@@ -25,7 +25,6 @@ namespace eosiowps {
     using eosio::indexed_by;
     using eosio::const_mem_fun;
 
-    //@abi table
     struct voter_info {
         account_name owner;
         set<uint64_t> proposals;
@@ -103,10 +102,10 @@ namespace eosiowps {
             void rmvreviewer(const account_name committee, const account_name reviewer);
 
             //@abi action
-            void acceptproposal(account_name reviewer, uint64_t proposal_id);
+            void acceptprop(account_name reviewer, uint64_t proposal_id);
 
             //@abi action
-            void rejectproposal(account_name reviewer, uint64_t proposal_id, const string& reason);
+            void rejectprop(account_name reviewer, uint64_t proposal_id, const string& reason);
 
             //@abi action
             void approve(account_name reviewer, uint64_t proposal_id);
