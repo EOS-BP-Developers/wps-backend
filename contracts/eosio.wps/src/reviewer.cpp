@@ -167,8 +167,43 @@ namespace eosiowps {
 		idx_index.erase(itr_proposal);
 	}
 
-	//@abi action
-	void wps_contract::approve(account_name reviewer, uint64_t proposal_id){
+	// @abi action
+	void wps_contract::checkvotes(account_name reviewer, uint64_t proposal_id) {
+		require_auth(reviewer);
+
+		reviewer_table reviewers(_self, _self);
+		auto itr = reviewers.find(reviewer);
+		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+
+		proposal_table proposals(_self, _self);
+		auto idx_index = proposals.get_index<N(idx)>();
+		auto itr_proposal = idx_index.find(proposal_id);
+		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
+		eosio_assert((*itr_proposal).committee == (*itr).committee, "Reviewer is not part of this proposal's responsible committee");
+		eosio_assert((*itr_proposal).status == proposal_status::VOTED, "Proposal's status is not VOTED");
+
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+			proposal.status = proposal_status::CHECK_COUNT_VOTES;
+		});
+	}
+
+	// @abi action
+	void wps_contract::checkedvotes(account_name watchman, uint64_t proposal_id) {
+		require_auth(watchman);
+
+		proposal_table proposals(_self, _self);
+		auto idx_index = proposals.get_index<N(idx)>();
+		auto itr_proposal = idx_index.find(proposal_id);
+		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
+		eosio_assert((*itr_proposal).status == proposal_status::CHECK_COUNT_VOTES, "Proposal's status is not CHECK_COUNT_VOTES");
+
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+			proposal.status = proposal_status::CHECKED_COUNT_VOTES;
+		});
+	}
+
+	// @abi action
+	void wps_contract::approve(account_name reviewer, uint64_t proposal_id) {
 		require_auth(reviewer);
 
 		reviewer_table reviewers(_self, _self);
@@ -180,7 +215,7 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
-		eosio_assert((*itr_proposal).status == proposal_status::FUNDED, "Proposal::status is not proposal_status::FUNDED");
+		eosio_assert((*itr_proposal).status == proposal_status::CHECKED_COUNT_VOTES, "Proposal::status is not proposal_status::CHECKED_COUNT_VOTES");
 
 		//inline action transfer
         eosio::action(

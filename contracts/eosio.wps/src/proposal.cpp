@@ -47,6 +47,7 @@ namespace eosiowps {
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
 		eosio_assert(duration <= m_wps_info.max_duration, "duration should be less than 60 days.");
 
+
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
 
@@ -67,6 +68,7 @@ namespace eosiowps {
 		// verify that the committee is on committee table
 		eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
 
+		m_wps_info = m_wps_info_global.exists() ? m_wps_info_global.get() : wps_info();
 		m_wps_info.proposal_current_index += 1;
 		m_wps_info_global.set( m_wps_info, _self );
 

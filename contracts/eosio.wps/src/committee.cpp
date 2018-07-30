@@ -3,8 +3,27 @@
 #include <eosio.wps/committee.hpp>
 
 namespace eosiowps {
+
     // @abi action
-    void wps_contract::regcommittee(const account_name owner, const string& category){
+    void wps_contract::setwpsinfo(account_name watchman, uint32_t lower_bound_total_voting, uint32_t max_duration) {
+        //registration of committee requires contract account permissions
+        require_auth(_self);
+
+        eosio_assert(is_account(watchman), "committee account doesn't exist");
+        eosio_assert(lower_bound_total_voting >= 5, "lower_bound_total_voting should be more than equal 5 long");
+        eosio_assert(max_duration >= 60, "max_duration should be more than equal 60 long");
+
+        m_wps_info = m_wps_info_global.exists() ? m_wps_info_global.get() : wps_info();
+
+        m_wps_info.watchman = watchman;
+        m_wps_info.lower_bound_total_voting = lower_bound_total_voting;
+        m_wps_info.max_duration = max_duration;
+
+        m_wps_info_global.set( m_wps_info, _self );
+    }
+
+    // @abi action
+    void wps_contract::regcommittee(account_name owner, const string& category) {
         //registration of committee requires contract account permissions
         require_auth(_self);
 
@@ -29,7 +48,7 @@ namespace eosiowps {
         });
     }
 
-    void wps_contract::editcommittee(const account_name owner, const string& category){
+    void wps_contract::editcommittee(account_name owner, const string& category) {
         //editing committee info requires contract account permissions
         require_auth(_self);
 
@@ -54,7 +73,7 @@ namespace eosiowps {
         });
     }
 
-    void wps_contract::rmvcommittee(const account_name owner){
+    void wps_contract::rmvcommittee(account_name owner) {
         require_auth(_self);
 
         eosio_assert(is_account(owner), "committee account doesn't exist");

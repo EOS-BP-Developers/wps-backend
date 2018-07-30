@@ -33,9 +33,11 @@ namespace eosiowps {
     };
 
     struct wps_info {
-        uint32_t lower_bound_total_voting = 50000; // sample
+        uint32_t lower_bound_total_voting = 5;      // 5%
         uint64_t proposal_current_index = 0;
-        uint32_t max_duration = 60;                // days
+        uint32_t max_duration = 60;                // voting duration days
+        account_name watchman = N(watchmanwpss);
+        EOSLIB_SERIALIZE( wps_info, (lower_bound_total_voting)(proposal_current_index)(max_duration)(watchman) )
     };
 
     typedef eosio::multi_index< N(voter), voter_info > voter_table;
@@ -99,13 +101,19 @@ namespace eosiowps {
             void editreviewer(account_name committee, account_name reviewer, const string& first_name, const string& last_name);
 
             //@abi action
-            void rmvreviewer(const account_name committee, const account_name reviewer);
+            void rmvreviewer(account_name committee, const account_name reviewer);
 
             //@abi action
             void acceptprop(account_name reviewer, uint64_t proposal_id);
 
             //@abi action
             void rejectprop(account_name reviewer, uint64_t proposal_id, const string& reason);
+
+            //@abi action
+            void checkvotes(account_name reviewer, uint64_t proposal_id);
+
+            //@abi action
+            void checkedvotes(account_name watchman, uint64_t proposal_id);
 
             //@abi action
             void approve(account_name reviewer, uint64_t proposal_id);
@@ -119,13 +127,16 @@ namespace eosiowps {
 
             // committee
             // @abi action
-            void regcommittee(const account_name owner, const string& category);
+            void setwpsinfo(account_name watchman, uint32_t lower_bound_total_voting, uint32_t max_duration);
 
             // @abi action
-            void editcommittee(const account_name owner, const string& category);
+            void regcommittee(account_name owner, const string& category);
 
             // @abi action
-            void rmvcommittee(const account_name owner);
+            void editcommittee(account_name owner, const string& category);
+
+            // @abi action
+            void rmvcommittee(account_name owner);
 
         private:
             wps_info_singleton m_wps_info_global;
