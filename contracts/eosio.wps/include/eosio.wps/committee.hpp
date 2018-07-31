@@ -12,11 +12,11 @@ namespace eosiowps {
 
     //@abi table
     struct committee {
-        account_name owner;
+        account_name committeeman;
         string category;
         bool is_oversight;
-        uint64_t primary_key() const { return owner; }
-        EOSLIB_SERIALIZE( committee, (owner)(category) );
+        uint64_t primary_key() const { return committeeman; }
+        EOSLIB_SERIALIZE( committee, (committeeman)(category) );
     };
 
     typedef eosio::multi_index< N(committee), committee> committee_table;

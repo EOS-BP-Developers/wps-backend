@@ -17,10 +17,10 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert((*itr).is_oversight, "account does not have oversight privileges");
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
-		eosio_assert((*itr_proposal).status == proposal_status::REQUEST_CHECK_COUNT_VOTES, "Proposal's status is not REQUEST_CHECK_COUNT_VOTES");
+		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::CHECK_VOTE, "Proposal's status is not CHECK_VOTE");
 
-		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
-			proposal.status = proposal_status::COMMIT_COUNT_VOTES;
+		idx_index.modify(itr_proposal, (*itr_proposal).proposer, [&](auto& proposal){
+			proposal.status = PROPOSAL_STATUS::CHECKED_VOTE;
 		});
 	}//action permission should be linked to a separate key
 
@@ -37,10 +37,10 @@ namespace eosiowps {
 		auto idx_index = proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
-		eosio_assert((*itr_proposal).status == proposal_status::REQUEST_CHECK_COUNT_VOTES, "Proposal's status is not REQUEST_CHECK_COUNT_VOTES");
+		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::CHECK_VOTE, "Proposal's status is not CHECK_VOTE");
 
-		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal) {
-			proposal.status = proposal_status::ON_VOTE; //roll back to on vote status
+		idx_index.modify(itr_proposal, (*itr_proposal).proposer, [&](auto& proposal) {
+			proposal.status = PROPOSAL_STATUS::ON_VOTE; //roll back to on vote status
 		});
 	}//action permission should be linked to a separate key
 

@@ -11,7 +11,7 @@ namespace eosiowps {
 
     //@abi table
     struct proposer {
-        account_name owner;
+        account_name account;
         string first_name;
         string last_name;
         string img_url;
@@ -20,8 +20,8 @@ namespace eosiowps {
         string telegram;
         string website;
         string linkedin;
-        uint64_t primary_key() const { return owner; }
-        EOSLIB_SERIALIZE( proposer, (owner)(first_name)(last_name)(img_url)(bio)(country)(telegram)(website)(linkedin) )
+        uint64_t primary_key() const { return account; }
+        EOSLIB_SERIALIZE( proposer, (account)(first_name)(last_name)(img_url)(bio)(country)(telegram)(website)(linkedin) )
     };
     typedef eosio::multi_index<N(proposer), proposer> proposer_table;
 

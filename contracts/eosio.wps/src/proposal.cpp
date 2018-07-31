@@ -8,7 +8,8 @@
 
 namespace eosiowps {
 	// @abi action
-	void wps_contract::regproposal(account_name owner,
+	void wps_contract::regproposal(
+		account_name proposer,
         account_name committee,
         uint16_t subcategory,
         const string& title,
@@ -21,7 +22,7 @@ namespace eosiowps {
 		uint16_t duration
     ) {
 		// authority of the user's account is required
-		require_auth(owner);
+		require_auth(proposer);
 
 		// verify that the committee account exists
 		eosio_assert(is_account(committee), "committee account doesn't exist");
@@ -45,19 +46,19 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-		eosio_assert(duration <= m_wps_env.voting_duration_day, "duration should be less than voting_duration_day days.");
+		eosio_assert(duration <= m_wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
 
-		auto itr = proposers.find(owner);
+		auto itr = proposers.find(proposer);
 		// verify that the account is a registered proposer
 		eosio_assert(itr != proposers.end(), "This account is not a registered proposer");
 
 		// creates the proposal table if there isn't one already
 		proposal_table proposals(_self, _self);
-		auto proposal_itr = proposals.find(owner);
+		auto proposal_itr = proposals.find(proposer);
 		// verify that the account doesn't already exist in the table
 		eosio_assert(proposal_itr == proposals.end(), "This account has already registered a proposal");
 
@@ -74,8 +75,8 @@ namespace eosiowps {
 
 		// add to the table
 		// storage is billed to the contract account
-		proposals.emplace(owner, [&](auto& proposal) {
-			proposal.owner = owner;
+		proposals.emplace(proposer, [&](auto& proposal) {
+			proposal.proposer = proposer;
 			proposal.committee = committee;
 			proposal.category = (*committee_itr).category;
 			proposal.subcategory = subcategory;
@@ -88,12 +89,14 @@ namespace eosiowps {
 			proposal.funding_goal = funding_goal;
 			proposal.id = m_wps_env.proposal_current_index;
 			proposal.duration = duration;
-			proposal.status = proposal_status::PENDING; //initialize status to pending
+			proposal.status = PROPOSAL_STATUS::PENDING; 		//initialize status to pending
+			proposal.iteration_of_funding = 0;
 		});
 	}
 
 	//@abi action
-	void wps_contract::editproposal(account_name owner,
+	void wps_contract::editproposal(
+		account_name proposer,
         account_name committee,
         uint16_t subcategory,
         const string& title,
@@ -106,7 +109,7 @@ namespace eosiowps {
 		uint16_t duration
     ) {
 		// authority of the user's account is required
-		require_auth(owner);
+		require_auth(proposer);
 
 		// verify that the committee account exists
 		eosio_assert(is_account(committee), "committee account doesn't exist");
@@ -130,18 +133,18 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-        eosio_assert(duration <= m_wps_env.voting_duration_day, "duration should be less than voting_duration_day days.");
+        eosio_assert(duration <= m_wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
 
-		auto itr = proposers.find(owner);
+		auto itr = proposers.find(proposer);
 		// verify that the account is a registered proposer
 		eosio_assert(itr != proposers.end(), "This account is not a registered proposer");
 
 		proposal_table proposals(_self, _self);
 
-		auto proposal_itr = proposals.find(owner);
+		auto proposal_itr = proposals.find(proposer);
 		// verify that the account already exists in the proposals table
 		eosio_assert(proposal_itr != proposals.end(), "Account not found in proposal table");
 
@@ -154,7 +157,7 @@ namespace eosiowps {
 
 		// modify value in the table
 		proposals.modify(proposal_itr, 0, [&](auto& proposal){
-			proposal.owner = owner;
+			proposal.proposer = proposer;
 			proposal.committee = committee;
 			proposal.category = (*committee_itr).category;
 			proposal.subcategory = subcategory;
@@ -170,14 +173,14 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::rmvproposal(const account_name owner){
+	void wps_contract::rmvproposal(const account_name proposer){
 		// needs authority of the proposers's account
-		require_auth(owner);
+		require_auth(proposer);
 
 		proposal_table proposals(_self, _self);
 
 		// verify that the account already exists in the proposer table
-		auto itr = proposals.find(owner);
+		auto itr = proposals.find(proposer);
 		eosio_assert(itr != proposals.end(), "Account not found in proposal table");
 
 		proposals.erase(itr);

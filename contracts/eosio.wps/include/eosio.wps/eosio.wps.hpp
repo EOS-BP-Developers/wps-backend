@@ -35,11 +35,11 @@ namespace eosiowps {
 
     struct wps_env {
         uint64_t proposal_current_index = 0;
-        uint32_t total_voting_boundary = 5;     // 5%
-        uint32_t voting_duration_day = 30;         // voting duration days
-        uint32_t payment_duration_day = 180;       // day
-        uint32_t split_duration_day = 30;          // day
-        EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_boundary)(voting_duration_day)(payment_duration_day)(split_duration_day) )
+        uint32_t total_voting_percent = 5;     // 5%
+        uint32_t duration_of_voting = 30;      // voting duration days
+        uint32_t duration_of_funding = 180;    // day
+        uint32_t total_iteration_of_funding = 6;     //
+        EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_percent)(duration_of_voting)(duration_of_funding)(total_iteration_of_funding) )
     };
 
     typedef eosio::multi_index< N(voter), voter_info > voter_table;
@@ -51,21 +51,22 @@ namespace eosiowps {
 
             // proposer
             // @abi action
-            void regproposer(account_name owner, const string& first_name, const string& last_name,
+            void regproposer(account_name account, const string& first_name, const string& last_name,
                             const string& img_url, const string& bio, const string& country, const string& telegram,
                             const string& website, const string& linkedin);
 
             //@abi action
-            void editproposer(account_name owner, const string& first_name, const string& last_name,
+            void editproposer(account_name account, const string& first_name, const string& last_name,
                             const string& img_url, const string& bio, const string& country, const string& telegram,
                             const string& website, const string& linkedin);
 
             //@abi action
-            void rmvproposer(const account_name owner);
+            void rmvproposer(const account_name proposer);
 
             // proposal
             // @abi action
-            void regproposal(account_name owner,
+            void regproposal(
+                account_name proposer,
                 account_name committee,           // committee
                 uint16_t subcategory,             // subcategory
                 const string& title,              // title
@@ -79,7 +80,8 @@ namespace eosiowps {
             );
 
             //@abi action
-            void editproposal(account_name owner,
+            void editproposal(
+                account_name proposer,
                 account_name committee,           // committee
                 uint16_t subcategory,             // subcategory
                 const string& title,              // title
@@ -93,7 +95,8 @@ namespace eosiowps {
             );
 
             //@abi action
-            void rmvproposal(const account_name owner);
+            void rmvproposal(const account_name proposer);
+
 
             // reviewer
             //@abi action
@@ -120,6 +123,7 @@ namespace eosiowps {
             //@abi action
             void rvmreject(account_name reviewer, uint64_t proposal_id);
 
+
             // vote
             //@abi action
             void vote(account_name voter, uint64_t proposal_id);
@@ -134,23 +138,22 @@ namespace eosiowps {
             //@abi action
             void rollbackvote(account_name watchman, uint64_t proposal_id);
 
+
             // committee
             // @abi action
-            void setwpsenv(uint32_t total_voting_boundary, uint32_t voting_duration_day, uint32_t payment_duration_day, uint32_t split_duration_day);
+            void setwpsenv(uint32_t total_voting_percent, uint32_t duration_of_voting, uint32_t duration_of_funding, uint32_t iteration_of_funding);
 
             // @abi action
-            void regcommittee(account_name owner, const string& category, bool is_oversight);
+            void regcommittee(account_name committeeman, const string& category, bool is_oversight);
 
             // @abi action
-            void editcommittee(account_name owner, const string& category, bool is_oversight);
+            void editcommittee(account_name committeeman, const string& category, bool is_oversight);
 
             // @abi action
-            void rmvcommittee(account_name owner);
+            void rmvcommittee(account_name committeeman);
 
             //@abi action
-            void rejectfunding(account_name committee, uint64_t proposal_id, const string& reason);
-
-
+            void rejectfunding(account_name committeeman, uint64_t proposal_id, const string& reason);
 
         private:
             wps_env_singleton m_wps_env_global;

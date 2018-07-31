@@ -192,6 +192,16 @@ transaction eosio_wps_tester::reqauth( account_name from, const vector<permissio
 
 BOOST_AUTO_TEST_SUITE(eosio_wps_tests)
 
+BOOST_FIXTURE_TEST_CASE( register_committee, eosio_wps_tester ) try {
+  auto trace = push_action( N(eosio.wps), N(regcommittee), mvo()
+                  ("owner",       "alice")
+                  ("category",    "test")
+                  ("is_oversight", true)
+  );
+  produce_block();
+
+} FC_LOG_AND_RETHROW()
+
 BOOST_FIXTURE_TEST_CASE( register_proposer, eosio_wps_tester ) try {
 
 } FC_LOG_AND_RETHROW()

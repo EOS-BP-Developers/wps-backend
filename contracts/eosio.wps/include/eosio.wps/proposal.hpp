@@ -13,36 +13,38 @@ namespace eosiowps {
     using std::string;
     using std::vector;
 
-    struct proposal_status {
+    struct PROPOSAL_STATUS {
         const static uint8_t PENDING = 1;
-        const static uint8_t REJECT = 2;
+        const static uint8_t REJECTED = 2;
         const static uint8_t ON_VOTE = 3;
-        const static uint8_t VOTED = 4;
-        const static uint8_t REQUEST_CHECK_COUNT_VOTES = 5;  // check count of votes
-        const static uint8_t COMMIT_COUNT_VOTES = 6;         // confirm count of votes
-        const static uint8_t APPROVED = 7;    // approve
+        const static uint8_t CHECK_VOTE = 4;     // check count of votes
+        const static uint8_t CHECKED_VOTE = 5;   // checked count of votes by platform
+        const static uint8_t APPROVED = 6;       // approve
+        const static uint8_t ON_FUND = 7;
+        const static uint8_t COMPLETED = 8;
     };
 
     //@abi table
     struct proposal {
-        account_name owner;        // proposer
+        account_name proposer;        // proposer
         uint64_t id;
-        account_name committee;    // committee
-        string category;           // category
-        uint16_t subcategory;      // subcategory
-        string title;              // title
-        string subtitle;           // subtitle
-        string project_img_url;    // project image or video url
-        string project_overview;   // overview
-        string financial_roadmap;  // financial
-        vector<string> members;    // linkedin
-        asset funding_goal;        // amount of EOS
-        uint16_t duration;         // voting duration
-        uint32_t total_votes;
-        uint8_t status;            // review status
-        uint64_t primary_key() const { return owner; }
+        account_name committee;       // committee
+        string category;              // category
+        uint16_t subcategory;         // subcategory
+        string title;                 // title
+        string subtitle;              // subtitle
+        string project_img_url;       // project image or video url
+        string project_overview;      // overview
+        string financial_roadmap;     // financial
+        vector<string> members;       // linkedin
+        asset funding_goal;           // amount of EOS
+        uint16_t duration;            // voting duration
+        uint64_t total_votes;         // total votes
+        uint8_t status;               // status
+        uint8_t iteration_of_funding; // number of iteration
+        uint64_t primary_key() const { return proposer; }
         uint64_t by_id() const { return static_cast<uint64_t>(id); }
-        EOSLIB_SERIALIZE( proposal, (owner)(id)(committee)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(total_votes)(status) )
+        EOSLIB_SERIALIZE( proposal, (proposer)(id)(committee)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(total_votes)(status)(iteration_of_funding) )
     };
 
     typedef eosio::multi_index< N(proposals), proposal,
@@ -53,8 +55,8 @@ namespace eosiowps {
         indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
     > rejected_proposal_table;
 
-    typedef eosio::multi_index< N(approvedprop), proposal,
+    typedef eosio::multi_index< N(fundedprop), proposal,
         indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
-    > approved_proposal_table;
+    > funded_proposal_table;
 
 } // eosiowps

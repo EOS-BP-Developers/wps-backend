@@ -7,7 +7,8 @@
 namespace eosiowps {
 
 	// @abi action
-	void wps_contract::regproposer(account_name owner,
+	void wps_contract::regproposer(
+		account_name account,
 		const string& first_name,
 		const string& last_name,
 		const string& img_url,
@@ -18,7 +19,7 @@ namespace eosiowps {
 		const string& linkedin) {
 
 		// authority of the user's account is required
-		require_auth(owner);
+		require_auth(account);
 
 		//verify that the inputs are not too short
 		eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
@@ -43,14 +44,14 @@ namespace eosiowps {
 		// creates the proposers table if there isn't one already
 		proposer_table proposers(_self, _self);
 
-		auto itr = proposers.find(owner);
+		auto itr = proposers.find(account);
 		// verify that the account doesn't already exist in the table
 		eosio_assert(itr == proposers.end(), "This account has already been registered as a proposer");
 
 		// add to the table
 		// storage is billed to the contract account
-		proposers.emplace(owner, [&](auto& proposer){
-			proposer.owner = owner;
+		proposers.emplace(account, [&](auto& proposer){
+			proposer.account = account;
 			proposer.first_name = first_name;
 			proposer.last_name = last_name;
 			proposer.img_url = img_url;
@@ -63,7 +64,7 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::editproposer(account_name owner,
+	void wps_contract::editproposer(account_name account,
 		const string& first_name,
 		const string& last_name,
 		const string& img_url,
@@ -73,7 +74,7 @@ namespace eosiowps {
 		const string& website,
 		const string& linkedin) {
 		// authority of the user's account is required
-		require_auth(owner);
+		require_auth(account);
 
 		//verify that the inputs are not too short
 		eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
@@ -97,13 +98,13 @@ namespace eosiowps {
 
 		proposer_table proposers(_self, _self);
 
-		auto itr = proposers.find(owner);
+		auto itr = proposers.find(account);
 		// verify that the account doesn't already exist in the table
 		eosio_assert(itr != proposers.end(), "Account not found in proposer table");
 
 		// modify value in the table
-		proposers.modify(itr, owner, [&](auto& proposer) {
-			proposer.owner = owner;
+		proposers.modify(itr, account, [&](auto& proposer) {
+			proposer.account = account;
 			proposer.first_name = first_name;
 			proposer.last_name = last_name;
 			proposer.img_url = img_url;
@@ -116,14 +117,14 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::rmvproposer(const account_name owner) {
+	void wps_contract::rmvproposer(const account_name account) {
 		// needs authority of the proposers's account
-		require_auth(owner);
+		require_auth(account);
 
 		proposer_table proposers(_self, _self);
 
 		// verify that the account already exists in the proposer table
-		auto itr = proposers.find(owner);
+		auto itr = proposers.find(account);
 		eosio_assert(itr != proposers.end(), "Account not found in proposer table");
 
 		proposers.erase(itr);
