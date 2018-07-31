@@ -104,11 +104,11 @@ namespace eosiowps {
 		// verify that the committee is on committee table
 		eosio_assert(itr != committees.end(), "Account not found in committee table");
 
-		funded_proposal_table funded_proposals(_self, _self);
+		proposal_table proposals(_self, _self);
 
-		auto idx_index = funded_proposals.get_index<N(idx)>();
+		auto idx_index = proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
-		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in approved proposal table");
+		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 
 		eosio_assert(((*itr_proposal).committee==(*itr).committeeman) || (*itr).is_oversight, "Committee is not associated with this proposal");
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::APPROVED, "Proposal::status is not PROPOSAL_STATUS::APPROVED");
@@ -116,7 +116,7 @@ namespace eosiowps {
 		rejected_proposal_table rejected_proposals(_self, _self);
 
 		//add to the table
-		funded_proposals.emplace((*itr_proposal).proposer, [&](auto& proposal){
+		rejected_proposals.emplace((*itr_proposal).proposer, [&](auto& proposal){
 			proposal = std::move(*itr_proposal);
 			proposal.status = PROPOSAL_STATUS::REJECTED;
 		});

@@ -19,7 +19,6 @@ namespace eosiowps {
         const string& financial_roadmap,
         const vector<string>& members,
 		const asset& funding_goal,
-		uint16_t duration
     ) {
 		// authority of the user's account is required
 		require_auth(proposer);
@@ -47,7 +46,6 @@ namespace eosiowps {
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
 		eosio_assert(duration <= m_wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
-
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
@@ -88,9 +86,9 @@ namespace eosiowps {
 			proposal.members = members;
 			proposal.funding_goal = funding_goal;
 			proposal.id = m_wps_env.proposal_current_index;
-			proposal.duration = duration;
 			proposal.status = PROPOSAL_STATUS::PENDING; 		//initialize status to pending
 			proposal.iteration_of_funding = 0;
+			proposal.fund_start_time = 0;
 		});
 	}
 
@@ -106,7 +104,6 @@ namespace eosiowps {
         const string& financial_roadmap,
         const vector<string>& members,
 		const asset& funding_goal,
-		uint16_t duration
     ) {
 		// authority of the user's account is required
 		require_auth(proposer);
@@ -168,7 +165,6 @@ namespace eosiowps {
 			proposal.financial_roadmap = financial_roadmap;
 			proposal.members = members;
 			proposal.funding_goal = funding_goal;
-			proposal.duration = duration;
 		});
 	}
 

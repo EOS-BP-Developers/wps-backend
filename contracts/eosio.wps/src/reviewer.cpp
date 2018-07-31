@@ -202,28 +202,9 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::CHECKED_VOTE, "Proposal::status is not PROPOSAL_STATUS::CHECKED_VOTE");
 
-		//inline action transfer
-        //should have time delays
-        eosio::action(
-            eosio::permission_level{ _self, N(active) },
-            N(eosio.token), N(transfer),
-            std::make_tuple( _self, (*itr_proposal).proposer, (*itr_proposal).funding_goal, std::string("Your worker proposal has been approved."))
-         ).send();
-
 		idx_index.modify(itr_proposal, (*itr_proposal).proposer, [&](auto& proposal){
 			proposal.status = PROPOSAL_STATUS::APPROVED;
 		});
-
-		/*
-		funded_proposal_table approved_proposals(_self, _self);
-
-		//add to the table
-		approved_proposals.emplace((*itr_proposal).proposer, [&](auto& proposal){
-			proposal = std::move(*itr_proposal);
-			proposal.status = PROPOSAL_STATUS::APPROVED;
-		});
-		idx_index.erase(itr_proposal);
-		*/
 	}
 
 	// @abi action
@@ -238,14 +219,32 @@ namespace eosiowps {
 		auto idx_index = rejected_proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in rejected proposal table");
-		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::REJECTED, "Proposal::status is not PROPOSAL_STATUS::REJECTED");
+		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::REJECTED,
+					 "Proposal::status is not PROPOSAL_STATUS::REJECTED");
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 
 		idx_index.erase(itr_proposal);
 	}
 
-	//To do: delete fully funded (all 180 days) proposals, reviewer authority
-	//To do: Time delayed transfers
+	// @abi action
+	void wps_contract::rmvcompleted(account_name reviewer, uint64_t proposal_id){
+		require_auth(reviewer);
+
+		reviewer_table reviewers(_self, _self);
+		auto itr = reviewers.find(reviewer);
+		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
+
+		completed_proposal_table completed_proposals(_self, _self);
+		auto idx_index = completed_proposals.get_index<N(idx)>();
+		auto itr_proposal = idx_index.find(proposal_id);
+		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in completed proposals table");
+		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::COMPLETED,
+					 "Proposal::status is not PROPOSAL_STATUS::COMPLETED");
+		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
+
+		idx_index.erase(itr_proposal);
+	}
+
 	//To do: assertions to check if voting duration has expired
 	//To do: put a cap on the amount of funds that each category can pull from eosio.wps
 
