@@ -169,7 +169,7 @@ namespace eosiowps {
 	}
 
 	// @abi action
-	void wps_contract::checkvotes(account_name reviewer, uint64_t proposal_id) {
+	void wps_contract::checkvote(account_name reviewer, uint64_t proposal_id) {
 		require_auth(reviewer);
 
 		reviewer_table reviewers(_self, _self);
@@ -184,7 +184,7 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).status == proposal_status::ON_VOTE, "Proposal's status is not ON_VOTE");
 
 		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
-			proposal.status = proposal_status::CHECK_COUNT_VOTES;
+			proposal.status = proposal_status::REQUEST_CHECK_COUNT_VOTES;
 		});
 	}
 
@@ -201,7 +201,7 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
-		eosio_assert((*itr_proposal).status == proposal_status::CHECKED_COUNT_VOTES, "Proposal::status is not proposal_status::CHECKED_COUNT_VOTES");
+		eosio_assert((*itr_proposal).status == proposal_status::COMMIT_COUNT_VOTES, "Proposal::status is not proposal_status::COMMIT_COUNT_VOTES");
 
 		//inline action transfer
         //should have time delays
@@ -211,6 +211,11 @@ namespace eosiowps {
             std::make_tuple( _self, (*itr_proposal).owner, (*itr_proposal).funding_goal, std::string("Your worker proposal has been approved."))
          ).send();
 
+		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
+			proposal.status = proposal_status::APPROVED;
+		});
+
+		/*
 		approved_proposal_table approved_proposals(_self, _self);
 
 		//add to the table
@@ -218,8 +223,8 @@ namespace eosiowps {
 			proposal = std::move(*itr_proposal);
 			proposal.status = proposal_status::APPROVED;
 		});
-
 		idx_index.erase(itr_proposal);
+		*/
 	}
 
 	// @abi action

@@ -5,19 +5,23 @@
 namespace eosiowps {
 
     // @abi action
-    void wps_contract::setwpsinfo(uint32_t lower_bound_total_voting, uint32_t max_duration) {
+    void wps_contract::setwpsenv(uint32_t total_voting_boundary, uint32_t voting_duration_day, uint32_t payment_duration_day, uint32_t split_duration_day) {
         //registration of committee requires contract account permissions
         require_auth(_self);
 
-        eosio_assert(lower_bound_total_voting >= 5, "lower_bound_total_voting should be more than equal 5 long");
-        eosio_assert(max_duration >= 60, "max_duration should be more than equal 60 long");
+        eosio_assert(total_voting_boundary >= 5, "total_voting_boundary should be more than equal 5 long");
+        eosio_assert(voting_duration_day > 0, "voting_duration_day should be more than 0");
+        eosio_assert(payment_duration_day > 0, "payment_duration_day should be more than 0");
+        eosio_assert(split_duration_day > 0, "split_duration_day should be more than 0");
 
-        m_wps_info = m_wps_info_global.exists() ? m_wps_info_global.get() : wps_info();
+        m_wps_env = m_wps_env_global.exists() ? m_wps_env_global.get() : wps_env();
 
-        m_wps_info.lower_bound_total_voting = lower_bound_total_voting;
-        m_wps_info.max_duration = max_duration;
+        m_wps_env.total_voting_boundary = total_voting_boundary;
+        m_wps_env.voting_duration_day = voting_duration_day;
+        m_wps_env.payment_duration_day = payment_duration_day;
+        m_wps_env.split_duration_day = split_duration_day;
 
-        m_wps_info_global.set( m_wps_info, _self );
+        m_wps_env_global.set( m_wps_env, _self );
     }
 
     // @abi action

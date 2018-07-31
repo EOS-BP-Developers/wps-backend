@@ -33,15 +33,17 @@ namespace eosiowps {
         EOSLIB_SERIALIZE( voter_info, (owner)(proposals) )
     };
 
-    struct wps_info {
-        uint32_t lower_bound_total_voting = 5;     // 5%
+    struct wps_env {
         uint64_t proposal_current_index = 0;
-        uint32_t max_duration = 30;                // voting duration days
-        EOSLIB_SERIALIZE( wps_info, (lower_bound_total_voting)(proposal_current_index)(max_duration) )
+        uint32_t total_voting_boundary = 5;     // 5%
+        uint32_t voting_duration_day = 30;         // voting duration days
+        uint32_t payment_duration_day = 180;       // day
+        uint32_t split_duration_day = 30;          // day
+        EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_boundary)(voting_duration_day)(payment_duration_day)(split_duration_day) )
     };
 
     typedef eosio::multi_index< N(voter), voter_info > voter_table;
-    typedef eosio::singleton< N(wpsglobal), wps_info > wps_info_singleton;
+    typedef eosio::singleton< N(wpsglobal), wps_env > wps_env_singleton;
 
     class wps_contract : public eosio::contract {
         public:
@@ -110,7 +112,7 @@ namespace eosiowps {
             void rejectprop(account_name reviewer, uint64_t proposal_id, const string& reason);
 
             //@abi action
-            void checkvotes(account_name reviewer, uint64_t proposal_id);
+            void checkvote(account_name reviewer, uint64_t proposal_id);
 
             //@abi action
             void approve(account_name reviewer, uint64_t proposal_id);
@@ -134,7 +136,7 @@ namespace eosiowps {
 
             // committee
             // @abi action
-            void setwpsinfo(uint32_t lower_bound_total_voting, uint32_t max_duration);
+            void setwpsenv(uint32_t total_voting_boundary, uint32_t voting_duration_day, uint32_t payment_duration_day, uint32_t split_duration_day);
 
             // @abi action
             void regcommittee(account_name owner, const string& category, bool is_oversight);
@@ -151,7 +153,7 @@ namespace eosiowps {
 
 
         private:
-            wps_info_singleton m_wps_info_global;
-            wps_info m_wps_info;
+            wps_env_singleton m_wps_env_global;
+            wps_env m_wps_env;
     };
 } // eosiowps

@@ -45,7 +45,7 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-		eosio_assert(duration <= m_wps_info.max_duration, "duration should be less than 60 days.");
+		eosio_assert(duration <= m_wps_env.voting_duration_day, "duration should be less than voting_duration_day days.");
 
 
 		//initializing the proposer table
@@ -68,9 +68,9 @@ namespace eosiowps {
 		// verify that the committee is on committee table
 		eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
 
-		m_wps_info = m_wps_info_global.exists() ? m_wps_info_global.get() : wps_info();
-		m_wps_info.proposal_current_index += 1;
-		m_wps_info_global.set( m_wps_info, _self );
+		m_wps_env = m_wps_env_global.exists() ? m_wps_env_global.get() : wps_env();
+		m_wps_env.proposal_current_index += 1;
+		m_wps_env_global.set( m_wps_env, _self );
 
 		// add to the table
 		// storage is billed to the contract account
@@ -86,7 +86,7 @@ namespace eosiowps {
 			proposal.financial_roadmap = financial_roadmap;
 			proposal.members = members;
 			proposal.funding_goal = funding_goal;
-			proposal.id = m_wps_info.proposal_current_index;
+			proposal.id = m_wps_env.proposal_current_index;
 			proposal.duration = duration;
 			proposal.status = proposal_status::PENDING; //initialize status to pending
 		});
@@ -130,7 +130,7 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-        eosio_assert(duration <= m_wps_info.max_duration, "duration should be less than 60 days.");
+        eosio_assert(duration <= m_wps_env.voting_duration_day, "duration should be less than voting_duration_day days.");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);

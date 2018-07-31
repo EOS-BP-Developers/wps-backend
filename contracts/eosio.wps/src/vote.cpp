@@ -36,7 +36,7 @@ namespace eosiowps {
 
 		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal) {
 			proposal.total_votes += voting_delta;
-			if (proposal.total_votes >= m_wps_info.lower_bound_total_voting) {
+			if (proposal.total_votes >= m_wps_env.total_voting_boundary) {
 				proposal.status = proposal_status::VOTED;
 			}
 		});
