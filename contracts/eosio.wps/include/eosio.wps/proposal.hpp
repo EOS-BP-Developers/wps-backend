@@ -20,8 +20,7 @@ namespace eosiowps {
         const static uint8_t CHECK_VOTE = 4;     // check count of votes
         const static uint8_t CHECKED_VOTE = 5;   // checked count of votes by platform
         const static uint8_t APPROVED = 6;       // approve
-        const static uint8_t ON_FUND = 7;
-        const static uint8_t COMPLETED = 8;
+        const static uint8_t COMPLETED = 7;
     };
 
     //@abi table
