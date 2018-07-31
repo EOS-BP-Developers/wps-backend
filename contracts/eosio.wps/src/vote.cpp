@@ -38,7 +38,7 @@ namespace eosiowps {
 		voter_table	voters(_self, _self);
 
 		//initialize vote_start_time
-		if(/*table is empty*/){
+		if(voters.begin() == voters.end()){
 			idx_index.modify(itr_proposal, 0, [&](auto& _proposal){
 				_proposal.vote_start_time = current_time;
 			});
