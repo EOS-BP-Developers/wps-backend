@@ -23,5 +23,5 @@ EOSIO_ABI( eosiowps::wps_contract,
 	// vote.hpp
 	(vote)(unvote) // (stake)(unstake)
 	// committee.hpp
-   (setwpsinfo)(regcommittee)(editcommittee)(rmvcommittee)
+    (setwpsinfo)(regcommittee)(editcommittee)(rmvcommittee)
 )

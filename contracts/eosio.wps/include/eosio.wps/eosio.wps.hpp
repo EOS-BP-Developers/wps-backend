@@ -33,11 +33,10 @@ namespace eosiowps {
     };
 
     struct wps_info {
-        uint32_t lower_bound_total_voting = 5;      // 5%
+        uint32_t lower_bound_total_voting = 5;     // 5%
         uint64_t proposal_current_index = 0;
         uint32_t max_duration = 60;                // voting duration days
-        //account_name watchman = N(watchmanwpss);
-        EOSLIB_SERIALIZE( wps_info, (lower_bound_total_voting)(proposal_current_index)(max_duration)/*(watchman)*/ )
+        EOSLIB_SERIALIZE( wps_info, (lower_bound_total_voting)(proposal_current_index)(max_duration) )
     };
 
     typedef eosio::multi_index< N(voter), voter_info > voter_table;
@@ -136,13 +135,13 @@ namespace eosiowps {
 
             // committee
             // @abi action
-            void setwpsinfo(account_name watchman, uint32_t lower_bound_total_voting, uint32_t max_duration);
+            void setwpsinfo(uint32_t lower_bound_total_voting, uint32_t max_duration);
 
             // @abi action
-            void regcommittee(account_name owner, const string& category);
+            void regcommittee(account_name owner, const string& category, bool is_oversight);
 
             // @abi action
-            void editcommittee(account_name owner, const string& category);
+            void editcommittee(account_name owner, const string& category, bool is_oversight);
 
             // @abi action
             void rmvcommittee(account_name owner);

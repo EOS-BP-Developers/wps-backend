@@ -192,10 +192,15 @@ namespace eosiowps {
 	void wps_contract::checkedvotes(account_name watchman, uint64_t proposal_id) {
 		require_auth(watchman);
 
+		committee_table committees(_self, _self);
+		auto itr = committees.find(watchman);
+		eosio_assert(itr != committees.end(), "Account not found in committees table");
+		eosio_assert((*itr).is_oversight, "account does not have oversight privileges");
+
 		proposal_table proposals(_self, _self);
 		auto idx_index = proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
-		eosio_assert((*itr_proposal).is_oversight, "account does not have oversight privileges");
+		eosio_assert((*itr).is_oversight, "account does not have oversight privileges");
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == proposal_status::CHECK_COUNT_VOTES, "Proposal's status is not CHECK_COUNT_VOTES");
 
@@ -208,10 +213,14 @@ namespace eosiowps {
 	void wps_contract::rollback(account_name watchman, uint64_t proposal_id){
 		require_auth(watchman);
 
+		committee_table committees(_self, _self);
+		auto itr = committees.find(watchman);
+		eosio_assert(itr != committees.end(), "Account not found in committees table");
+		eosio_assert((*itr).is_oversight, "account does not have oversight privileges");
+
 		proposal_table proposals(_self, _self);
 		auto idx_index = proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
-		eosio_assert((*itr_proposal).is_oversight, "account does not have oversight privileges");
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == proposal_status::CHECK_COUNT_VOTES, "Proposal's status is not CHECK_COUNT_VOTES");
 

@@ -23,7 +23,7 @@ namespace eosiowps {
     }
 
     // @abi action
-    void wps_contract::regcommittee(account_name owner, const string& category, const bool& is_oversight) {
+    void wps_contract::regcommittee(account_name owner, const string& category, bool is_oversight) {
         //registration of committee requires contract account permissions
         require_auth(_self);
 
@@ -33,7 +33,6 @@ namespace eosiowps {
         //verify that the size of the category string is not too long/short
         eosio_assert(category.size() > 0, "category should be more than 0 characters long");
         eosio_assert(category.size() < 64, "category should be less than 64 characters long");
-        eosio_assert((is_oversight) || !(is_oversight), "invalid value for is_oversight");
 
         //creates the committee table if it doesn't exist already
         committee_table committees(_self, _self);
@@ -50,7 +49,7 @@ namespace eosiowps {
         });
     }
 
-    void wps_contract::editcommittee(account_name owner, const string& category, const bool& is_oversight) {
+    void wps_contract::editcommittee(account_name owner, const string& category, bool is_oversight) {
         //editing committee info requires contract account permissions
         require_auth(_self);
 
@@ -60,7 +59,6 @@ namespace eosiowps {
         //verify that the size of the category string is not too long/short
         eosio_assert(category.size() > 0, "category should be more than 0 characters long");
         eosio_assert(category.size() < 64, "category should be less than 64 characters long");
-        eosio_assert((is_oversight) || !(is_oversight), "invalid value for is_oversight");
 
         //creates the committee table if it doesn't exist already
         committee_table committees(_self, _self);
