@@ -63,6 +63,9 @@ namespace eosiowps {
             //@abi action
             void rmvproposer(const account_name proposer);
 
+            //@abi action
+            void claimfunds(account_name proposer, uint64_t proposal_id);
+
             // proposal
             // @abi action
             void regproposal(
@@ -97,7 +100,6 @@ namespace eosiowps {
             //@abi action
             void rmvproposal(const account_name proposer);
 
-
             // reviewer
             //@abi action
             void regreviewer(account_name committee, account_name reviewer, const string& first_name, const string& last_name);
@@ -122,6 +124,9 @@ namespace eosiowps {
 
             //@abi action
             void rvmreject(account_name reviewer, uint64_t proposal_id);
+
+            // @abi action
+            void rmvcompleted(account_name reviewer, uint64_t proposal_id);
 
 
             // vote

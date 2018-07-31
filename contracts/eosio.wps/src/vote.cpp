@@ -16,8 +16,34 @@ namespace eosiowps {
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::ON_VOTE, "Proposal::status is not PROPOSAL_STATUS::ON_VOTE");
 
+		m_wps_env = m_wps_env_global.exists() ? m_wps_env_global.get() : wps_env();
+		auto current_time = now();
+		//check for vote time expiry
+		if(current_time - (*itr_proposal).vote_start_time > duration_of_voting_seconds){
+			rejected_proposal_table rejected_proposals(_self, _self);
+
+			//add to the table
+			rejected_proposals.emplace((*itr_proposal).proposer, [&](auto& _proposal){
+				_proposal = std::move(*itr_proposal);
+				_proposal.status = PROPOSAL_STATUS::REJECTED;
+			});
+
+			idx_index.erase(itr_proposal);
+			//move tables
+			eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting_seconds, "The funding period for this proposal has expired.");
+		}
+
 		uint64_t voting_delta = 0;
+
 		voter_table	voters(_self, _self);
+
+		//initialize vote_start_time
+		if(/*table is empty*/){
+			idx_index.modify(itr_proposal, 0, [&](auto& _proposal){
+				_proposal.vote_start_time = current_time;
+			});
+		}
+
 		auto itr = voters.find(voter);
 		if (itr == voters.end()) {
 			voters.emplace(_self, [&](auto& _voter_info) {
@@ -33,15 +59,6 @@ namespace eosiowps {
 				}
 			});
 		}
-
-/*
-		idx_index.modify(itr_proposal, (*itr_proposal).proposer, [&](auto& proposal) {
-			proposal.total_votes += voting_delta;
-			if (proposal.total_votes >= m_wps_env.total_voting_boundary) {
-				proposal.status = PROPOSAL_STATUS::VOTED;
-			}
-		});
-*/
 	}
 
 	// @abi action
@@ -53,6 +70,23 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::ON_VOTE, "Proposal::status is not proposal_status::PROPOSAL_STATUS");
+
+		m_wps_env = m_wps_env_global.exists() ? m_wps_env_global.get() : wps_env();
+		auto current_time = now();
+		//check for vote time expiry
+		if(current_time - (*itr_proposal).vote_start_time > duration_of_voting_seconds){
+			rejected_proposal_table rejected_proposals(_self, _self);
+
+			//add to the table
+			rejected_proposals.emplace((*itr_proposal).proposer, [&](auto& _proposal){
+				_proposal = std::move(*itr_proposal);
+				_proposal.status = PROPOSAL_STATUS::REJECTED;
+			});
+
+			idx_index.erase(itr_proposal);
+			//move tables
+			eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting_seconds, "The funding period for this proposal has expired.");
+		}
 
 		uint64_t voting_delta = 0;
 		voter_table	voters(_self, _self);
