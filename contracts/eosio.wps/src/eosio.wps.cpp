@@ -6,6 +6,7 @@
 #include "reviewer.cpp"
 #include "vote.cpp"
 #include "committee.cpp"
+#include "watchman.cpp"
 
 namespace eosiowps {
 	wps_contract::wps_contract(action_name self) : contract(self), m_wps_info_global(self, self) {
@@ -14,14 +15,17 @@ namespace eosiowps {
 };
 
 EOSIO_ABI( eosiowps::wps_contract,
-	// proposer.hpp
+	// proposer.cpp
 	(regproposer)(editproposer)(rmvproposer)
-	// proposal.hpp
+	// proposal.cpp
 	(regproposal)(editproposal)(rmvproposal)
-	// reviewer.hpp
-	(regreviewer)(editreviewer)(rmvreviewer)(acceptprop)(rejectprop)(checkvotes)(checkedvotes)(rollback)(approve)(rejectongoing)(cleartable)
-	// vote.hpp
+	// reviewer.cpp
+	(regreviewer)(editreviewer)(rmvreviewer)(acceptprop)(rejectprop)(checkvotes)(approve)(rejectfunding)(rvmreject)
+	// vote.cpp
 	(vote)(unvote) // (stake)(unstake)
-	// committee.hpp
+	// committee.cpp
     (setwpsinfo)(regcommittee)(editcommittee)(rmvcommittee)
+	// watchman.cpp
+	(commitvote)(rollbackvote)
+
 )

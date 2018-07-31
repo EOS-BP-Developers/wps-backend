@@ -189,47 +189,6 @@ namespace eosiowps {
 	}
 
 	// @abi action
-	void wps_contract::checkedvotes(account_name watchman, uint64_t proposal_id) {
-		require_auth(watchman);
-
-		committee_table committees(_self, _self);
-		auto itr = committees.find(watchman);
-		eosio_assert(itr != committees.end(), "Account not found in committees table");
-		eosio_assert((*itr).is_oversight, "account does not have oversight privileges");
-
-		proposal_table proposals(_self, _self);
-		auto idx_index = proposals.get_index<N(idx)>();
-		auto itr_proposal = idx_index.find(proposal_id);
-		eosio_assert((*itr).is_oversight, "account does not have oversight privileges");
-		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
-		eosio_assert((*itr_proposal).status == proposal_status::CHECK_COUNT_VOTES, "Proposal's status is not CHECK_COUNT_VOTES");
-
-		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal){
-			proposal.status = proposal_status::CHECKED_COUNT_VOTES;
-		});
-	}//action permission should be linked to a separate key
-
-	// @abi action
-	void wps_contract::rollback(account_name watchman, uint64_t proposal_id){
-		require_auth(watchman);
-
-		committee_table committees(_self, _self);
-		auto itr = committees.find(watchman);
-		eosio_assert(itr != committees.end(), "Account not found in committees table");
-		eosio_assert((*itr).is_oversight, "account does not have oversight privileges");
-
-		proposal_table proposals(_self, _self);
-		auto idx_index = proposals.get_index<N(idx)>();
-		auto itr_proposal = idx_index.find(proposal_id);
-		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
-		eosio_assert((*itr_proposal).status == proposal_status::CHECK_COUNT_VOTES, "Proposal's status is not CHECK_COUNT_VOTES");
-
-		idx_index.modify(itr_proposal, (*itr_proposal).owner, [&](auto& proposal) {
-			proposal.status = proposal_status::ON_VOTE; //roll back to on vote status
-		});
-	}//action permission should be linked to a separate key
-
-	// @abi action
 	void wps_contract::approve(account_name reviewer, uint64_t proposal_id) {
 		require_auth(reviewer);
 
@@ -264,40 +223,7 @@ namespace eosiowps {
 	}
 
 	// @abi action
-	void wps_contract::rejectongoing(account_name committee, uint64_t proposal_id, const string& reason){
-		require_auth(committee);
-
-		eosio_assert(reason.size() > 0, "must provide a brief reason");
-		eosio_assert(reason.size() < 256, "reason is too long");
-
-		committee_table committees(_self, _self);
-
-		auto itr = committees.find(committee);
-		// verify that the committee is on committee table
-		eosio_assert(itr != committees.end(), "Account not found in committee table");
-
-		approved_proposal_table approved_proposals(_self, _self);
-
-		auto idx_index = approved_proposals.get_index<N(idx)>();
-		auto itr_proposal = idx_index.find(proposal_id);
-		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in approved proposal table");
-
-		eosio_assert(((*itr_proposal).committee==(*itr).owner) || (*itr).is_oversight, "Committee is not associated with this proposal");
-		eosio_assert((*itr_proposal).status == proposal_status::APPROVED, "Proposal::status is not proposal_status::APPROVED");
-
-		rejected_proposal_table rejected_proposals(_self, _self);
-
-		//add to the table
-		approved_proposals.emplace((*itr_proposal).owner, [&](auto& proposal){
-			proposal = std::move(*itr_proposal);
-			proposal.status = proposal_status::REJECT;
-		});
-
-		idx_index.erase(itr_proposal);
-	}
-
-	// @abi action
-	void wps_contract::cleartable(account_name reviewer, uint64_t proposal_id){
+	void wps_contract::rvmreject(account_name reviewer, uint64_t proposal_id){
 		require_auth(reviewer);
 
 		reviewer_table reviewers(_self, _self);

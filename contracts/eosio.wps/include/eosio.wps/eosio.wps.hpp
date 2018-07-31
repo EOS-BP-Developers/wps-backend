@@ -6,7 +6,8 @@
 #include <eosiolib/contract.hpp>
 #include <eosiolib/asset.hpp>
 
-/* to generate abi, comment out
+/* to generate abi, comment out*/
+/*
 #include "proposal.hpp"
 #include "proposer.hpp"
 #include "reviewer.hpp"
@@ -35,7 +36,7 @@ namespace eosiowps {
     struct wps_info {
         uint32_t lower_bound_total_voting = 5;     // 5%
         uint64_t proposal_current_index = 0;
-        uint32_t max_duration = 60;                // voting duration days
+        uint32_t max_duration = 30;                // voting duration days
         EOSLIB_SERIALIZE( wps_info, (lower_bound_total_voting)(proposal_current_index)(max_duration) )
     };
 
@@ -112,19 +113,10 @@ namespace eosiowps {
             void checkvotes(account_name reviewer, uint64_t proposal_id);
 
             //@abi action
-            void checkedvotes(account_name watchman, uint64_t proposal_id);
-
-            //@abi action
-            void rollback(account_name watchman, uint64_t proposal_id);
-
-            //@abi action
             void approve(account_name reviewer, uint64_t proposal_id);
 
             //@abi action
-            void rejectongoing(account_name committee, uint64_t proposal_id, const string& reason);
-
-            //@abi action
-            void cleartable(account_name reviewer, uint64_t proposal_id);
+            void rvmreject(account_name reviewer, uint64_t proposal_id);
 
             // vote
             //@abi action
@@ -132,6 +124,13 @@ namespace eosiowps {
 
             //@abi action
             void unvote(account_name voter, uint64_t proposal_id);
+
+            // watchman
+            //@abi action
+            void commitvote(account_name watchman, uint64_t proposal_id);
+
+            //@abi action
+            void rollbackvote(account_name watchman, uint64_t proposal_id);
 
             // committee
             // @abi action
@@ -145,6 +144,11 @@ namespace eosiowps {
 
             // @abi action
             void rmvcommittee(account_name owner);
+
+            //@abi action
+            void rejectfunding(account_name committee, uint64_t proposal_id, const string& reason);
+
+
 
         private:
             wps_info_singleton m_wps_info_global;

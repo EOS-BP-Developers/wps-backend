@@ -193,6 +193,7 @@ transaction eosio_wps_tester::reqauth( account_name from, const vector<permissio
 BOOST_AUTO_TEST_SUITE(eosio_wps_tests)
 
 BOOST_FIXTURE_TEST_CASE( register_proposer, eosio_wps_tester ) try {
+
 } FC_LOG_AND_RETHROW()
 
 

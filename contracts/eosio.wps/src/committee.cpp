@@ -5,17 +5,15 @@
 namespace eosiowps {
 
     // @abi action
-    void wps_contract::setwpsinfo(/*account_name watchman,*/ uint32_t lower_bound_total_voting, uint32_t max_duration) {
+    void wps_contract::setwpsinfo(uint32_t lower_bound_total_voting, uint32_t max_duration) {
         //registration of committee requires contract account permissions
         require_auth(_self);
 
-        //eosio_assert(is_account(watchman), "committee account doesn't exist");
         eosio_assert(lower_bound_total_voting >= 5, "lower_bound_total_voting should be more than equal 5 long");
         eosio_assert(max_duration >= 60, "max_duration should be more than equal 60 long");
 
         m_wps_info = m_wps_info_global.exists() ? m_wps_info_global.get() : wps_info();
 
-        //m_wps_info.watchman = watchman;
         m_wps_info.lower_bound_total_voting = lower_bound_total_voting;
         m_wps_info.max_duration = max_duration;
 
@@ -49,6 +47,7 @@ namespace eosiowps {
         });
     }
 
+    // @abi action
     void wps_contract::editcommittee(account_name owner, const string& category, bool is_oversight) {
         //editing committee info requires contract account permissions
         require_auth(_self);
@@ -75,6 +74,7 @@ namespace eosiowps {
         });
     }
 
+    // @abi action
     void wps_contract::rmvcommittee(account_name owner) {
         require_auth(_self);
 
@@ -86,4 +86,37 @@ namespace eosiowps {
         eosio_assert(itr != committees.end(), "Account not found in committee table");
         committees.erase( itr );
     }
+
+    // @abi action
+	void wps_contract::rejectfunding(account_name owner, uint64_t proposal_id, const string& reason){
+		require_auth(owner);
+
+		eosio_assert(reason.size() > 0, "must provide a brief reason");
+		eosio_assert(reason.size() < 256, "reason is too long");
+
+		committee_table committees(_self, _self);
+
+		auto itr = committees.find(owner);
+		// verify that the committee is on committee table
+		eosio_assert(itr != committees.end(), "Account not found in committee table");
+
+		approved_proposal_table approved_proposals(_self, _self);
+
+		auto idx_index = approved_proposals.get_index<N(idx)>();
+		auto itr_proposal = idx_index.find(proposal_id);
+		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in approved proposal table");
+
+		eosio_assert(((*itr_proposal).committee==(*itr).owner) || (*itr).is_oversight, "Committee is not associated with this proposal");
+		eosio_assert((*itr_proposal).status == proposal_status::APPROVED, "Proposal::status is not proposal_status::APPROVED");
+
+		rejected_proposal_table rejected_proposals(_self, _self);
+
+		//add to the table
+		approved_proposals.emplace((*itr_proposal).owner, [&](auto& proposal){
+			proposal = std::move(*itr_proposal);
+			proposal.status = proposal_status::REJECT;
+		});
+
+		idx_index.erase(itr_proposal);
+	}
 } //eosiowps
