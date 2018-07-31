@@ -123,7 +123,7 @@ namespace eosiowps {
             void approve(account_name reviewer, uint64_t proposal_id);
 
             //@abi action
-            void rvmreject(account_name reviewer, uint64_t proposal_id);
+            void rmvreject(account_name reviewer, uint64_t proposal_id);
 
             // @abi action
             void rmvcompleted(account_name reviewer, uint64_t proposal_id);

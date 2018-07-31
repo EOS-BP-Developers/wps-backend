@@ -208,7 +208,7 @@ namespace eosiowps {
 	}
 
 	// @abi action
-	void wps_contract::rvmreject(account_name reviewer, uint64_t proposal_id){
+	void wps_contract::rmvreject(account_name reviewer, uint64_t proposal_id){
 		require_auth(reviewer);
 
 		reviewer_table reviewers(_self, _self);
@@ -244,8 +244,5 @@ namespace eosiowps {
 
 		idx_index.erase(itr_proposal);
 	}
-
-	//To do: assertions to check if voting duration has expired
-	//To do: put a cap on the amount of funds that each category can pull from eosio.wps
 
 } // eosiowps

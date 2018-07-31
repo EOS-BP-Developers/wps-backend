@@ -24,7 +24,7 @@ EOSIO_ABI( eosiowps::wps_contract,
 	// proposal.cpp
 	(regproposal)(editproposal)(rmvproposal)
 	// reviewer.cpp
-	(regreviewer)(editreviewer)(rmvreviewer)(acceptprop)(rejectprop)(checkvote)(approve)(rejectfunding)(rvmreject)(rmvcompleted)
+	(regreviewer)(editreviewer)(rmvreviewer)(acceptprop)(rejectprop)(checkvote)(approve)(rejectfunding)(rmvreject)(rmvcompleted)
 	// vote.cpp
 	(vote)(unvote) // (stake)(unstake)
 	// committee.cpp
@@ -33,3 +33,6 @@ EOSIO_ABI( eosiowps::wps_contract,
 	(commitvote)(rollbackvote)
 
 )
+
+//To do: put a cap on the amount of funds that each committee can pull from eosio.wps
+//Refactor vote.cpp
