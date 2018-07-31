@@ -36,8 +36,8 @@ namespace eosiowps {
         uint32_t lower_bound_total_voting = 5;      // 5%
         uint64_t proposal_current_index = 0;
         uint32_t max_duration = 60;                // voting duration days
-        account_name watchman = N(watchmanwpss);
-        EOSLIB_SERIALIZE( wps_info, (lower_bound_total_voting)(proposal_current_index)(max_duration)(watchman) )
+        //account_name watchman = N(watchmanwpss);
+        EOSLIB_SERIALIZE( wps_info, (lower_bound_total_voting)(proposal_current_index)(max_duration)/*(watchman)*/ )
     };
 
     typedef eosio::multi_index< N(voter), voter_info > voter_table;
@@ -116,7 +116,16 @@ namespace eosiowps {
             void checkedvotes(account_name watchman, uint64_t proposal_id);
 
             //@abi action
+            void rollback(account_name watchman, uint64_t proposal_id);
+
+            //@abi action
             void approve(account_name reviewer, uint64_t proposal_id);
+
+            //@abi action
+            void rejectongoing(account_name committee, uint64_t proposal_id, const string& reason);
+
+            //@abi action
+            void cleartable(account_name reviewer, uint64_t proposal_id);
 
             // vote
             //@abi action

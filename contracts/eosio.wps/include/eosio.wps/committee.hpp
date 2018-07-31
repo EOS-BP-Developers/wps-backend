@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+//#include <stdbool.h>
 
 namespace eosiowps {
     using std::string;
@@ -13,6 +14,7 @@ namespace eosiowps {
     struct committee {
         account_name owner;
         string category;
+        bool is_oversight;
         uint64_t primary_key() const { return owner; }
         EOSLIB_SERIALIZE( committee, (owner)(category) );
     };
