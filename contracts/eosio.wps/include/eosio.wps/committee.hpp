@@ -16,7 +16,7 @@ namespace eosiowps {
         string category;
         bool is_oversight;
         uint64_t primary_key() const { return committeeman; }
-        EOSLIB_SERIALIZE( committee, (committeeman)(category) );
+        EOSLIB_SERIALIZE( committee, (committeeman)(category)(is_oversight) );
     };
 
     typedef eosio::multi_index< N(committee), committee> committee_table;
