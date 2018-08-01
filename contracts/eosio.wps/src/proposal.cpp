@@ -18,10 +18,12 @@ namespace eosiowps {
         const string& project_overview,
         const string& financial_roadmap,
         const vector<string>& members,
-		const asset& funding_goal,
+		const asset& funding_goal
     ) {
 		// authority of the user's account is required
 		require_auth(proposer);
+
+		auto wps_env = m_wps_env_global.get();
 
 		// verify that the committee account exists
 		eosio_assert(is_account(committee), "committee account doesn't exist");
@@ -35,7 +37,7 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() > 0, "project_overview should be more than 0 characters long");
 		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
 		eosio_assert(members.size() > 0, "member should be more than 0");
-		eosio_assert(duration > 0, "duration must be greater than 0 days");
+		// eosio_assert(duration > 0, "duration must be greater than 0 days");
 
 		//verify that the inputs aren't too long
 		eosio_assert(subcategory < 10, "invalid sub-category");
@@ -45,7 +47,7 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-		eosio_assert(duration <= m_wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
+		// eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
@@ -67,9 +69,8 @@ namespace eosiowps {
 		// verify that the committee is on committee table
 		eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
 
-		m_wps_env = m_wps_env_global.exists() ? m_wps_env_global.get() : wps_env();
-		m_wps_env.proposal_current_index += 1;
-		m_wps_env_global.set( m_wps_env, _self );
+		wps_env.proposal_current_index += 1;
+		m_wps_env_global.set( wps_env, _self );
 
 		// add to the table
 		// storage is billed to the contract account
@@ -85,11 +86,11 @@ namespace eosiowps {
 			proposal.financial_roadmap = financial_roadmap;
 			proposal.members = members;
 			proposal.funding_goal = funding_goal;
-			proposal.id = m_wps_env.proposal_current_index;
+			proposal.id = wps_env.proposal_current_index;
 			proposal.status = PROPOSAL_STATUS::PENDING; 		//initialize status to pending
             proposal.vote_start_time = 0;
-			proposal.iteration_of_funding = 0;
 			proposal.fund_start_time = 0;
+			proposal.iteration_of_funding = 0;
 		});
 	}
 
@@ -104,11 +105,12 @@ namespace eosiowps {
         const string& project_overview,
         const string& financial_roadmap,
         const vector<string>& members,
-		const asset& funding_goal,
+		const asset& funding_goal
     ) {
 		// authority of the user's account is required
 		require_auth(proposer);
 
+		auto wps_env = m_wps_env_global.get();
 		// verify that the committee account exists
 		eosio_assert(is_account(committee), "committee account doesn't exist");
 
@@ -121,7 +123,7 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() > 0, "project_overview should be more than 0 characters long");
 		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
 		eosio_assert(members.size() > 0, "member should be more than 0");
-		eosio_assert(duration > 0, "duration must be greater than 0 days");
+		// eosio_assert(duration > 0, "duration must be greater than 0 days");
 
 		//verify that the inputs aren't too long
 		eosio_assert(subcategory < 10, "invalid sub-category");
@@ -131,7 +133,7 @@ namespace eosiowps {
 		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-        eosio_assert(duration <= m_wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
+        // eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
@@ -141,7 +143,6 @@ namespace eosiowps {
 		eosio_assert(itr != proposers.end(), "This account is not a registered proposer");
 
 		proposal_table proposals(_self, _self);
-
 		auto proposal_itr = proposals.find(proposer);
 		// verify that the account already exists in the proposals table
 		eosio_assert(proposal_itr != proposals.end(), "Account not found in proposal table");
@@ -170,7 +171,7 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::rmvproposal(const account_name proposer){
+	void wps_contract::rmvproposal(account_name proposer){
 		// needs authority of the proposers's account
 		require_auth(proposer);
 

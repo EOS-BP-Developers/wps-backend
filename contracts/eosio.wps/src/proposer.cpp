@@ -1,5 +1,6 @@
 // #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/proposer.hpp>
+#include <eosio.wps/proposal.hpp>
 
 // extern struct permission_level;
 // extern void require_auth(const permission_level& level);
@@ -98,13 +99,12 @@ namespace eosiowps {
 		eosio_assert(linkedin.size() < 128, "linked URL should be shorter than 128 characters.");
 
 		proposer_table proposers(_self, _self);
-
 		auto itr = proposers.find(account);
 		// verify that the account doesn't already exist in the table
 		eosio_assert(itr != proposers.end(), "Account not found in proposer table");
 
 		// modify value in the table
-		proposers.modify(itr, account, [&](auto& proposer) {
+		proposers.modify(itr, 0, [&](auto& proposer) {
 			proposer.account = account;
 			proposer.first_name = first_name;
 			proposer.last_name = last_name;
@@ -118,7 +118,7 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::rmvproposer(account_name account) {
+	void wps_contract::rvmproposer(account_name account) {
 		// needs authority of the proposers's account
 		require_auth(account);
 
@@ -132,9 +132,9 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::claimfunds(account_name proposer, uint64_t proposal_id){
+	void wps_contract::claimfunds(account_name account, uint64_t proposal_id){
 		// needs authority of the proposer account
-		require_auth(proposer);
+		require_auth(account);
 
 		proposer_table proposers(_self, _self);
 		// verify that the account already exists in the proposer table
@@ -145,64 +145,55 @@ namespace eosiowps {
 		auto idx_index = proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
-		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::APPROVED, "Proposal::status is not PROPOSAL_STATUS::APPROVED");
 
 		auto current_time = now();
-		m_wps_env = m_wps_env_global.exists() ? m_wps_env_global.get() : wps_env();
+		auto wps_env = m_wps_env_global.get();
+		auto& proposal = (*itr_proposal);
+
+		eosio_assert(proposal.status == PROPOSAL_STATUS::APPROVED, "Proposal::status is not PROPOSAL_STATUS::APPROVED");
+		eosio_assert(proposal.iteration_of_funding < wps_env.total_iteration_of_funding, "all funds for this proposal have already been claimed");
 
 		//check for proposal expiry
-		if(current_time - (*itr_proposal).funding_start_time > duration_of_funding_seconds){
-			completed_proposal_table completed_proposals(_self, _self);
-
-			//add to the table
-			completed_proposals.emplace((*itr_proposal).proposer, [&](auto& _proposal){
-				_proposal = std::move(*itr_proposal);
+		/*
+		if(current_time - proposal.fund_start_time > wps_env.duration_of_funding){
+		finished_proposal_table finished_proposals(_self, _self);
+			finished_proposals.emplace(account, [&](auto& _proposal){
+				_proposal = (*itr_proposal);
 				_proposal.status = PROPOSAL_STATUS::COMPLETED;
 			});
-
 			idx_index.erase(itr_proposal);
-			//move tables
-			eosio_assert(current_time - (*itr_proposal).funding_start_time < duration_of_funding_seconds, "The funding period for this proposal has expired.");
+			eosio_assert(current_time - (*itr_proposal).fund_start_time < wps_env.duration_of_funding, "The funding period for this proposal has expired.");
 		}
-
+		*/
 		//check for iteration of claim funds
-		eosio_assert((*itr_proposal).iteration_of_funding < m_wps_env.total_iteration_of_funding, "all funds for this proposal have already been claimed");
 
-		double seconds_per_claim_interval = duration_of_funding_seconds / m_wps_env.total_iteration_of_funding;
-		eosio_assert(current_time - (*itr).last_claim_time > seconds_per_claim_interval, "It has not been one month since last claim");
+		uint32_t seconds_per_claim_interval = wps_env.duration_of_funding / wps_env.total_iteration_of_funding;
+		uint64_t start_funding_round =  proposal.fund_start_time + proposal.iteration_of_funding * seconds_per_claim_interval;
 
-		double amount = ((*itr_proposal).funding_goal) / (m_wps_env.total_iteration_of_funding);
+		eosio_assert( current_time > start_funding_round, "It has not been 30 days since last claim");
+		asset amount = proposal.funding_goal / wps_env.total_iteration_of_funding;
 
 		//inline action transfer, send funds to proposer
 		eosio::action(
 				eosio::permission_level{ _self, N(active) },
 				N(eosio.token), N(transfer),
-				std::make_tuple( _self, proposer, amount, std::string("Your worker proposal has been approved."))
+				std::make_tuple( _self, account, amount, std::string("Your worker proposal has been approved."))
 		).send();
 
 		proposers.modify(itr, 0, [&](auto& _proposer){
 			_proposer.last_claim_time = current_time;
 		});
 
-		if((*itr_proposal).iteration_of_funding == 0){
-			idx_index.modify(itr_proposal, 0, [&](auto& _proposal){
-				_proposal.fund_start_time = current_time;
-			});
-		}
-
 		idx_index.modify(itr_proposal, 0, [&](auto& _proposal){
-			_proposal.iteration_of_funding++;
+			_proposal.iteration_of_funding = proposal.iteration_of_funding + 1;
 		});
 
-		if((*itr_proposal).iteration_of_funding >= m_wps_env.total_iteration_of_funding){
-			completed_proposal_table completed_proposals(_self, _self);
-
-			//add to the table
-			completed_proposals.emplace((*itr_proposal).proposer, [&](auto& _proposal){
-				_proposal = std::move(*itr_proposal);
+		if(proposal.iteration_of_funding + 1 >= wps_env.total_iteration_of_funding){
+			finished_proposal_table finished_proposals(_self, _self);
+			finished_proposals.emplace(account, [&](auto& _proposal){
+				_proposal = (*itr_proposal);
 				_proposal.status = PROPOSAL_STATUS::COMPLETED;
 			});
-
 			idx_index.erase(itr_proposal);
 		}
 		//if statement, change state based on count

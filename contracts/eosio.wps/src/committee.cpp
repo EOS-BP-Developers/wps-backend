@@ -14,14 +14,14 @@ namespace eosiowps {
         eosio_assert(duration_of_funding > 0, "duration_of_funding should be more than 0");
         eosio_assert(total_iteration_of_funding > 0, "total_iteration_of_funding should be more than 0");
 
-        m_wps_env = m_wps_env_global.exists() ? m_wps_env_global.get() : wps_env();
+        auto wps_env = m_wps_env_global.get();
 
-        m_wps_env.total_voting_percent = total_voting_percent;
-        m_wps_env.duration_of_voting = duration_of_voting;
-        m_wps_env.duration_of_funding = duration_of_funding;
-        m_wps_env.total_iteration_of_funding = total_iteration_of_funding;
+        wps_env.total_voting_percent = total_voting_percent;
+        wps_env.duration_of_voting = duration_of_voting;
+        wps_env.duration_of_funding = duration_of_funding;
+        wps_env.total_iteration_of_funding = total_iteration_of_funding;
 
-        m_wps_env_global.set( m_wps_env, _self );
+        m_wps_env_global.set( wps_env, _self );
     }
 
     // @abi action
@@ -71,7 +71,7 @@ namespace eosiowps {
         eosio_assert(itr != committees.end(), "Account not found in committee table");
 
         //add to the table
-        committees.modify(itr, _self, [&](auto& committee){
+        committees.modify(itr, 0, [&](auto& committee){
             committee.committeeman = committeeman;
             committee.category = category;
             committee.is_oversight = is_oversight;
@@ -110,15 +110,17 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 
-		eosio_assert(((*itr_proposal).committee==(*itr).committeeman) || (*itr).is_oversight, "Committee is not associated with this proposal");
-		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::APPROVED, "Proposal::status is not PROPOSAL_STATUS::APPROVED");
+        auto& proposal = (*itr_proposal);
+
+		eosio_assert(proposal.committee == (*itr).committeeman || (*itr).is_oversight, "Committee is not associated with this proposal");
+		eosio_assert(proposal.status == PROPOSAL_STATUS::APPROVED, "Proposal::status is not PROPOSAL_STATUS::APPROVED");
 
 		rejected_proposal_table rejected_proposals(_self, _self);
 
 		//add to the table
-		rejected_proposals.emplace((*itr_proposal).proposer, [&](auto& proposal){
-			proposal = std::move(*itr_proposal);
-			proposal.status = PROPOSAL_STATUS::REJECTED;
+		rejected_proposals.emplace(committeeman, [&](auto& _proposal){
+			_proposal = proposal;
+			_proposal.status = PROPOSAL_STATUS::REJECTED;
 		});
 
 		idx_index.erase(itr_proposal);

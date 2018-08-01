@@ -26,23 +26,28 @@ namespace eosiowps {
     using eosio::indexed_by;
     using eosio::const_mem_fun;
 
-    struct voter_info {
-        account_name owner;
-        set<uint64_t> proposals;
-        uint64_t primary_key() const { return owner; }
-        EOSLIB_SERIALIZE( voter_info, (owner)(proposals) )
+	const uint32_t seconds_per_day = 60 * 60 * 24;
+
+    //@abi table
+    struct voting_info {
+        uint64_t proposal_id;
+        vector<account_name> agrees;
+        vector<account_name> disagrees;
+        uint64_t primary_key() const { return proposal_id; }
+        EOSLIB_SERIALIZE( voting_info, (proposal_id)(agrees)(disagrees) )
     };
 
+    //@abi table
     struct wps_env {
         uint64_t proposal_current_index = 0;
-        uint32_t total_voting_percent = 5;     // 5%
-        uint32_t duration_of_voting = 30;      // voting duration days
-        uint32_t duration_of_funding = 180;    // day
-        uint32_t total_iteration_of_funding = 6;     //
+        uint32_t total_voting_percent = 5;                      // 5%
+        uint32_t duration_of_voting = 30 * seconds_per_day;     // voting duration (seconds)
+        uint32_t duration_of_funding = 180 * seconds_per_day;   // funding duration (seconds)
+        uint32_t total_iteration_of_funding = 6;                //
         EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_percent)(duration_of_voting)(duration_of_funding)(total_iteration_of_funding) )
     };
 
-    typedef eosio::multi_index< N(voter), voter_info > voter_table;
+    typedef eosio::multi_index< N(voting), voting_info > voting_table;
     typedef eosio::singleton< N(wpsglobal), wps_env > wps_env_singleton;
 
     class wps_contract : public eosio::contract {
@@ -61,10 +66,10 @@ namespace eosiowps {
                             const string& website, const string& linkedin);
 
             //@abi action
-            void rmvproposer(const account_name proposer);
+            void rvmproposer(account_name account);
 
             //@abi action
-            void claimfunds(account_name proposer, uint64_t proposal_id);
+            void claimfunds(account_name account, uint64_t proposal_id);
 
             // proposal
             // @abi action
@@ -78,8 +83,7 @@ namespace eosiowps {
                 const string& project_overview,   // overview
                 const string& financial_loadmap,  // financial
                 const vector<string>& members,     // linkedin
-                const asset& funding_goal,
-                uint16_t duration
+                const asset& funding_goal
             );
 
             //@abi action
@@ -93,12 +97,11 @@ namespace eosiowps {
                 const string& project_overview,   // overview
                 const string& financial_loadmap,  // financial
                 const vector<string>& members,    // linkedin
-                const asset& funding_goal,
-                uint16_t duration
+                const asset& funding_goal
             );
 
             //@abi action
-            void rmvproposal(const account_name proposer);
+            void rmvproposal(account_name proposer);
 
             // reviewer
             //@abi action
@@ -131,17 +134,10 @@ namespace eosiowps {
 
             // vote
             //@abi action
-            void vote(account_name voter, uint64_t proposal_id);
+            void vote(account_name voter, uint64_t proposal_id, bool is_agree);
 
             //@abi action
             void unvote(account_name voter, uint64_t proposal_id);
-
-            // watchman
-            //@abi action
-            void commitvote(account_name watchman, uint64_t proposal_id);
-
-            //@abi action
-            void rollbackvote(account_name watchman, uint64_t proposal_id);
 
 
             // committee
@@ -160,8 +156,18 @@ namespace eosiowps {
             //@abi action
             void rejectfunding(account_name committeeman, uint64_t proposal_id, const string& reason);
 
+
+            // watchman
+            //@abi action
+            void commitvote(account_name watchman, uint64_t proposal_id);
+
+            //@abi action
+            void rollbackvote(account_name watchman, uint64_t proposal_id);
+
+            //@abi action
+            void checkexpire(account_name watchman, uint64_t proposal_id);
+
         private:
             wps_env_singleton m_wps_env_global;
-            wps_env m_wps_env;
     };
 } // eosiowps

@@ -38,7 +38,7 @@ namespace eosiowps {
 		eosio_assert(reviewer_itr == reviewers.end(), "This account has already been registered as a reviewer");
 
 		//add to the table
-		reviewers.emplace(reviewer, [&](auto& _reviewer){
+		reviewers.emplace(committee, [&](auto& _reviewer){
 			_reviewer.account = reviewer;
 			_reviewer.first_name = first_name;
 			_reviewer.last_name = last_name;
@@ -64,18 +64,15 @@ namespace eosiowps {
 
         //creates the committee table if it doesn't exist already
         committee_table committees(_self, _self);
-
         auto committee_itr = committees.find(committee);
         // verify that the committee is on committee table
         eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
 
 		//creates the reviewers table if it there isn't one already
 		reviewer_table reviewers(_self, _self);
-
 		auto itr = reviewers.find(reviewer);
 		// verify that the account already exists in the table
 		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
-
 		// verify that the reviewer is part of the committee
         eosio_assert((*itr).committee == committee, "The given reviewer is not part of this committee");
 
@@ -98,17 +95,14 @@ namespace eosiowps {
 
         //creates the committee table if it doesn't exist already
         committee_table committees(_self, _self);
-
         auto committee_itr = committees.find(committee);
         // verify that the committee is on committee table
         eosio_assert(committee_itr != committees.end(), "Account not found in committee table");
 
 		reviewer_table reviewers(_self, _self);
-
 		auto itr = reviewers.find(reviewer);
         // verify that the account already exists in the reviewers table
 		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
-
         // verify that the reviewer is part of the committee
         eosio_assert((*itr).committee==committee, "The given reviewer is not part of this committee");
 
@@ -130,7 +124,7 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::PENDING, "Proposal::status is not proposal_status::PENDING");
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 
-		idx_index.modify(itr_proposal, (*itr_proposal).proposer, [&](auto& proposal){
+		idx_index.modify(itr_proposal, 0, [&](auto& proposal){
 			proposal.status = PROPOSAL_STATUS::ON_VOTE;
 		});
 	}
@@ -158,10 +152,8 @@ namespace eosiowps {
 		});
 
 		rejected_proposal_table rejected_proposals(_self, _self);
-
-		//add to the table
-		rejected_proposals.emplace((*itr_proposal).proposer, [&](auto& proposal){
-			proposal = std::move(*itr_proposal);
+		rejected_proposals.emplace(reviewer, [&](auto& proposal){
+			proposal = (*itr_proposal);
 		});
 
 		idx_index.erase(itr_proposal);
@@ -182,7 +174,7 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).committee == (*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::ON_VOTE, "Proposal's status is not ON_VOTE");
 
-		idx_index.modify(itr_proposal, (*itr_proposal).proposer, [&](auto& proposal){
+		idx_index.modify(itr_proposal, 0, [&](auto& proposal){
 			proposal.status = PROPOSAL_STATUS::CHECK_VOTE;
 		});
 	}
@@ -202,7 +194,8 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::CHECKED_VOTE, "Proposal::status is not PROPOSAL_STATUS::CHECKED_VOTE");
 
-		idx_index.modify(itr_proposal, (*itr_proposal).proposer, [&](auto& proposal){
+		idx_index.modify(itr_proposal, 0, [&](auto& proposal){
+			proposal.fund_start_time = now();
 			proposal.status = PROPOSAL_STATUS::APPROVED;
 		});
 	}
@@ -219,8 +212,7 @@ namespace eosiowps {
 		auto idx_index = rejected_proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in rejected proposal table");
-		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::REJECTED,
-					 "Proposal::status is not PROPOSAL_STATUS::REJECTED");
+		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::REJECTED, "Proposal::status is not PROPOSAL_STATUS::REJECTED");
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 
 		idx_index.erase(itr_proposal);
@@ -234,12 +226,11 @@ namespace eosiowps {
 		auto itr = reviewers.find(reviewer);
 		eosio_assert(itr != reviewers.end(), "Account not found in reviewers table");
 
-		completed_proposal_table completed_proposals(_self, _self);
-		auto idx_index = completed_proposals.get_index<N(idx)>();
+		finished_proposal_table finished_proposals(_self, _self);
+		auto idx_index = finished_proposals.get_index<N(idx)>();
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in completed proposals table");
-		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::COMPLETED,
-					 "Proposal::status is not PROPOSAL_STATUS::COMPLETED");
+		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::COMPLETED, "Proposal::status is not PROPOSAL_STATUS::COMPLETED");
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 
 		idx_index.erase(itr_proposal);
