@@ -16,7 +16,7 @@ namespace eosiowps {
         string first_name;
         string last_name;
         uint64_t primary_key() const { return account; }
-        EOSLIB_SERIALIZE( reviewer, (account)(first_name)(last_name)(committee) )
+        EOSLIB_SERIALIZE( reviewer, (account)(committee)(first_name)(last_name) )
     };
 
     typedef eosio::multi_index< N(reviewer), reviewer> reviewer_table;

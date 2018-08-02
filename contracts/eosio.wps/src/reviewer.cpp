@@ -13,7 +13,7 @@ namespace eosiowps {
 		require_auth(committee);
 
 		//verify that the account exists
-		eosio_assert(is_account(reviewer), "The account does not exist");
+		eosio_assert(is_account(reviewer), "The reviewer account does not exist");
 
 		//verify that the inputs are not too short
 		eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
@@ -52,7 +52,7 @@ namespace eosiowps {
 		require_auth(committee);
 
 		//verify that the account exists
-		eosio_assert(is_account(reviewer), "The account does not exist");
+		eosio_assert(is_account(reviewer), "The reviewer account does not exist");
 
 		//verify that the inputs are not too short
 		eosio_assert(first_name.size() > 0, "first name should be more than 0 characters long");
