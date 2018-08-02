@@ -241,6 +241,9 @@ BOOST_FIXTURE_TEST_CASE( manage_reviewer, reviewer_tester ) try {
   REQUIRE_MATCHING_OBJECT(_r1_2, r1_2);
   REQUIRE_MATCHING_OBJECT(_r2_2, r2_2);
 
+  base_tester::push_action( N(eosio.wps), N(rmvreviewer), N(committee2), mvo()("committee","committee2")("reviewer", "reviewer2"));
+  produce_block();
+
 } FC_LOG_AND_RETHROW()
 
 BOOST_AUTO_TEST_SUITE_END()

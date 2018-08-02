@@ -113,13 +113,16 @@ BOOST_FIXTURE_TEST_CASE( manage_committee, committee_tester ) try {
   REQUIRE_MATCHING_OBJECT(t1_2, committeeman1_2);
   REQUIRE_MATCHING_OBJECT(t2_2, committeeman2_2);
 
-  trace = base_tester::push_action( N(eosio.wps), N(rmvcommittee), N(eosio.wps), committeeman2_2);
+  trace = base_tester::push_action( N(eosio.wps), N(rmvcommittee), N(eosio.wps), mvo()("committeeman", "committee2"));
   produce_block();
+
+  /*
   try {
-    // get_committee(t2_2, N(committee2));
+    get_committee(t2_2, N(committee2));
   } catch(...) {
     BOOST_TEST_MESSAGE("exception");
   }
+  */
 
   // BOOST_TEST_MESSAGE( fc::json::to_pretty_string(trace) );
   // BOOST_TEST_MESSAGE( fc::json::to_pretty_string(t2_2) );
