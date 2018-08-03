@@ -3,43 +3,43 @@
 class committee_tester : public tester {
 public:
    committee_tester() {
-      create_accounts( {N(eosio.token), N(eosio.wps), N(eosio.saving), N(committee1), N(committee2)} );
-      produce_block();
+    create_accounts( {N(eosio.token), N(eosio.wps), N(eosio.saving), N(committee1), N(committee2)} );
+    produce_block();
 
-      base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
-        mutable_variant_object()
-        ("account", "eosio.token")
-        ("is_priv", 1)
-      );
+    base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
+      mutable_variant_object()
+      ("account", "eosio.token")
+      ("is_priv", 1)
+    );
 
-      base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
-        mutable_variant_object()
-        ("account", "eosio.wps")
-        ("is_priv", 1)
-      );
+    base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
+      mutable_variant_object()
+      ("account", "eosio.wps")
+      ("is_priv", 1)
+    );
 
-      base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
-        mutable_variant_object()
-        ("account", "eosio.saving")
-        ("is_priv", 1)
-      );
+    base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
+      mutable_variant_object()
+      ("account", "eosio.saving")
+      ("is_priv", 1)
+    );
 
-      set_code( N(eosio.token), contracts::util::token_wasm() );
-      set_abi( N(eosio.token), contracts::util::token_abi().data() );
+    set_code( N(eosio.token), contracts::util::token_wasm() );
+    set_abi( N(eosio.token), contracts::util::token_abi().data() );
 
-      set_code( N(eosio.wps), contracts::wps_wasm() );
-      set_abi( N(eosio.wps), contracts::wps_abi().data() );
+    set_code( N(eosio.wps), contracts::wps_wasm() );
+    set_abi( N(eosio.wps), contracts::wps_abi().data() );
 
-      produce_blocks();
+    produce_blocks();
 
-      const auto& accnt = control->db().get<account_object,by_name>( N(eosio.wps) );
-      abi_def abi;
-      BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
-      abi_ser.set_abi(abi, fc::seconds(1));
+    const auto& accnt = control->db().get<account_object,by_name>( N(eosio.wps) );
+    abi_def abi;
+    BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
+    abi_ser.set_abi(abi, fc::seconds(1));
    }
 
   bool get_committee(committee_t& committeeman, account_name name) {
-    return get_table_entry(committeeman, N(eosio.wps), N(eosio.wps), N(committee), name);
+    return get_table_entry(committeeman, N(eosio.wps), N(eosio.wps), N(committees), name);
   }
 
   bool get_wpsenv(wps_env_t& wpsenv ) {

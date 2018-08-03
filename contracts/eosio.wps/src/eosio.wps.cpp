@@ -18,7 +18,7 @@ namespace eosiowps {
 
 EOSIO_ABI( eosiowps::wps_contract,
 	// proposer.cpp
-	(regproposer)(editproposer)(rvmproposer)(claimfunds)
+	(regproposer)(editproposer)(rmvproposer)(claimfunds)
 	// proposal.cpp
 	(regproposal)(editproposal)(rmvproposal)
 	// reviewer.cpp

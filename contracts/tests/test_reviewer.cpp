@@ -2,74 +2,72 @@
 
 class reviewer_tester : public tester {
 public:
-   reviewer_tester() {
-      create_accounts( {N(eosio.token), N(eosio.wps), N(eosio.saving), N(committee1), N(committee2), N(reviewer1), N(reviewer2)} );
+  reviewer_tester() {
+    create_accounts( {N(eosio.token), N(eosio.wps), N(eosio.saving), N(committee1), N(committee2), N(reviewer1), N(reviewer2)} );
 
-      produce_block();
-      produce_block();
-      produce_block();
+    produce_block();
 
-      base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
-        mutable_variant_object()
-        ("account", "eosio.token")
-        ("is_priv", 1)
-      );
+    base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
+      mutable_variant_object()
+      ("account", "eosio.token")
+      ("is_priv", 1)
+    );
 
-      base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
-        mutable_variant_object()
-        ("account", "eosio.wps")
-        ("is_priv", 1)
-      );
+    base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
+      mutable_variant_object()
+      ("account", "eosio.wps")
+      ("is_priv", 1)
+    );
 
-      base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
-        mutable_variant_object()
-        ("account", "eosio.saving")
-        ("is_priv", 1)
-      );
-      set_code( N(eosio.token), contracts::util::token_wasm() );
-      set_abi( N(eosio.token), contracts::util::token_abi().data() );
+    base_tester::push_action(config::system_account_name, N(setpriv), config::system_account_name,
+      mutable_variant_object()
+      ("account", "eosio.saving")
+      ("is_priv", 1)
+    );
+    set_code( N(eosio.token), contracts::util::token_wasm() );
+    set_abi( N(eosio.token), contracts::util::token_abi().data() );
 
-      set_code( N(eosio.wps), contracts::wps_wasm() );
-      set_abi( N(eosio.wps), contracts::wps_abi().data() );
+    set_code( N(eosio.wps), contracts::wps_wasm() );
+    set_abi( N(eosio.wps), contracts::wps_abi().data() );
 
-      produce_blocks();
+    produce_blocks();
 
-      const auto& accnt = control->db().get<account_object,by_name>( N(eosio.wps) );
-      abi_def abi;
-      BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
-      abi_ser.set_abi(abi, fc::seconds(1));
+    const auto& accnt = control->db().get<account_object,by_name>( N(eosio.wps) );
+    abi_def abi;
+    BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
+    abi_ser.set_abi(abi, fc::seconds(1));
 
-      init_committee();
-   }
+    init_committee();
+  }
 
-   void init_committee() {
-      auto committeeman1 = mvo()
-          ("committeeman",  "committee1")
-          ("category", "emergency")
-          ("is_oversight", 1);
+  void init_committee() {
+    auto committeeman1 = mvo()
+      ("committeeman",  "committee1")
+      ("category", "emergency")
+      ("is_oversight", 1);
 
-      auto committeeman2 = mvo()
-          ("committeeman",  "committee2")
-          ("category", "game")
-          ("is_oversight", 0);
+    auto committeeman2 = mvo()
+      ("committeeman",  "committee2")
+      ("category", "game")
+      ("is_oversight", 0);
 
-      auto wpsenv = mvo()
-          ("total_voting_percent",  10)
-          ("duration_of_voting", 30 * seconds_per_day)
-          ("duration_of_funding", 180 * seconds_per_day)
-          ("total_iteration_of_funding", 6)
-          ("proposal_current_index", 0);
+    auto wpsenv = mvo()
+      ("total_voting_percent",  10)
+      ("duration_of_voting", 30 * seconds_per_day)
+      ("duration_of_funding", 180 * seconds_per_day)
+      ("total_iteration_of_funding", 6)
+      ("proposal_current_index", 0);
 
-      auto trace = base_tester::push_action( N(eosio.wps), N(setwpsenv), N(eosio.wps), wpsenv);
-      produce_block();
+    auto trace = base_tester::push_action( N(eosio.wps), N(setwpsenv), N(eosio.wps), wpsenv);
+    produce_block();
 
-      base_tester::push_action( N(eosio.wps), N(regcommittee), N(eosio.wps), committeeman1);
-      base_tester::push_action( N(eosio.wps), N(regcommittee), N(eosio.wps), committeeman2);
+    base_tester::push_action( N(eosio.wps), N(regcommittee), N(eosio.wps), committeeman1);
+    base_tester::push_action( N(eosio.wps), N(regcommittee), N(eosio.wps), committeeman2);
 
-      produce_block();
-   }
+    produce_block();
+  }
 
-   transaction_trace_ptr create_account_with_resources( account_name a, account_name creator, asset ramfunds, bool multisig,
+  transaction_trace_ptr create_account_with_resources( account_name a, account_name creator, asset ramfunds, bool multisig,
                                                         asset net = core_from_string("10.0000"), asset cpu = core_from_string("10.0000") ) {
       signed_transaction trx;
       set_transaction_headers(trx);
@@ -110,23 +108,23 @@ public:
       set_transaction_headers(trx);
       trx.sign( get_private_key( creator, "active" ), control->get_chain_id()  );
       return push_transaction( trx );
-   }
+  }
 
-   void create_currency( name contract, name manager, asset maxsupply ) {
-      auto act =  mutable_variant_object()
-         ("issuer",       manager )
-         ("maximum_supply", maxsupply );
+  void create_currency( name contract, name manager, asset maxsupply ) {
+    auto act =  mutable_variant_object()
+      ("issuer",       manager )
+      ("maximum_supply", maxsupply );
 
-      base_tester::push_action(contract, N(create), contract, act );
-   }
+    base_tester::push_action(contract, N(create), contract, act );
+  }
 
-   void issue( name to, const asset& amount, name manager = config::system_account_name ) {
-      base_tester::push_action( N(eosio.token), N(issue), manager, mutable_variant_object()
-                                ("to",      to )
-                                ("quantity", amount )
-                                ("memo", "")
-                                );
-   }
+  void issue( name to, const asset& amount, name manager = config::system_account_name ) {
+    base_tester::push_action( N(eosio.token), N(issue), manager, mutable_variant_object()
+                              ("to",      to )
+                              ("quantity", amount )
+                              ("memo", "")
+                              );
+  }
 
    void transfer( name from, name to, const string& amount, name manager = config::system_account_name ) {
       base_tester::push_action( N(eosio.token), N(transfer), manager, mutable_variant_object()
@@ -158,7 +156,7 @@ public:
   }
 
   bool get_reviewer(reviewer_t& reviewer, account_name name) {
-    return get_table_entry(reviewer, N(eosio.wps), N(eosio.wps), N(reviewer), name);
+    return get_table_entry(reviewer, N(eosio.wps), N(eosio.wps), N(reviewers), name);
   }
 
   abi_serializer abi_ser;

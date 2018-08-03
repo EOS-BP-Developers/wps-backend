@@ -38,10 +38,48 @@ struct wps_env_t {
 FC_REFLECT( wps_env_t, (proposal_current_index)(total_voting_percent)(duration_of_voting)(duration_of_funding)(total_iteration_of_funding) );
 
 struct reviewer_t {
-    account_name account;
-    account_name committee;
-    string first_name;
-    string last_name;
-    uint64_t primary_key() const { return account; }
+  account_name account;
+  account_name committee;
+  string first_name;
+  string last_name;
+  uint64_t primary_key() const { return account; }
 };
 FC_REFLECT( reviewer_t, (account)(committee)(first_name)(last_name) );
+
+struct proposer_t {
+  account_name account;
+  string first_name;
+  string last_name;
+  string img_url;
+  string bio;
+  string country;
+  string telegram;
+  string website;
+  string linkedin;
+  uint64_t last_claim_time;
+  uint64_t primary_key() const { return account; }
+};
+FC_REFLECT( proposer_t, (account)(first_name)(last_name)(img_url)(bio)(country)(telegram)(website)(linkedin)(last_claim_time) )
+
+struct proposal_t {
+  account_name proposer;        // proposer
+  uint64_t id;
+  account_name committee;       // committee
+  string category;              // category
+  uint16_t subcategory;         // subcategory
+  string title;                 // title
+  string subtitle;              // subtitle
+  string project_img_url;       // project image or video url
+  string project_overview;      // overview
+  string financial_roadmap;     // financial
+  vector<string> members;       // linkedin
+  asset funding_goal;           // amount of EOS
+  uint64_t total_votes;         // total votes
+  uint8_t status;               // status
+  uint64_t vote_start_time;     // time when voting starts (seconds)
+  uint64_t fund_start_time;     // time when funding starts (seconds)
+  uint8_t iteration_of_funding; // number of iteration
+  uint64_t primary_key() const { return proposer; }
+  uint64_t by_id() const { return static_cast<uint64_t>(id); }
+};
+FC_REFLECT( proposal_t, (proposer)(id)(committee)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(funding_goal)(total_votes)(status)(vote_start_time)(fund_start_time)(iteration_of_funding) )

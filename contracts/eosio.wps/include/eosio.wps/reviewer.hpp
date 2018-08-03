@@ -19,5 +19,5 @@ namespace eosiowps {
         EOSLIB_SERIALIZE( reviewer, (account)(committee)(first_name)(last_name) )
     };
 
-    typedef eosio::multi_index< N(reviewer), reviewer> reviewer_table;
+    typedef eosio::multi_index< N(reviewers), reviewer> reviewer_table;
 } // eosiowps

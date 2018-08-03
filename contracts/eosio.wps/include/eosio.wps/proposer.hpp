@@ -24,6 +24,6 @@ namespace eosiowps {
         uint64_t primary_key() const { return account; }
         EOSLIB_SERIALIZE( proposer, (account)(first_name)(last_name)(img_url)(bio)(country)(telegram)(website)(linkedin)(last_claim_time) )
     };
-    typedef eosio::multi_index<N(proposer), proposer> proposer_table;
+    typedef eosio::multi_index<N(proposers), proposer> proposer_table;
 
 } // eosiowps

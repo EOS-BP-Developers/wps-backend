@@ -118,7 +118,7 @@ namespace eosiowps {
 	}
 
 	//@abi action
-	void wps_contract::rvmproposer(account_name account) {
+	void wps_contract::rmvproposer(account_name account) {
 		// needs authority of the proposers's account
 		require_auth(account);
 

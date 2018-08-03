@@ -44,18 +44,19 @@ namespace eosiowps {
         uint8_t iteration_of_funding; // number of iteration
         uint64_t primary_key() const { return proposer; }
         uint64_t by_id() const { return static_cast<uint64_t>(id); }
-        EOSLIB_SERIALIZE( proposal, (proposer)(id)(committee)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(funding_goal)(total_votes)(status)(vote_start_time)(iteration_of_funding)(fund_start_time) )
+        EOSLIB_SERIALIZE( proposal, (proposer)(id)(committee)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(funding_goal)
+            (total_votes)(status)(vote_start_time)(fund_start_time)(iteration_of_funding) )
     };
 
     typedef eosio::multi_index< N(proposals), proposal,
         indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
     > proposal_table;
 
-    typedef eosio::multi_index< N(rejectedprop), proposal,
+    typedef eosio::multi_index< N(rejectedpros), proposal,
         indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
     > rejected_proposal_table;
 
-    typedef eosio::multi_index< N(finishedprop), proposal,
+    typedef eosio::multi_index< N(finishedpros), proposal,
         indexed_by< N(idx), const_mem_fun<proposal, uint64_t, &proposal::by_id>  >
     > finished_proposal_table;
 

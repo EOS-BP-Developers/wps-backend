@@ -19,5 +19,5 @@ namespace eosiowps {
         EOSLIB_SERIALIZE( committee, (committeeman)(category)(is_oversight) );
     };
 
-    typedef eosio::multi_index< N(committee), committee> committee_table;
+    typedef eosio::multi_index< N(committees), committee> committee_table;
 } // eosiowps

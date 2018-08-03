@@ -45,7 +45,7 @@ namespace eosiowps {
         EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_percent)(duration_of_voting)(duration_of_funding)(total_iteration_of_funding) )
     };
 
-    typedef eosio::multi_index< N(voting), voting_info > voting_table;
+    typedef eosio::multi_index< N(votings), voting_info > voting_table;
     typedef eosio::singleton< N(wpsglobal), wps_env > wps_env_singleton;
 
     class wps_contract : public eosio::contract {
@@ -64,7 +64,7 @@ namespace eosiowps {
                             const string& website, const string& linkedin);
 
             //@abi action
-            void rvmproposer(account_name account);
+            void rmvproposer(account_name account);
 
             //@abi action
             void claimfunds(account_name account, uint64_t proposal_id);
