@@ -49,6 +49,10 @@ namespace eosiowps {
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
 		// eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
+		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
+		eosio_assert( funding_goal.amount > 0, "must request positive quantity" );
+
+
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
 
@@ -134,6 +138,9 @@ namespace eosiowps {
 		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
         // eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
+
+		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
+		eosio_assert( funding_goal.amount > 0, "must request positive quantity" );
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);

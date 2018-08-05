@@ -171,13 +171,19 @@ namespace eosiowps {
 		uint64_t start_funding_round =  proposal.fund_start_time + proposal.iteration_of_funding * seconds_per_claim_interval;
 
 		eosio_assert( current_time > start_funding_round, "It has not been 30 days since last claim");
-		asset amount = proposal.funding_goal / wps_env.total_iteration_of_funding;
+
+		int64_t amount = proposal.funding_goal.amount / wps_env.total_iteration_of_funding;
+		asset transfer_amount{
+			amount,
+			proposal.funding_goal.symbol,
+			proposal.funding_goal.max_amount
+		};
 
 		//inline action transfer, send funds to proposer
 		eosio::action(
 				eosio::permission_level{ _self, N(active) },
 				N(eosio.token), N(transfer),
-				std::make_tuple( _self, account, amount, std::string("Your worker proposal has been approved."))
+				std::make_tuple( _self, account, transfer_amount, std::string("Your worker proposal has been approved."))
 		).send();
 
 		proposers.modify(itr, 0, [&](auto& _proposer){
