@@ -1,6 +1,7 @@
 // #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/proposer.hpp>
 #include <eosio.wps/proposal.hpp>
+#include <eosio.token/eosio.token.hpp>
 
 // extern struct permission_level;
 // extern void require_auth(const permission_level& level);
@@ -176,7 +177,6 @@ namespace eosiowps {
 		asset transfer_amount{
 			amount,
 			proposal.funding_goal.symbol,
-			proposal.funding_goal.max_amount
 		};
 
 		//inline action transfer, send funds to proposer

@@ -50,8 +50,11 @@ namespace eosiowps {
 		// eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
 		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
-		eosio_assert( funding_goal.amount > 0, "must request positive quantity" );
-
+		eosio_assert( funding_goal.amount > 0, "must request positive amount" );
+		auto sym = funding_goal.symbol.name();
+		stats statstable( _self, sym );
+		const auto& st = statstable.get( sym );
+		eosio_assert( funding_goal.symbol == st.supply.symbol, "symbol precision mismatch" );
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
@@ -141,6 +144,11 @@ namespace eosiowps {
 
 		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
 		eosio_assert( funding_goal.amount > 0, "must request positive quantity" );
+
+		auto sym = funding_goal.symbol.name();
+		stats statstable( _self, sym );
+		const auto& st = statstable.get( sym );
+		eosio_assert( funding_goal.symbol == st.supply.symbol, "symbol precision mismatch" );
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
