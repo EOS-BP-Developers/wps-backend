@@ -33,7 +33,7 @@ namespace eosiowps {
 		//subcategory is not required
 		//eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
 		eosio_assert(title.size() > 0, "title should be more than 0 characters long");
-		eosio_assert(summary.size() > 0, "summary should be more than 0 characters long");
+		eosio_assert(summary.size() > 400, "summary should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
 		eosio_assert(description.size() > 0, "description should be more than 0 characters long");
 		eosio_assert(roadmap.size() > 0, "roadmap should be more than 0 characters long");
@@ -139,7 +139,7 @@ namespace eosiowps {
 		//verify that the inputs aren't too long
 		eosio_assert(subcategory < 10, "invalid sub-category");
 		eosio_assert(title.size() < 256, "title should be shorter than 256 characters.");
-		eosio_assert(summary.size() < 256, "subtitle should be shorter than 256 characters.");
+		eosio_assert(summary.size() < 400, "subtitle should be shorter than 256 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
 		eosio_assert(description.size() < 5000, "project_overview should be shorter than 1024 characters.");
 		eosio_assert(roadmap.size() < 2000, "financial_roadmap should be shorter than 256 characters.");

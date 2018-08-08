@@ -5,6 +5,7 @@
 #include <eosiolib/singleton.hpp>
 #include <eosiolib/contract.hpp>
 #include <eosiolib/asset.hpp>
+#include <eosio.token/eosio.token.hpp>
 
 /* to generate abi, comment out*/
 #include "proposal.hpp"
@@ -40,9 +41,9 @@ namespace eosiowps {
         uint64_t proposal_current_index = 0;
         uint32_t total_voting_percent = 5;                      // 5%
         uint32_t duration_of_voting = 30 * seconds_per_day;     // voting duration (seconds)
-        uint32_t max_duration_of_funding = 180;   // funding duration (seconds)
+        uint32_t max_duration_of_funding = 180;   // funding duration (days)
         uint32_t total_iteration_of_funding = 6;                //
-        EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_percent)(duration_of_voting)(duration_of_funding)(total_iteration_of_funding) )
+        EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_percent)(duration_of_voting)(max_duration_of_funding)(total_iteration_of_funding) )
     };
 
     typedef eosio::multi_index< N(votings), voting_info > voting_table;
@@ -72,30 +73,32 @@ namespace eosiowps {
             // proposal
             // @abi action
             void regproposal(
-                account_name proposer,
-                account_name committee,           // committee
-                uint16_t subcategory,             // subcategory
-                const string& title,              // title
-                const string& subtitle,           // subtitle
-                const string& project_img_url,    // project image or video url
-                const string& project_overview,   // overview
-                const string& financial_loadmap,  // financial
-                const vector<string>& members,     // linkedin
-                const asset& funding_goal
+                    account_name proposer,
+                    account_name committee,
+                    uint16_t subcategory,
+                    const string& title,
+                    const string& summary,
+                    const string& project_img_url,
+                    const string& description,
+                    const string& roadmap,
+                    uint64_t duration,
+                    const vector<string>& members,
+                    const asset& funding_goal
             );
 
             //@abi action
             void editproposal(
-                account_name proposer,
-                account_name committee,           // committee
-                uint16_t subcategory,             // subcategory
-                const string& title,              // title
-                const string& subtitle,           // subtitle
-                const string& project_img_url,    // project image or video url
-                const string& project_overview,   // overview
-                const string& financial_loadmap,  // financial
-                const vector<string>& members,    // linkedin
-                const asset& funding_goal
+                    account_name proposer,
+                    account_name committee,
+                    uint16_t subcategory,
+                    const string& title,
+                    const string& summary,
+                    const string& project_img_url,
+                    const string& description,
+                    const string& roadmap,
+                    uint64_t duration,
+                    const vector<string>& members,
+                    const asset& funding_goal
             );
 
             //@abi action

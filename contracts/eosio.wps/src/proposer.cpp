@@ -168,7 +168,8 @@ namespace eosiowps {
 		*/
 		//check for iteration of claim funds
 
-		uint32_t seconds_per_claim_interval = wps_env.duration_of_funding / wps_env.total_iteration_of_funding;
+		uint64_t funding_duration_seconds = (*itr_proposal).duration*seconds_per_day;
+		uint32_t seconds_per_claim_interval = funding_duration_seconds / wps_env.total_iteration_of_funding;
 		uint64_t start_funding_round =  proposal.fund_start_time + proposal.iteration_of_funding * seconds_per_claim_interval;
 
 		eosio_assert( current_time > start_funding_round, "It has not been 30 days since last claim");
