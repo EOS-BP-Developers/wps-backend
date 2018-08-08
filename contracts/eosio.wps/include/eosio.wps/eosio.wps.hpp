@@ -40,7 +40,7 @@ namespace eosiowps {
         uint64_t proposal_current_index = 0;
         uint32_t total_voting_percent = 5;                      // 5%
         uint32_t duration_of_voting = 30 * seconds_per_day;     // voting duration (seconds)
-        uint32_t duration_of_funding = 180 * seconds_per_day;   // funding duration (seconds)
+        uint32_t max_duration_of_funding = 180;   // funding duration (seconds)
         uint32_t total_iteration_of_funding = 6;                //
         EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_percent)(duration_of_voting)(duration_of_funding)(total_iteration_of_funding) )
     };

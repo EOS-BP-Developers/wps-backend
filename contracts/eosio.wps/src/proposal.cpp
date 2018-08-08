@@ -13,10 +13,11 @@ namespace eosiowps {
         account_name committee,
         uint16_t subcategory,
         const string& title,
-        const string& subtitle,
+        const string& summary,
         const string& project_img_url,
-        const string& project_overview,
-        const string& financial_roadmap,
+        const string& description,
+        const string& roadmap,
+        uint64_t duration,
         const vector<string>& members,
 		const asset& funding_goal
     ) {
@@ -32,25 +33,25 @@ namespace eosiowps {
 		//subcategory is not required
 		//eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
 		eosio_assert(title.size() > 0, "title should be more than 0 characters long");
-		eosio_assert(subtitle.size() > 0, "subtitle should be more than 0 characters long");
+		eosio_assert(summary.size() > 0, "summary should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
-		eosio_assert(project_overview.size() > 0, "project_overview should be more than 0 characters long");
-		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
+		eosio_assert(description.size() > 0, "description should be more than 0 characters long");
+		eosio_assert(roadmap.size() > 0, "roadmap should be more than 0 characters long");
+		eosio_assert(duration > 0, "duration should be longer than 0 days");
 		eosio_assert(members.size() > 0, "member should be more than 0");
-		// eosio_assert(duration > 0, "duration must be greater than 0 days");
 
 		//verify that the inputs aren't too long
 		eosio_assert(subcategory < 10, "invalid sub-category");
 		eosio_assert(title.size() < 256, "title should be shorter than 256 characters.");
-		eosio_assert(subtitle.size() < 256, "subtitle should be shorter than 256 characters.");
+		eosio_assert(summary.size() < 256, "subtitle should be shorter than 256 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
-		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
-		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
+		eosio_assert(description.size() < 5000, "project_overview should be shorter than 1024 characters.");
+		eosio_assert(roadmap.size() < 2000, "financial_roadmap should be shorter than 256 characters.");
+		eosio_assert(duration <= wps_env.max_duration_of_funding, "duration can be at most 180 days");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-		// eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
-
 		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
 		eosio_assert( funding_goal.amount > 0, "must request positive amount" );
+
 		auto sym = funding_goal.symbol.name();
 		stats statstable( _self, sym );
 		const auto& st = statstable.get( sym );
@@ -87,10 +88,11 @@ namespace eosiowps {
 			proposal.category = (*committee_itr).category;
 			proposal.subcategory = subcategory;
 			proposal.title = title;
-			proposal.subtitle = subtitle;
+			proposal.summary = summary;
 			proposal.project_img_url = project_img_url;
-			proposal.project_overview = project_overview;
-			proposal.financial_roadmap = financial_roadmap;
+			proposal.description = description;
+			proposal.roadmap = roadmap;
+			proposal.duration = duration;
 			proposal.members = members;
 			proposal.funding_goal = funding_goal;
 			proposal.id = wps_env.proposal_current_index;
@@ -107,10 +109,11 @@ namespace eosiowps {
         account_name committee,
         uint16_t subcategory,
         const string& title,
-        const string& subtitle,
+        const string& summary,
         const string& project_img_url,
-        const string& project_overview,
-        const string& financial_roadmap,
+        const string& description,
+        const string& roadmap,
+		uint64_t duration,
         const vector<string>& members,
 		const asset& funding_goal
     ) {
@@ -125,21 +128,25 @@ namespace eosiowps {
 		//subcategory is not required
 		//eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
 		eosio_assert(title.size() > 0, "title should be more than 0 characters long");
-		eosio_assert(subtitle.size() > 0, "subtitle should be more than 0 characters long");
+		eosio_assert(summary.size() > 0, "summary should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
-		eosio_assert(project_overview.size() > 0, "project_overview should be more than 0 characters long");
-		eosio_assert(financial_roadmap.size() > 0, "financial_roadmap should be more than 0 characters long");
+		eosio_assert(description.size() > 0, "description should be more than 0 characters long");
+		eosio_assert(roadmap.size() > 0, "roadmap should be more than 0 characters long");
+		eosio_assert(duration > 0, "duration should be longer than 0 days");
 		eosio_assert(members.size() > 0, "member should be more than 0");
 		// eosio_assert(duration > 0, "duration must be greater than 0 days");
 
 		//verify that the inputs aren't too long
 		eosio_assert(subcategory < 10, "invalid sub-category");
 		eosio_assert(title.size() < 256, "title should be shorter than 256 characters.");
-		eosio_assert(subtitle.size() < 256, "subtitle should be shorter than 256 characters.");
+		eosio_assert(summary.size() < 256, "subtitle should be shorter than 256 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
-		eosio_assert(project_overview.size() < 1024, "project_overview should be shorter than 1024 characters.");
-		eosio_assert(financial_roadmap.size() < 256, "financial_roadmap should be shorter than 256 characters.");
+		eosio_assert(description.size() < 5000, "project_overview should be shorter than 1024 characters.");
+		eosio_assert(roadmap.size() < 2000, "financial_roadmap should be shorter than 256 characters.");
+		eosio_assert(duration <= wps_env.max_duration_of_funding, "duration can be at most 180 days");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
+		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
+		eosio_assert( funding_goal.amount > 0, "must request positive amount" );
         // eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
 		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
@@ -162,6 +169,8 @@ namespace eosiowps {
 		// verify that the account already exists in the proposals table
 		eosio_assert(proposal_itr != proposals.end(), "Account not found in proposal table");
 
+		eosio_assert((*proposal_itr).status == PROPOSAL_STATUS::PENDING, "Proposal::status is not PROPOSAL_STATUS::PENDING");
+
 		//creates the committee table if it doesn't exist already
 		committee_table committees(_self, _self);
 
@@ -176,10 +185,11 @@ namespace eosiowps {
 			proposal.category = (*committee_itr).category;
 			proposal.subcategory = subcategory;
 			proposal.title = title;
-			proposal.subtitle = subtitle;
+			proposal.summary = summary;
 			proposal.project_img_url = project_img_url;
-			proposal.project_overview = project_overview;
-			proposal.financial_roadmap = financial_roadmap;
+			proposal.description = description;
+			proposal.roadmap = roadmap;
+			proposal.duration = duration;
 			proposal.members = members;
 			proposal.funding_goal = funding_goal;
 		});

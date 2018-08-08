@@ -31,10 +31,11 @@ namespace eosiowps {
         string category;              // category
         uint16_t subcategory;         // subcategory
         string title;                 // title
-        string subtitle;              // subtitle
+        string summary;               // summary
         string project_img_url;       // project image or video url
-        string project_overview;      // overview
-        string financial_roadmap;     // financial
+        string description;           // overview
+        string roadmap;               // roadmap
+        uint64_t duration;              // duration
         vector<string> members;       // linkedin
         asset funding_goal;           // amount of EOS
         uint64_t total_votes;         // total votes
@@ -44,7 +45,7 @@ namespace eosiowps {
         uint8_t iteration_of_funding; // number of iteration
         uint64_t primary_key() const { return proposer; }
         uint64_t by_id() const { return static_cast<uint64_t>(id); }
-        EOSLIB_SERIALIZE( proposal, (proposer)(id)(committee)(category)(subcategory)(title)(subtitle)(project_img_url)(project_overview)(financial_roadmap)(members)(funding_goal)
+        EOSLIB_SERIALIZE( proposal, (proposer)(id)(committee)(category)(subcategory)(title)(summary)(project_img_url)(description)(roadmap)(duration)(members)(funding_goal)
             (total_votes)(status)(vote_start_time)(fund_start_time)(iteration_of_funding) )
     };
 
