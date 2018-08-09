@@ -5,7 +5,6 @@
 #include <eosiolib/singleton.hpp>
 #include <eosiolib/contract.hpp>
 #include <eosiolib/asset.hpp>
-#include <eosio.token/eosio.token.hpp>
 
 /* to generate abi, comment out*/
 #include "proposal.hpp"
@@ -39,10 +38,10 @@ namespace eosiowps {
     //@abi table
     struct wps_env {
         uint64_t proposal_current_index = 0;
-        uint32_t total_voting_percent = 5;                      // 5%
-        uint32_t duration_of_voting = 30 * seconds_per_day;     // voting duration (seconds)
-        uint32_t max_duration_of_funding = 180;   // funding duration (days)
-        uint32_t total_iteration_of_funding = 6;                //
+        uint32_t total_voting_percent = 5;           // 5%
+        uint32_t duration_of_voting = 30;            // voting duration (days)
+        uint32_t max_duration_of_funding = 180;      // funding duration (days)
+        uint32_t total_iteration_of_funding = 6;     //
         EOSLIB_SERIALIZE( wps_env, (proposal_current_index)(total_voting_percent)(duration_of_voting)(max_duration_of_funding)(total_iteration_of_funding) )
     };
 
@@ -143,7 +142,7 @@ namespace eosiowps {
 
             // committee
             // @abi action
-            void setwpsenv(uint32_t total_voting_percent, uint32_t duration_of_voting, uint32_t duration_of_funding, uint32_t total_iteration_of_funding);
+            void setwpsenv(uint32_t total_voting_percent, uint32_t duration_of_voting, uint32_t max_duration_of_funding, uint32_t total_iteration_of_funding);
 
             // @abi action
             void regcommittee(account_name committeeman, const string& category, bool is_oversight);

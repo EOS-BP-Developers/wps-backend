@@ -1,7 +1,7 @@
 // #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/proposer.hpp>
 #include <eosio.wps/proposal.hpp>
-#include <eosio.token/eosio.token.hpp>
+// #include <eosio.token/eosio.token.hpp>
 
 // extern struct permission_level;
 // extern void require_auth(const permission_level& level);
@@ -156,14 +156,14 @@ namespace eosiowps {
 
 		//check for proposal expiry
 		/*
-		if(current_time - proposal.fund_start_time > wps_env.duration_of_funding){
+		if(current_time - proposal.fund_start_time > wps_env.max_duration_of_funding){
 		finished_proposal_table finished_proposals(_self, _self);
 			finished_proposals.emplace(account, [&](auto& _proposal){
 				_proposal = (*itr_proposal);
 				_proposal.status = PROPOSAL_STATUS::COMPLETED;
 			});
 			idx_index.erase(itr_proposal);
-			eosio_assert(current_time - (*itr_proposal).fund_start_time < wps_env.duration_of_funding, "The funding period for this proposal has expired.");
+			eosio_assert(current_time - (*itr_proposal).fund_start_time < wps_env.max_duration_of_funding, "The funding period for this proposal has expired.");
 		}
 		*/
 		//check for iteration of claim funds

@@ -35,7 +35,7 @@ namespace eosiowps {
         string project_img_url;       // project image or video url
         string description;           // overview
         string roadmap;               // roadmap
-        uint64_t duration;              // duration
+        uint64_t duration;            // duration
         vector<string> members;       // linkedin
         asset funding_goal;           // amount of EOS
         uint64_t total_votes;         // total votes

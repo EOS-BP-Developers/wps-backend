@@ -53,8 +53,8 @@ public:
 
     auto wpsenv = mvo()
       ("total_voting_percent",  10)
-      ("duration_of_voting", 30 * seconds_per_day)
-      ("duration_of_funding", 180 * seconds_per_day)
+      ("duration_of_voting", 30)
+      ("max_duration_of_funding", 180)
       ("total_iteration_of_funding", 6)
       ("proposal_current_index", 0);
 

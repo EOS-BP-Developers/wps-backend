@@ -33,7 +33,7 @@ namespace eosiowps {
 		//subcategory is not required
 		//eosio_assert(subcategory > 0, "subcategory should be an integer greater than 0");
 		eosio_assert(title.size() > 0, "title should be more than 0 characters long");
-		eosio_assert(summary.size() > 400, "summary should be more than 0 characters long");
+		eosio_assert(summary.size() > 0, "summary should be more than 0 characters long");
 		eosio_assert(project_img_url.size() > 0, "URL should be more than 0 characters long");
 		eosio_assert(description.size() > 0, "description should be more than 0 characters long");
 		eosio_assert(roadmap.size() > 0, "roadmap should be more than 0 characters long");
@@ -43,19 +43,16 @@ namespace eosiowps {
 		//verify that the inputs aren't too long
 		eosio_assert(subcategory < 10, "invalid sub-category");
 		eosio_assert(title.size() < 256, "title should be shorter than 256 characters.");
-		eosio_assert(summary.size() < 256, "subtitle should be shorter than 256 characters.");
+		eosio_assert(summary.size() < 400, "subtitle should be shorter than 256 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
-		eosio_assert(description.size() < 5000, "project_overview should be shorter than 1024 characters.");
+		eosio_assert(description.size() < 5000, "description should be shorter than 1024 characters.");
 		eosio_assert(roadmap.size() < 2000, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(duration <= wps_env.max_duration_of_funding, "duration can be at most 180 days");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
-		eosio_assert( funding_goal.amount > 0, "must request positive amount" );
+		eosio_assert(funding_goal.is_valid(), "invalid quantity" );
+		eosio_assert(funding_goal.amount > 0, "must request positive amount" );
 
-		auto sym = funding_goal.symbol.name();
-		stats statstable( _self, sym );
-		const auto& st = statstable.get( sym );
-		eosio_assert( funding_goal.symbol == st.supply.symbol, "symbol precision mismatch" );
+		eosio_assert(funding_goal.symbol == asset().symbol, "symbol precision mismatch" );
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
@@ -141,21 +138,15 @@ namespace eosiowps {
 		eosio_assert(title.size() < 256, "title should be shorter than 256 characters.");
 		eosio_assert(summary.size() < 400, "subtitle should be shorter than 256 characters.");
 		eosio_assert(project_img_url.size() < 128, "URL should be shorter than 128 characters.");
-		eosio_assert(description.size() < 5000, "project_overview should be shorter than 1024 characters.");
+		eosio_assert(description.size() < 5000, "description should be shorter than 1024 characters.");
 		eosio_assert(roadmap.size() < 2000, "financial_roadmap should be shorter than 256 characters.");
 		eosio_assert(duration <= wps_env.max_duration_of_funding, "duration can be at most 180 days");
 		eosio_assert(members.size() < 50, "members should be shorter than 50 characters.");
-		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
-		eosio_assert( funding_goal.amount > 0, "must request positive amount" );
+		eosio_assert(funding_goal.is_valid(), "invalid quantity" );
+		eosio_assert(funding_goal.amount > 0, "must request positive amount" );
         // eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
-		eosio_assert( funding_goal.is_valid(), "invalid quantity" );
-		eosio_assert( funding_goal.amount > 0, "must request positive quantity" );
-
-		auto sym = funding_goal.symbol.name();
-		stats statstable( _self, sym );
-		const auto& st = statstable.get( sym );
-		eosio_assert( funding_goal.symbol == st.supply.symbol, "symbol precision mismatch" );
+		eosio_assert(funding_goal.symbol == asset().symbol, "symbol precision mismatch" );
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);

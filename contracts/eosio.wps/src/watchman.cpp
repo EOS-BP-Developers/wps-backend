@@ -55,8 +55,9 @@ namespace eosiowps {
 
 		auto current_time = now();
 		auto wps_env = m_wps_env_global.get();
+		auto duration_of_voting = wps_env.duration_of_voting * seconds_per_day;
 
-		if(current_time - (*itr_proposal).vote_start_time > wps_env.duration_of_voting){
+		if(current_time - (*itr_proposal).vote_start_time > duration_of_voting){
 			rejected_proposal_table rejected_proposals(_self, _self);
 			rejected_proposals.emplace(_self, [&](auto& _proposal){
 				_proposal = (*itr_proposal);

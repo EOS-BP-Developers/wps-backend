@@ -5,20 +5,20 @@
 namespace eosiowps {
 
     // @abi action
-    void wps_contract::setwpsenv(uint32_t total_voting_percent, uint32_t duration_of_voting, uint32_t duration_of_funding, uint32_t total_iteration_of_funding) {
+    void wps_contract::setwpsenv(uint32_t total_voting_percent, uint32_t duration_of_voting, uint32_t max_duration_of_funding, uint32_t total_iteration_of_funding) {
         //registration of committee requires contract account permissions
         require_auth(_self);
 
         eosio_assert(total_voting_percent >= 5, "total_voting_percent should be more than equal 5 long");
         eosio_assert(duration_of_voting > 0, "duration_of_voting should be more than 0");
-        eosio_assert(duration_of_funding > 0, "duration_of_funding should be more than 0");
+        eosio_assert(max_duration_of_funding > 0, "max_duration_of_funding should be more than 0");
         eosio_assert(total_iteration_of_funding > 0, "total_iteration_of_funding should be more than 0");
 
         auto wps_env = m_wps_env_global.get();
 
         wps_env.total_voting_percent = total_voting_percent;
         wps_env.duration_of_voting = duration_of_voting;
-        wps_env.duration_of_funding = duration_of_funding;
+        wps_env.max_duration_of_funding = max_duration_of_funding;
         wps_env.total_iteration_of_funding = total_iteration_of_funding;
 
         m_wps_env_global.set( wps_env, _self );
