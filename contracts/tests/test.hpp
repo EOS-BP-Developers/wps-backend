@@ -61,6 +61,16 @@ struct proposer_t {
 };
 FC_REFLECT( proposer_t, (account)(first_name)(last_name)(img_url)(bio)(country)(telegram)(website)(linkedin)(last_claim_time) )
 
+struct PROPOSAL_STATUS_T {
+  const static uint8_t PENDING = 1;
+  const static uint8_t REJECTED = 2;
+  const static uint8_t ON_VOTE = 3;
+  const static uint8_t CHECK_VOTE = 4;     // check count of votes
+  const static uint8_t CHECKED_VOTE = 5;   // checked count of votes by platform
+  const static uint8_t APPROVED = 6;       // approve
+  const static uint8_t COMPLETED = 7;
+};
+
 struct proposal_t {
   account_name proposer;        // proposer
   uint64_t id;

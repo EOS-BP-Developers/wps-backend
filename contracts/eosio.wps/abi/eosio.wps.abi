@@ -676,7 +676,7 @@
     }
   ],
   "tables": [{
-      "name": "proposal",
+      "name": "proposals",
       "index_type": "i64",
       "key_names": [
         "proposer"
@@ -686,7 +686,7 @@
       ],
       "type": "proposal"
     },{
-      "name": "proposer",
+      "name": "proposers",
       "index_type": "i64",
       "key_names": [
         "account"
@@ -696,7 +696,7 @@
       ],
       "type": "proposer"
     },{
-      "name": "reviewer",
+      "name": "reviewers",
       "index_type": "i64",
       "key_names": [
         "account"
@@ -706,7 +706,7 @@
       ],
       "type": "reviewer"
     },{
-      "name": "committee",
+      "name": "committees",
       "index_type": "i64",
       "key_names": [
         "committeeman"

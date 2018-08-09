@@ -223,8 +223,6 @@ BOOST_FIXTURE_TEST_CASE( manage_proposal, proposal_tester ) try {
   get_proposal(_p1_1, N(proposer1));
   get_proposal(_p2_1, N(proposer2));
 
-  return;
-
   // BOOST_TEST_MESSAGE( fc::json::to_pretty_string(_p1_1) );
   // BOOST_TEST_MESSAGE( fc::json::to_pretty_string(_p2_1) );
 
@@ -248,7 +246,6 @@ BOOST_FIXTURE_TEST_CASE( manage_proposal, proposal_tester ) try {
 
   // REQUIRE_MATCHING_OBJECT(_p1_2, proposal1_2);
   // REQUIRE_MATCHING_OBJECT(_p2_2, proposal2_2);
-
   base_tester::push_action( N(eosio.wps), N(rmvproposal), N(proposer2), mvo()("proposer", "proposer2"));
   produce_block();
 
