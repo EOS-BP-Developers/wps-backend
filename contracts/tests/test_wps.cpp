@@ -18,7 +18,7 @@ public:
   wps_tester() {
     create_accounts( {N(eosio.token), N(eosio.wps), N(eosio.saving), N(committee1), N(committee2), N(watchman1), N(reviewer1), N(reviewer2),  N(proposer1), N(proposer2)});
 
-    create_accounts( {N(voteuser1), N(voteuser2), N(voteuser3), N(voteuser4), N(voteuser5)});
+    create_accounts( {N(voter1), N(voter2), N(voter3), N(voter4), N(voter5)});
 
     produce_block();
 
@@ -51,6 +51,13 @@ public:
     abi_def abi;
     BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(accnt.abi, abi), true);
     abi_ser.set_abi(abi, fc::seconds(1));
+
+
+
+    create_currency(N(eosio.token), N(eosio), core_from_string("10000000000.0000"));
+    produce_blocks();
+    issue(N(eosio), core_from_string("100000000.0000"));
+    transfer(N(eosio), N(eosio.wps), "100000.0000 EOS");
 
     init_committee();
     init_reviewer();
@@ -185,8 +192,71 @@ public:
     base_tester::push_action( N(eosio.wps), N(regproposal), N(proposer2), proposal2);
   }
 
+  void create_currency( name contract, name manager, asset maxsupply ) {
+    auto act =  mutable_variant_object()
+      ("issuer",       manager )
+      ("maximum_supply", maxsupply );
+
+    base_tester::push_action(contract, N(create), contract, act );
+  }
+
+  void issue( name to, const asset& amount, name manager = config::system_account_name ) {
+    base_tester::push_action( N(eosio.token), N(issue), manager, mutable_variant_object()
+                              ("to",      to )
+                              ("quantity", amount )
+                              ("memo", "")
+                              );
+  }
+
+   void transfer( name from, name to, const string& amount, name manager = config::system_account_name ) {
+      base_tester::push_action( N(eosio.token), N(transfer), manager, mutable_variant_object()
+                                ("from",    from)
+                                ("to",      to )
+                                ("quantity", asset::from_string(amount) )
+                                ("memo", "")
+                                );
+   }
+
+   asset get_balance( const account_name& act ) {
+      //return get_currency_balance( config::system_account_name, symbol(CORE_SYMBOL), act );
+      //temporary code. current get_currency_balancy uses table name N(accounts) from currency.h
+      //generic_currency table name is N(account).
+      const auto& db  = control->db();
+      const auto* tbl = db.find<table_id_object, by_code_scope_table>(boost::make_tuple(N(eosio.token), act, N(accounts)));
+      share_type result = 0;
+
+      // the balance is implied to be 0 if either the table or row does not exist
+      if (tbl) {
+         const auto *obj = db.find<key_value_object, by_scope_primary>(boost::make_tuple(tbl->id, symbol(CORE_SYMBOL).to_symbol_code()));
+         if (obj) {
+            // balance is the first field in the serialization
+            fc::datastream<const char *> ds(obj->value.data(), obj->value.size());
+            fc::raw::unpack(ds, result);
+         }
+      }
+      return asset( result, symbol(CORE_SYMBOL) );
+  }
+
   bool get_proposal(proposal_t& proposal, account_name name) {
     return get_table_entry(proposal, N(eosio.wps), N(eosio.wps), N(proposals), name);
+  }
+
+  bool get_voting_info(voting_info_t& voting_info, uint64_t proposal_id) {
+    return get_table_entry(voting_info, N(eosio.wps), N(eosio.wps), N(votings), proposal_id);
+  }
+
+  fc::variant get_account( account_name account, const string& symbolname)
+  {
+    abi_serializer abi_ser;
+    const auto& acc = control->db().get<account_object,by_name>( N(eosio.token) );
+    abi_def abi;
+    BOOST_REQUIRE_EQUAL(abi_serializer::to_abi(acc.abi, abi), true);
+    abi_ser.set_abi(abi, fc::seconds(1));
+
+    auto symb = eosio::chain::symbol::from_string(symbolname);
+    auto symbol_code = symb.to_symbol_code().value;
+    vector<char> data = get_row_by_account( N(eosio.token), account, N(accounts), symbol_code );
+    return data.empty() ? fc::variant() : abi_ser.binary_to_variant( "account", data, fc::microseconds(30) );
   }
 
   abi_serializer abi_ser;
@@ -209,6 +279,27 @@ BOOST_FIXTURE_TEST_CASE( manage_wps, wps_tester ) try {
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::ON_VOTE);
 
+  produce_blocks(10);
+  base_tester::push_action(N(eosio.wps), N(vote), N(voter1), mvo()("voter", "voter1")("proposal_id", 1)("is_agree", true));
+  produce_blocks(10);
+  base_tester::push_action(N(eosio.wps), N(unvote), N(voter1), mvo()("voter", "voter1")("proposal_id", 1));
+  produce_blocks(10);
+
+  base_tester::push_action(N(eosio.wps), N(vote), N(voter1), mvo()("voter", "voter1")("proposal_id", 1)("is_agree", true));
+  produce_blocks(10);
+  base_tester::push_action(N(eosio.wps), N(vote), N(voter2), mvo()("voter", "voter2")("proposal_id", 1)("is_agree", true));
+  produce_blocks(10);
+  base_tester::push_action(N(eosio.wps), N(vote), N(voter3), mvo()("voter", "voter3")("proposal_id", 1)("is_agree", false));
+  produce_blocks(10);
+  base_tester::push_action(N(eosio.wps), N(vote), N(voter4), mvo()("voter", "voter4")("proposal_id", 1)("is_agree", true));
+  produce_blocks(10);
+  base_tester::push_action(N(eosio.wps), N(vote), N(voter5), mvo()("voter", "voter5")("proposal_id", 1)("is_agree", true));
+  produce_blocks(10);
+
+  voting_info_t vt;
+  get_voting_info(vt, 1);
+  BOOST_TEST_MESSAGE(fc::json::to_pretty_string(vt));
+
   base_tester::push_action(N(eosio.wps), N(checkvote), N(reviewer1), acceptprop_param);
   produce_block();
   get_proposal(prop, N(proposer1));
@@ -223,9 +314,19 @@ BOOST_FIXTURE_TEST_CASE( manage_wps, wps_tester ) try {
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::CHECKED_VOTE);
 
   base_tester::push_action(N(eosio.wps), N(approve), N(reviewer1), acceptprop_param);
-  produce_block();
+  produce_blocks(10);
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::APPROVED);
+
+  base_tester::push_action(N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
+  produce_block();
+  get_proposal(prop, N(proposer1));
+  BOOST_TEST_MESSAGE(fc::json::to_pretty_string(prop));
+
+  auto acc = get_account(N(proposer1), "4,EOS");
+  BOOST_TEST_MESSAGE(fc::json::to_pretty_string(acc));
+
+  // base_tester::push_action(N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
 
 } FC_LOG_AND_RETHROW()
 

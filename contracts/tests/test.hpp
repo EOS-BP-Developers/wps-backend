@@ -94,3 +94,12 @@ struct proposal_t {
   uint64_t by_id() const { return static_cast<uint64_t>(id); }
 };
 FC_REFLECT( proposal_t, (proposer)(id)(committee)(category)(subcategory)(title)(summary)(project_img_url)(description)(roadmap)(duration)(members)(funding_goal)(total_votes)(status)(vote_start_time)(fund_start_time)(iteration_of_funding) )
+
+
+struct voting_info_t {
+  uint64_t proposal_id;
+  vector<account_name> agrees;
+  vector<account_name> disagrees;
+  uint64_t primary_key() const { return proposal_id; }
+};
+FC_REFLECT( voting_info_t, (proposal_id)(agrees)(disagrees) )

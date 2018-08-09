@@ -1,9 +1,7 @@
-// #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/reviewer.hpp>
 #include <eosio.wps/proposal.hpp>
 #include <algorithm>
-// extern struct permission_level;
-// extern void require_auth(const permission_level& level);
+#include <eosiolib/print.hpp>
 
 namespace eosiowps {
 	// @abi action
@@ -19,6 +17,7 @@ namespace eosiowps {
 		auto current_time = now();
 		auto wps_env = m_wps_env_global.get();
 		auto duration_of_voting = wps_env.duration_of_voting * seconds_per_day;
+
 		eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting, "The funding period for this proposal has expired.");
 
 		voting_table voting(_self, _self);

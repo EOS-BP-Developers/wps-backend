@@ -211,7 +211,7 @@ BOOST_FIXTURE_TEST_CASE( manage_proposal, proposal_tester ) try {
     ("fund_start_time", 0)
     ("iteration_of_funding", 0);
 
-  BOOST_TEST_MESSAGE( fc::json::to_pretty_string(proposal1_1) );
+  // BOOST_TEST_MESSAGE( fc::json::to_pretty_string(proposal1_1) );
 
   base_tester::push_action( N(eosio.wps), N(regproposal), N(proposer1), proposal1_1);
   base_tester::push_action( N(eosio.wps), N(regproposal), N(proposer2), proposal2_1);

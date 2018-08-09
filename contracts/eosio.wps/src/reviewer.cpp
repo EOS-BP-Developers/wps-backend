@@ -1,10 +1,6 @@
-// #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/reviewer.hpp>
 #include <eosio.wps/proposal.hpp>
 #include <eosio.wps/committee.hpp>
-
-// extern struct permission_level;
-// extern void require_auth(const permission_level& level);
 
 namespace eosiowps {
 	// @abi action
@@ -125,6 +121,7 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).committee==(*itr).committee, "Reviewer is not part of this proposal's responsible committee");
 
 		idx_index.modify(itr_proposal, 0, [&](auto& proposal){
+			proposal.vote_start_time = now();
 			proposal.status = PROPOSAL_STATUS::ON_VOTE;
 		});
 	}

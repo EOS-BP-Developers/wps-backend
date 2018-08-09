@@ -1,10 +1,5 @@
-// #include <eosio.wps/eosio.wps.hpp>
 #include <eosio.wps/proposer.hpp>
 #include <eosio.wps/proposal.hpp>
-// #include <eosio.token/eosio.token.hpp>
-
-// extern struct permission_level;
-// extern void require_auth(const permission_level& level);
 
 namespace eosiowps {
 
@@ -154,35 +149,17 @@ namespace eosiowps {
 		eosio_assert(proposal.status == PROPOSAL_STATUS::APPROVED, "Proposal::status is not PROPOSAL_STATUS::APPROVED");
 		eosio_assert(proposal.iteration_of_funding < wps_env.total_iteration_of_funding, "all funds for this proposal have already been claimed");
 
-		//check for proposal expiry
-		/*
-		if(current_time - proposal.fund_start_time > wps_env.max_duration_of_funding){
-		finished_proposal_table finished_proposals(_self, _self);
-			finished_proposals.emplace(account, [&](auto& _proposal){
-				_proposal = (*itr_proposal);
-				_proposal.status = PROPOSAL_STATUS::COMPLETED;
-			});
-			idx_index.erase(itr_proposal);
-			eosio_assert(current_time - (*itr_proposal).fund_start_time < wps_env.max_duration_of_funding, "The funding period for this proposal has expired.");
-		}
-		*/
-		//check for iteration of claim funds
-
-		uint64_t funding_duration_seconds = (*itr_proposal).duration*seconds_per_day;
-		uint32_t seconds_per_claim_interval = funding_duration_seconds / wps_env.total_iteration_of_funding;
-		uint64_t start_funding_round =  proposal.fund_start_time + proposal.iteration_of_funding * seconds_per_claim_interval;
+		uint64_t funding_duration_seconds = proposal.duration * seconds_per_day;
+		uint64_t seconds_per_claim_interval = funding_duration_seconds / wps_env.total_iteration_of_funding;
+		uint64_t start_funding_round = proposal.fund_start_time + proposal.iteration_of_funding * seconds_per_claim_interval;
 
 		eosio_assert( current_time > start_funding_round, "It has not been 30 days since last claim");
 
-		int64_t amount = proposal.funding_goal.amount / wps_env.total_iteration_of_funding;
-		asset transfer_amount{
-			amount,
-			proposal.funding_goal.symbol,
-		};
+		asset transfer_amount = proposal.funding_goal / wps_env.total_iteration_of_funding;
 
 		//inline action transfer, send funds to proposer
 		eosio::action(
-				eosio::permission_level{ _self, N(active) },
+				eosio::permission_level{_self , N(active) },
 				N(eosio.token), N(transfer),
 				std::make_tuple( _self, account, transfer_amount, std::string("Your worker proposal has been approved."))
 		).send();
