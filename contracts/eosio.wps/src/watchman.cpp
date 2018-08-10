@@ -45,7 +45,7 @@ namespace eosiowps {
 	}//action permission should be linked to a separate key
 
 	void wps_contract::checkexpire(account_name watchman, uint64_t proposal_id) {
-		require_auth(watchman);
+		//require_auth(watchman);
 
 		proposal_table proposals(_self, _self);
 		auto idx_index = proposals.get_index<N(idx)>();
