@@ -716,7 +716,7 @@
       ],
       "type": "committee"
     },{
-      "name": "votinginfo",
+      "name": "votings",
       "index_type": "i64",
       "key_names": [
         "proposal_id"
@@ -726,7 +726,7 @@
       ],
       "type": "voting_info"
     },{
-      "name": "wpsenv",
+      "name": "wpsglobal",
       "index_type": "i64",
       "key_names": [
         "proposal_current_index"
