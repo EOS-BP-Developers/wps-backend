@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(eosio_wps_contracts VERSION 1.1.0)
+project(eosio_wps_contracts VERSION 1.1.1)
 
 include( GNUInstallDirs )
 
