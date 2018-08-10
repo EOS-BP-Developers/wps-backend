@@ -1,18 +1,5 @@
 #include "test.hpp"
 
-/*
-struct PROPOSAL_STATUS_T {
-    const static uint8_t PENDING = 1;
-    const static uint8_t REJECTED = 2;
-    const static uint8_t ON_VOTE = 3;
-    const static uint8_t CHECK_VOTE = 4;     // check count of votes
-    const static uint8_t CHECKED_VOTE = 5;   // checked count of votes by platform
-    const static uint8_t APPROVED = 6;       // approve
-    const static uint8_t COMPLETED = 7;
-};
-*/
-
-
 class wps_tester : public tester {
 public:
   wps_tester() {
@@ -159,7 +146,7 @@ public:
       ("project_img_url", "http://www.google.com")
       ("description", "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
       ("roadmap", "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-      ("duration", 30)
+      ("duration", 180)
       ("members", members)
       ("funding_goal", core_from_string("10.0000"))
       ("total_votes", 0)
@@ -179,7 +166,7 @@ public:
       ("project_img_url", "http://www.google.com")
       ("description", "game yyyyyyyyyy")
       ("roadmap", "game yyyyyyyyyy")
-      ("duration", 30)
+      ("duration", 180)
       ("members", members)
       ("funding_goal", core_from_string("10.0000"))
       ("total_votes", 0)
@@ -241,6 +228,14 @@ public:
     return get_table_entry(proposal, N(eosio.wps), N(eosio.wps), N(proposals), name);
   }
 
+  bool get_rejected_proposal(proposal_t& proposal, account_name name) {
+    return get_table_entry(proposal, N(eosio.wps), N(eosio.wps), N(rejectedpros), name);
+  }
+
+  bool get_finished_proposal(proposal_t& proposal, account_name name) {
+    return get_table_entry(proposal, N(eosio.wps), N(eosio.wps), N(finishedpros), name);
+  }
+
   bool get_voting_info(voting_info_t& voting_info, uint64_t proposal_id) {
     return get_table_entry(voting_info, N(eosio.wps), N(eosio.wps), N(votings), proposal_id);
   }
@@ -259,75 +254,145 @@ public:
     return data.empty() ? fc::variant() : abi_ser.binary_to_variant( "account", data, fc::microseconds(30) );
   }
 
+  action_result push_action( const account_name& signer, const action_name &name, const variant_object &data ) {
+    string action_type_name = abi_ser.get_action_type(name);
+    action act;
+    act.account = N(eosio.wps);
+    act.name    = name;
+    act.data    = abi_ser.variant_to_binary( action_type_name, data, abi_serializer_max_time );
+    return base_tester::push_action( std::move(act), uint64_t(signer));
+  }
+
   abi_serializer abi_ser;
 };
 
 BOOST_AUTO_TEST_SUITE(wps_tests)
 
-BOOST_FIXTURE_TEST_CASE( manage_wps, wps_tester ) try {
-
-  auto acceptprop_param = mvo()
-    ("reviewer", "reviewer1")
-    ("proposal_id", 1);
-
+BOOST_FIXTURE_TEST_CASE( full_wps, wps_tester ) try {
   proposal_t prop;
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::PENDING);
 
-  base_tester::push_action(N(eosio.wps), N(acceptprop), N(reviewer1), acceptprop_param);
-  produce_block();
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(reviewer1), N(acceptprop), mvo()("reviewer", "reviewer1")("proposal_id", 1)));
+  produce_blocks(10);
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::ON_VOTE);
 
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter1), N(vote), mvo()("voter", "voter1")("proposal_id", 1)("is_agree", true)));
   produce_blocks(10);
-  base_tester::push_action(N(eosio.wps), N(vote), N(voter1), mvo()("voter", "voter1")("proposal_id", 1)("is_agree", true));
+  BOOST_REQUIRE_EQUAL( wasm_assert_msg("duplicate agree vote"), push_action(N(voter1), N(vote), mvo()("voter", "voter1")("proposal_id", 1)("is_agree", true)));
   produce_blocks(10);
-  base_tester::push_action(N(eosio.wps), N(unvote), N(voter1), mvo()("voter", "voter1")("proposal_id", 1));
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter1), N(unvote), mvo()("voter", "voter1")("proposal_id", 1)));
   produce_blocks(10);
 
-  base_tester::push_action(N(eosio.wps), N(vote), N(voter1), mvo()("voter", "voter1")("proposal_id", 1)("is_agree", true));
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter1), N(vote), mvo()("voter", "voter1")("proposal_id", 1)("is_agree", true)));
   produce_blocks(10);
-  base_tester::push_action(N(eosio.wps), N(vote), N(voter2), mvo()("voter", "voter2")("proposal_id", 1)("is_agree", true));
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter2), N(vote), mvo()("voter", "voter2")("proposal_id", 1)("is_agree", true)));
   produce_blocks(10);
-  base_tester::push_action(N(eosio.wps), N(vote), N(voter3), mvo()("voter", "voter3")("proposal_id", 1)("is_agree", false));
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter3), N(vote), mvo()("voter", "voter3")("proposal_id", 1)("is_agree", false)));
   produce_blocks(10);
-  base_tester::push_action(N(eosio.wps), N(vote), N(voter4), mvo()("voter", "voter4")("proposal_id", 1)("is_agree", true));
+  BOOST_REQUIRE_EQUAL( wasm_assert_msg("duplicate disagree vote"), push_action(N(voter3), N(vote), mvo()("voter", "voter3")("proposal_id", 1)("is_agree", false)));
   produce_blocks(10);
-  base_tester::push_action(N(eosio.wps), N(vote), N(voter5), mvo()("voter", "voter5")("proposal_id", 1)("is_agree", true));
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter4), N(vote), mvo()("voter", "voter4")("proposal_id", 1)("is_agree", true)));
+  produce_blocks(10);
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter5), N(vote), mvo()("voter", "voter5")("proposal_id", 1)("is_agree", true)));
   produce_blocks(10);
 
   voting_info_t vt;
   get_voting_info(vt, 1);
   BOOST_TEST_MESSAGE(fc::json::to_pretty_string(vt));
 
-  base_tester::push_action(N(eosio.wps), N(checkvote), N(reviewer1), acceptprop_param);
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(reviewer1), N(checkvote), mvo()("reviewer", "reviewer1")("proposal_id", 1)));
   produce_block();
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::CHECK_VOTE);
 
-  auto commitvote_param = mvo()
-    ("watchman", "watchman1")
-    ("proposal_id", 1);
-  base_tester::push_action(N(eosio.wps), N(commitvote), N(watchman1), commitvote_param);
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(watchman1), N(commitvote), mvo()("watchman", "watchman1")("proposal_id", 1)));
   produce_block();
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::CHECKED_VOTE);
 
-  base_tester::push_action(N(eosio.wps), N(approve), N(reviewer1), acceptprop_param);
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(reviewer1), N(approve), mvo()("reviewer", "reviewer1")("proposal_id", 1)));
   produce_blocks(10);
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::APPROVED);
 
-  base_tester::push_action(N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
-  produce_block();
+  // 1 success
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
   get_proposal(prop, N(proposer1));
   BOOST_TEST_MESSAGE(fc::json::to_pretty_string(prop));
+
+  // auto acc = get_account(N(proposer1), "4,EOS");
+  // BOOST_TEST_MESSAGE(fc::json::to_pretty_string(acc));
+  // 2 success
+  produce_block( fc::hours(30 * 24) );
+  produce_blocks(10);
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
+  produce_blocks(1);
+
+  // 3 fail
+  BOOST_REQUIRE_EQUAL( wasm_assert_msg("It has not been 30 days since last claim"), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
+  produce_blocks(1);
+
+  // auto trx = base_tester::push_action( N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
+  // BOOST_TEST_MESSAGE(fc::json::to_pretty_string(trx));
+  // produce_blocks(10);
+  /// auto trx2 = base_tester::push_action( N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
+  // BOOST_TEST_MESSAGE(fc::json::to_pretty_string(trx2));
+
+  // 3 success
+  produce_block( fc::hours(30 * 24) );
+  produce_blocks(1);
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
+  produce_blocks(1);
+  // base_tester::push_action( N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
+
+  // 4 success
+  produce_block( fc::hours(30 * 24) );
+  produce_blocks(1);
+  // BOOST_REQUIRE_EQUAL( success(), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
+  auto trx = base_tester::push_action( N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
+  BOOST_TEST_MESSAGE(fc::json::to_pretty_string(trx));
+  produce_blocks(1);
+
+  // 5 success
+  produce_block( fc::hours(30 * 24) );
+  produce_blocks(1);
+  //BOOST_REQUIRE_EQUAL( success(), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
+  trx = base_tester::push_action( N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
+  BOOST_TEST_MESSAGE(fc::json::to_pretty_string(trx));
+  produce_blocks(1);
+
+  // 6 success
+  produce_block( fc::hours(30 * 24) );
+  produce_blocks(1);
+  // BOOST_REQUIRE_EQUAL( success(), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
+  trx = base_tester::push_action( N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
+  BOOST_TEST_MESSAGE(fc::json::to_pretty_string(trx));
+  produce_blocks(1);
+
+  // 7 fail
+  produce_block( fc::hours(30 * 24) );
+  produce_blocks(1);
+  BOOST_REQUIRE_EQUAL( wasm_assert_msg("Proposal not found in proposal table"), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
+
+  // 8 fail
+  produce_block( fc::hours(30 * 24) );
+  produce_blocks(1);
+  BOOST_REQUIRE_EQUAL( wasm_assert_msg("Proposal not found in proposal table"), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
 
   auto acc = get_account(N(proposer1), "4,EOS");
   BOOST_TEST_MESSAGE(fc::json::to_pretty_string(acc));
 
-  // base_tester::push_action(N(eosio.wps), N(claimfunds), N(proposer1), mvo()("account", "proposer1")("proposal_id", 1));
+  proposal_t prop_t;
+  get_finished_proposal(prop_t, N(proposer1));
+  BOOST_TEST_MESSAGE(fc::json::to_pretty_string(prop_t));
 
+/*
+  proposal_t prop_t2;
+  get_proposal(prop_t2, N(proposer1));
+  BOOST_TEST_MESSAGE(fc::json::to_pretty_string(prop_t2));
+*/
 } FC_LOG_AND_RETHROW()
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -86,5 +86,4 @@ namespace eosiowps {
 			});
 		}
 	}
-
 } // eosiowps

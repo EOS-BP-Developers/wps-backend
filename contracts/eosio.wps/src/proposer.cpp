@@ -153,7 +153,8 @@ namespace eosiowps {
 		uint64_t seconds_per_claim_interval = funding_duration_seconds / wps_env.total_iteration_of_funding;
 		uint64_t start_funding_round = proposal.fund_start_time + proposal.iteration_of_funding * seconds_per_claim_interval;
 
-		eosio_assert( current_time > start_funding_round, "It has not been 30 days since last claim");
+		// eosio::print(current_time, " ",start_funding_round, " ", proposal.fund_start_time, " ", (uint32_t)proposal.iteration_of_funding, " ", seconds_per_claim_interval, " ", proposal.iteration_of_funding * seconds_per_claim_interval);
+		eosio_assert(current_time > start_funding_round, "It has not been 30 days since last claim");
 
 		asset transfer_amount = proposal.funding_goal / wps_env.total_iteration_of_funding;
 
@@ -169,13 +170,14 @@ namespace eosiowps {
 		});
 
 		idx_index.modify(itr_proposal, 0, [&](auto& _proposal){
-			_proposal.iteration_of_funding = proposal.iteration_of_funding + 1;
+			_proposal.iteration_of_funding += 1;
 		});
 
-		if(proposal.iteration_of_funding + 1 >= wps_env.total_iteration_of_funding){
+		eosio::print((uint32_t)proposal.iteration_of_funding, " ", (uint32_t)wps_env.total_iteration_of_funding);
+		if(proposal.iteration_of_funding >= wps_env.total_iteration_of_funding){
 			finished_proposal_table finished_proposals(_self, _self);
 			finished_proposals.emplace(account, [&](auto& _proposal){
-				_proposal = (*itr_proposal);
+				_proposal = proposal;
 				_proposal.status = PROPOSAL_STATUS::COMPLETED;
 			});
 			idx_index.erase(itr_proposal);
