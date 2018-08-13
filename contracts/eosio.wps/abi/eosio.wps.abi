@@ -686,6 +686,26 @@
       ],
       "type": "proposal"
     },{
+            "name": "rejectedpros",
+            "index_type": "i64",
+            "key_names": [
+              "proposer"
+            ],
+            "key_types": [
+              "name"
+            ],
+            "type": "proposal"
+          },{
+            "name": "finishedpros",
+            "index_type": "i64",
+            "key_names": [
+              "proposer"
+            ],
+            "key_types": [
+              "name"
+            ],
+            "type": "proposal"
+    },{
       "name": "proposers",
       "index_type": "i64",
       "key_names": [
