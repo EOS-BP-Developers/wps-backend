@@ -27,6 +27,8 @@ Required authority: `_self`
 
 Parameters: `uint32_t total_voting_percent, uint32_t duration_of_voting, uint32_t max_duration_of_funding, uint32_t total_iteration_of_funding`
 
+Description: Sets up the global WPS parameters, which includes vote participation required, duration of voting for a proposal, maximum duration of a project, and the number of times the funding is divided and claimed (for security reasons). The default values proposed when the WPS is ratified will be 5, 30, 180, and 6, respectively.
+
 #### regproposer
 
 Required authority: Account owner
@@ -34,6 +36,8 @@ Required authority: Account owner
 Parameters: `account_name account, const string& first_name, const string& last_name,
                             const string& img_url, const string& bio, const string& country, const string& telegram,
                             const string& website, const string& linkedin`
+
+Description: Register an account as a proposer. All fields required. RAM is billed to the registrant's account. Account is added to the proposers table.
 
 #### editproposer
 
@@ -43,11 +47,15 @@ Parameters: `account_name account, const string& first_name, const string& last_
                             const string& img_url, const string& bio, const string& country, const string& telegram,
                             const string& website, const string& linkedin`
 
+Description: Edit proposer info. All fields required.
+
 #### rmvproposer
 
 Required authority: Account owner
 
 Parameters: `account_name account`
+
+Description: Remove account from the proposers table.
 
 #### regproposal
 
@@ -65,6 +73,8 @@ Parameters: `account_name proposer,
                     const vector<string>& members,
                     const asset& funding_goal`
 
+Description: Register a proposal. Account must be on the proposers table. All fields required. RAM is billed to the proposer's account. Proposal is added to the proposals table. One proposer can register only one proposal at a time.
+
 #### editproposal
 
 Required authority: Proposer
@@ -81,11 +91,15 @@ Parameters: `account_name proposer,
                     const vector<string>& members,
                     const asset& funding_goal`
 
+Description: Edit proposal info. All fields required.
+
 #### rmvproposal
 
 Required authority: Proposer
 
 Parameters: `account_name proposer`
+
+Description: Delete proposal from the proposals table.
 
 #### regcommittee
 
@@ -93,11 +107,15 @@ Required authority: `_self`
 
 Parameters: `account_name committeeman, const string& category, bool is_oversight`
 
+Description: Register a committee responsible for a certain category. The account is added to the committees table. RAM is billed to the contract's account. All fields are required. Oversight power is given to the oversight committee. Committees can only be registered using `eosio.wps` permissions.
+
 #### edcommittee
 
 Required authority: `_self`
 
 Parameters: `account_name committeeman, const string& category, bool is_oversight`
+
+Description: Edit committee information. All fields required.
 
 #### rmvcommittee
 
@@ -105,11 +123,15 @@ Required authority: `_self`
 
 Parameters: `account_name committeeman`
 
+Description: Remove committee from the committees table.
+
 #### regreviewer
 
 Required authority: Committee
 
 Parameters: `account_name committee, account_name reviewer, const string& first_name, const string& last_name`
+
+Description: Register account as a reviewer. All fields required. RAM billed to committee account. Reviewer is added to reviewers table, with the committee that the account is associated with.
 
 #### editreviewer
 
@@ -117,11 +139,15 @@ Required authority: Committee
 
 Parameters: `account_name committee, account_name reviewer, const string& first_name, const string& last_name`
 
+Description: Edit reviewer information. All fields required.
+
 #### rmvreviewer
 
 Required authority: Committee
 
 Parameters: `account_name committee, const account_name reviewer`
+
+Description: Remove reviewer from the reviewers table.
 
 #### acceptprop
 
