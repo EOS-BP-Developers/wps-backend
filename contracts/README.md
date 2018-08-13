@@ -25,29 +25,67 @@ Note: When the required authority is `_self`, it means that the authority of the
 
 Required authority: `_self`
 
+Parameters: `uint32_t total_voting_percent, uint32_t duration_of_voting, uint32_t max_duration_of_funding, uint32_t total_iteration_of_funding`
+
 #### regproposer
 
 Required authority: Account owner
+
+Parameters: `account_name account, const string& first_name, const string& last_name,
+                            const string& img_url, const string& bio, const string& country, const string& telegram,
+                            const string& website, const string& linkedin`
 
 #### editproposer
 
 Required authority: Account owner
 
+Parameters: `account_name account, const string& first_name, const string& last_name,
+                            const string& img_url, const string& bio, const string& country, const string& telegram,
+                            const string& website, const string& linkedin`
+
 #### rmvproposer
 
 Required authority: Account owner
+
+Parameters: `account_name account`
 
 #### regproposal
 
 Required authority: Proposer
 
+Parameters: `account_name proposer,
+                    account_name committee,
+                    uint16_t subcategory,
+                    const string& title,
+                    const string& summary,
+                    const string& project_img_url,
+                    const string& description,
+                    const string& roadmap,
+                    uint64_t duration,
+                    const vector<string>& members,
+                    const asset& funding_goal`
+
 #### editproposal
 
 Required authority: Proposer
 
+Parameters: `account_name proposer,
+                    account_name committee,
+                    uint16_t subcategory,
+                    const string& title,
+                    const string& summary,
+                    const string& project_img_url,
+                    const string& description,
+                    const string& roadmap,
+                    uint64_t duration,
+                    const vector<string>& members,
+                    const asset& funding_goal`
+
 #### rmvproposal
 
 Required authority: Proposer
+
+Parameters: 
 
 #### regcommittee
 
