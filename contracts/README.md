@@ -16,3 +16,111 @@ After build:
 * The unit tests executable is placed in the _build/tests_ and is named __unit_test__.
 * The contracts are built into a _bin/\<contract name\>_ folder in their respective directories.
 * Finally, simply use __cleos__ to _set contract_ by pointing to the previously mentioned directory.
+
+## Actions
+
+Note: When the required authority is `_self`, it means that the authority of the contract account is required. When deployed onto the `eosio.wps` account on mainnet, this authority will be given to `eosio`, which is owned by `eosio.prods`. We also expect that most committees will be "owned" by its reviewers, where the committee has an `msig` permission set up and controlled by its members.
+
+#### setwpsenv
+
+Required authority: `_self`
+
+#### regproposer
+
+Required authority: Account owner
+
+#### editproposer
+
+Required authority: Account owner
+
+#### rmvproposer
+
+Required authority: Account owner
+
+#### regproposal
+
+Required authority: Proposer
+
+#### editproposal
+
+Required authority: Proposer
+
+#### rmvproposal
+
+Required authority: Proposer
+
+#### regcommittee
+
+Required authority: `_self`
+
+#### editcommittee
+
+Required authority: `_self`
+
+#### rmvcommittee
+
+Required authority: `_self`
+
+#### regreviewer
+
+Required authority: Committee
+
+#### editreviewer
+
+Required authority: Committee
+
+#### rmvreviewer
+
+Required authority: Committee
+
+#### acceptprop
+
+Required authority: Reviewer
+
+#### rejectprop
+
+Required authority: Reviewer
+
+#### checkvote
+
+Required authority: Reviewer
+
+#### approve
+
+Required authority: Reviewer
+
+#### claimfunds
+
+Required authority: Proposer
+
+#### rmvreject
+
+Required authority: Reviewer
+
+#### rmvcompleted
+
+Required authority: Reviewer
+
+#### vote
+
+Required authority: Account owner
+
+#### unvote
+
+Required authority: Account owner
+
+#### rejectfund
+
+Required authority: Committee (oversight)
+
+#### commitvote
+
+Required authority: Committee (oversight)
+
+#### rollbackvote
+
+Required authority: Committee (oversight)
+
+#### checkexpire
+
+Required authority: None
