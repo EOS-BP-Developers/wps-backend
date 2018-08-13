@@ -2,7 +2,6 @@
 #include <eosio.wps/proposal.hpp>
 
 namespace eosiowps {
-
 	// @abi action
 	void wps_contract::regproposer(
 		account_name account,
@@ -173,7 +172,7 @@ namespace eosiowps {
 			_proposal.iteration_of_funding += 1;
 		});
 
-		eosio::print((uint32_t)proposal.iteration_of_funding, " ", (uint32_t)wps_env.total_iteration_of_funding);
+		// eosio::print((uint32_t)proposal.iteration_of_funding, " ", (uint32_t)wps_env.total_iteration_of_funding);
 		if(proposal.iteration_of_funding >= wps_env.total_iteration_of_funding){
 			finished_proposal_table finished_proposals(_self, _self);
 			finished_proposals.emplace(account, [&](auto& _proposal){

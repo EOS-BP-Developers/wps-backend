@@ -52,7 +52,7 @@ namespace eosiowps {
     }
 
     // @abi action
-    void wps_contract::editcommittee(account_name committeeman, const string& category, bool is_oversight) {
+    void wps_contract::edcommittee(account_name committeeman, const string& category, bool is_oversight) {
         //editing committee info requires contract account permissions
         require_auth(_self);
 
@@ -92,7 +92,7 @@ namespace eosiowps {
     }
 
     // @abi action
-	void wps_contract::rejectfunding(account_name committeeman, uint64_t proposal_id, const string& reason){
+	void wps_contract::rejectfund(account_name committeeman, uint64_t proposal_id, const string& reason){
 		require_auth(committeeman);
 
 		eosio_assert(reason.size() > 0, "must provide a brief reason");

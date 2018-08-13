@@ -22,11 +22,11 @@ EOSIO_ABI( eosiowps::wps_contract,
 	// proposal.cpp
 	(regproposal)(editproposal)(rmvproposal)
 	// reviewer.cpp
-	(regreviewer)(editreviewer)(rmvreviewer)(acceptprop)(rejectprop)(checkvote)(approve)(rejectfunding)(rmvreject)(rmvcompleted)
+	(regreviewer)(editreviewer)(rmvreviewer)(acceptprop)(rejectprop)(checkvote)(approve)(rmvreject)(rmvcompleted)
 	// vote.cpp
 	(vote)(unvote) // (stake)(unstake)
 	// committee.cpp
-    (setwpsenv)(regcommittee)(editcommittee)(rmvcommittee)
+    (setwpsenv)(regcommittee)(edcommittee)(rmvcommittee)(rejectfund)
 	// watchman.cpp
 	(commitvote)(rollbackvote)(checkexpire)
 

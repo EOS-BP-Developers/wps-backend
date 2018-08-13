@@ -148,13 +148,13 @@ namespace eosiowps {
             void regcommittee(account_name committeeman, const string& category, bool is_oversight);
 
             // @abi action
-            void editcommittee(account_name committeeman, const string& category, bool is_oversight);
+            void edcommittee(account_name committeeman, const string& category, bool is_oversight);
 
             // @abi action
             void rmvcommittee(account_name committeeman);
 
             //@abi action
-            void rejectfunding(account_name committeeman, uint64_t proposal_id, const string& reason);
+            void rejectfund(account_name committeeman, uint64_t proposal_id, const string& reason);
 
 
             // watchman

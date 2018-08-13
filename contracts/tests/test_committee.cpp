@@ -100,8 +100,8 @@ BOOST_FIXTURE_TEST_CASE( manage_committee, committee_tester ) try {
   REQUIRE_MATCHING_OBJECT(t1_1, committeeman1_1);
   REQUIRE_MATCHING_OBJECT(t2_1, committeeman2_1);
 
-  trace = base_tester::push_action( N(eosio.wps), N(editcommittee), N(eosio.wps), committeeman1_2);
-  trace = base_tester::push_action( N(eosio.wps), N(editcommittee), N(eosio.wps), committeeman2_2);
+  trace = base_tester::push_action( N(eosio.wps), N(edcommittee), N(eosio.wps), committeeman1_2);
+  trace = base_tester::push_action( N(eosio.wps), N(edcommittee), N(eosio.wps), committeeman2_2);
 
   produce_block();
 
