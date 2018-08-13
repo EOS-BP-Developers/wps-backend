@@ -155,11 +155,15 @@ Required authority: Reviewer
 
 Parameters: `account_name reviewer, uint64_t proposal_id`
 
+Description: Accept a proposal with PENDING status. Change its status to ON VOTE. All fields required.
+
 #### rejectprop
 
 Required authority: Reviewer
 
 Parameters: `account_name reviewer, uint64_t proposal_id, const string& reason`
+
+Description: Reject a proposal with PENDING status. Change its status to REJECTED. Move proposal to the rejected proposals table. All fields required.
 
 #### checkvote
 
@@ -167,47 +171,7 @@ Required authority: Reviewer
 
 Parameters: `account_name reviewer, uint64_t proposal_id`
 
-#### approve
-
-Required authority: Reviewer
-
-Parameters: `account_name reviewer, uint64_t proposal_id`
-
-#### claimfunds
-
-Required authority: Proposer
-
-Parameters: `account_name account, uint64_t proposal_id`
-
-#### rmvreject
-
-Required authority: Reviewer
-
-Parameters: `account_name reviewer, uint64_t proposal_id`
-
-#### rmvcompleted
-
-Required authority: Reviewer
-
-Parameters: `account_name reviewer, uint64_t proposal_id`
-
-#### vote
-
-Required authority: Account owner
-
-Parameters: `account_name voter, uint64_t proposal_id, bool is_agree`
-
-#### unvote
-
-Required authority: Account owner
-
-Parameters: `account_name voter, uint64_t proposal_id`
-
-#### rejectfund
-
-Required authority: Committee (oversight)
-
-Parameters: `account_name committeeman, uint64_t proposal_id, const string& reason`
+Description: Request the database to verify that the proposal (ON VOTE) has passed the vote threshold. Change its status to CHECK VOTES. All fields required.
 
 #### commitvote
 
@@ -215,14 +179,76 @@ Required authority: Committee (oversight)
 
 Parameters: `account_name watchman, uint64_t proposal_id`
 
+Description: Oversight automatically checks proposals with the CHECK VOTES status using the database and verifies that the proposal passed the vote threshold through this action. The proposal status changes to CHECKED VOTES. All fields required.
+
 #### rollbackvote
 
 Required authority: Committee (oversight)
 
 Parameters: `account_name watchman, uint64_t proposal_id`
 
+Description: Oversight automatically checks proposals with the CHECK VOTES status using the database. If the vote threshold hasn't been met, it rolls the status of the proposal back to ON VOTE. All fields required.
+
+#### approve
+
+Required authority: Reviewer
+
+Parameters: `account_name reviewer, uint64_t proposal_id`
+
+Description: Approve funding for proposals with the CHECKED VOTES status. Proposal status changes to APPROVED. All fields required.
+
+#### claimfunds
+
+Required authority: Proposer
+
+Parameters: `account_name account, uint64_t proposal_id`
+
+Description: Claim funding for a proposal with the APPROVED status. The proposer can claim a portion of the funds for each iteration of the project's duration. When all iterations have been completed, the proposal status changes to COMPLETED. It is then transferred to the completed proposals table. All fields required.
+
+#### rmvreject
+
+Required authority: Reviewer
+
+Parameters: `account_name reviewer, uint64_t proposal_id`
+
+Description: Clear a proposal on the rejected proposals table when it is no longer needed there.
+
+#### rmvcompleted
+
+Required authority: Reviewer
+
+Parameters: `account_name reviewer, uint64_t proposal_id`
+
+Description: Clear a proposal on the completed proposals table when it is no longer needed there.
+
+#### vote
+
+Required authority: Account owner
+
+Parameters: `account_name voter, uint64_t proposal_id, bool is_agree`
+
+Description: Vote for a proposal. The voter can choose to vote yes (true) or no (false) for a given proposal. In the database, the account's stake weight is counted. The account is added to the votings table. All fields required.
+
+#### unvote
+
+Required authority: Account owner
+
+Parameters: `account_name voter, uint64_t proposal_id`
+
+Descripton: Unvote for a proposal. The account is removed from the votings table. All fields required.
+
+#### rejectfund
+
+Required authority: Committee (oversight)
+
+Parameters: `account_name committeeman, uint64_t proposal_id, const string& reason`
+
+Description: Reject a proposal with APPROVED status being funded. The proposal is transferred to the rejected proposals table. All fiels required.
+
 #### checkexpire
 
 Required authority: None
 
 Parameters: `account_name watchman, uint64_t proposal_id`
+
+Description: Check whether a proposal has gone over the voting duration (default 30 days). If the duration has expired, the proposal is transferred to the rejected proposals table. All fields required.
