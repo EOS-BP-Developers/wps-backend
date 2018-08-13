@@ -252,3 +252,76 @@ Required authority: None
 Parameters: `account_name watchman, uint64_t proposal_id`
 
 Description: Check whether a proposal has gone over the voting duration (default 30 days). If the duration has expired, the proposal is transferred to the rejected proposals table. All fields required.
+
+
+## Tables
+
+You can find information on the tables using `cleos`:
+```console
+cleos get table <contract account> <contract account> <table name>
+```
+
+On mainnet, since the contract account will be `eosio.wps`:
+```console
+cleos get table eosio.wps eosio.wps <table name>
+```
+
+#### proposals
+
+Description: Table of ongoing proposals. Indexed by proposer account name and proposal id.
+
+Code: `_self`
+
+Scope: `_self`
+
+#### rejectedpros
+
+Description: Table of rejected proposals. Indexed by proposer account name and proposal id.
+
+Code: `_self`
+
+Scope: `_self`
+
+#### finishedpros
+
+Description: Table of completed proposals. Indexed by proposer account name and proposal id.
+
+Code: `_self`
+
+Scope: `_self`
+
+#### proposers
+
+Description: Table of proposers. Indexed by account name.
+
+Code: `_self`
+
+Scope: `_self`
+
+#### reviewers
+
+Description: Table of reviewers. Indexed by account name.
+
+Code: `_self`
+
+Scope: `_self`
+
+#### committees
+
+Description: Table of committees. Indexed by account name.
+
+Code: `_self`
+
+Scope: `_self`
+
+#### votings
+
+Description: Table of votes. Indexed by proposal id.
+
+Code: `_self`
+
+Scope: `_self`
+
+#### wpsglobal
+
+Description: Table of WPS global environment variables. This is a singleton, and not a multi index table.
