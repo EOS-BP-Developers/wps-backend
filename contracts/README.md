@@ -85,80 +85,118 @@ Parameters: `account_name proposer,
 
 Required authority: Proposer
 
-Parameters: 
+Parameters: `account_name proposer`
 
 #### regcommittee
 
 Required authority: `_self`
 
-#### editcommittee
+Parameters: `account_name committeeman, const string& category, bool is_oversight`
+
+#### edcommittee
 
 Required authority: `_self`
+
+Parameters: `account_name committeeman, const string& category, bool is_oversight`
 
 #### rmvcommittee
 
 Required authority: `_self`
 
+Parameters: `account_name committeeman`
+
 #### regreviewer
 
 Required authority: Committee
+
+Parameters: `account_name committee, account_name reviewer, const string& first_name, const string& last_name`
 
 #### editreviewer
 
 Required authority: Committee
 
+Parameters: `account_name committee, account_name reviewer, const string& first_name, const string& last_name`
+
 #### rmvreviewer
 
 Required authority: Committee
+
+Parameters: `account_name committee, const account_name reviewer`
 
 #### acceptprop
 
 Required authority: Reviewer
 
+Parameters: `account_name reviewer, uint64_t proposal_id`
+
 #### rejectprop
 
 Required authority: Reviewer
+
+Parameters: `account_name reviewer, uint64_t proposal_id, const string& reason`
 
 #### checkvote
 
 Required authority: Reviewer
 
+Parameters: `account_name reviewer, uint64_t proposal_id`
+
 #### approve
 
 Required authority: Reviewer
+
+Parameters: `account_name reviewer, uint64_t proposal_id`
 
 #### claimfunds
 
 Required authority: Proposer
 
+Parameters: `account_name account, uint64_t proposal_id`
+
 #### rmvreject
 
 Required authority: Reviewer
+
+Parameters: `account_name reviewer, uint64_t proposal_id`
 
 #### rmvcompleted
 
 Required authority: Reviewer
 
+Parameters: `account_name reviewer, uint64_t proposal_id`
+
 #### vote
 
 Required authority: Account owner
+
+Parameters: `account_name voter, uint64_t proposal_id, bool is_agree`
 
 #### unvote
 
 Required authority: Account owner
 
+Parameters: `account_name voter, uint64_t proposal_id`
+
 #### rejectfund
 
 Required authority: Committee (oversight)
+
+Parameters: `account_name committeeman, uint64_t proposal_id, const string& reason`
 
 #### commitvote
 
 Required authority: Committee (oversight)
 
+Parameters: `account_name watchman, uint64_t proposal_id`
+
 #### rollbackvote
 
 Required authority: Committee (oversight)
 
+Parameters: `account_name watchman, uint64_t proposal_id`
+
 #### checkexpire
 
 Required authority: None
+
+Parameters: `account_name watchman, uint64_t proposal_id`
