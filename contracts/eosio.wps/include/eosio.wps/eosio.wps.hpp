@@ -159,10 +159,10 @@ namespace eosiowps {
 
             // watchman
             //@abi action
-            void commitvote(account_name watchman, uint64_t proposal_id);
+            void commitvote(account_name watchman, uint64_t proposal_id, uint64_t total_votes, uint64_t agree_votes, uint64_t disagree_votes);
 
             //@abi action
-            void rollbackvote(account_name watchman, uint64_t proposal_id);
+            void rollbackvote(account_name watchman, uint64_t proposal_id, uint64_t total_votes, uint64_t agree_votes, uint64_t disagree_votes);
 
             //@abi action
             void checkexpire(account_name watchman, uint64_t proposal_id);

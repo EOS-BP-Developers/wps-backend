@@ -94,6 +94,9 @@ namespace eosiowps {
 			proposal.funding_goal = funding_goal;
 			proposal.id = wps_env.proposal_current_index;
 			proposal.status = PROPOSAL_STATUS::PENDING; 		//initialize status to pending
+			proposal.total_votes = 0;
+        	proposal.agree_votes = 0;
+        	proposal.disagree_votes = 0;
             proposal.vote_start_time = 0;
 			proposal.fund_start_time = 0;
 			proposal.iteration_of_funding = 0;

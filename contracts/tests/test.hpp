@@ -86,6 +86,8 @@ struct proposal_t {
   vector<string> members;       // linkedin
   asset funding_goal;           // amount of EOS
   uint64_t total_votes;         // total votes
+  uint64_t agree_votes;         // total votes
+  uint64_t disagree_votes;         // total votes
   uint8_t status;               // status
   uint64_t vote_start_time;     // time when voting starts (seconds)
   uint64_t fund_start_time;     // time when funding starts (seconds)
@@ -93,7 +95,8 @@ struct proposal_t {
   uint64_t primary_key() const { return proposer; }
   uint64_t by_id() const { return static_cast<uint64_t>(id); }
 };
-FC_REFLECT( proposal_t, (proposer)(id)(committee)(category)(subcategory)(title)(summary)(project_img_url)(description)(roadmap)(duration)(members)(funding_goal)(total_votes)(status)(vote_start_time)(fund_start_time)(iteration_of_funding) )
+FC_REFLECT( proposal_t, (proposer)(id)(committee)(category)(subcategory)(title)(summary)(project_img_url)(description)(roadmap)(duration)(members)
+  (funding_goal)(total_votes)(agree_votes)(disagree_votes)(status)(vote_start_time)(fund_start_time)(iteration_of_funding) )
 
 
 struct voting_info_t {

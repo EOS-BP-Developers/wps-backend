@@ -48,6 +48,12 @@
           "name": "total_votes",
           "type": "uint64"
         },{
+          "name": "agree_votes",
+          "type": "uint64"
+        },{
+          "name": "disagree_votes",
+          "type": "uint64"
+        },{
           "name": "status",
           "type": "uint8"
         },{
@@ -543,6 +549,15 @@
         },{
           "name": "proposal_id",
           "type": "uint64"
+        },{
+          "name": "total_votes",
+          "type": "uint64"
+        },{
+          "name": "agree_votes",
+          "type": "uint64"
+        },{
+          "name": "disagree_votes",
+          "type": "uint64"
         }
       ]
     },{
@@ -553,6 +568,15 @@
           "type": "name"
         },{
           "name": "proposal_id",
+          "type": "uint64"
+        },{
+          "name": "total_votes",
+          "type": "uint64"
+        },{
+          "name": "agree_votes",
+          "type": "uint64"
+        },{
+          "name": "disagree_votes",
           "type": "uint64"
         }
       ]
@@ -686,25 +710,25 @@
       ],
       "type": "proposal"
     },{
-            "name": "rejectedpros",
-            "index_type": "i64",
-            "key_names": [
-              "proposer"
-            ],
-            "key_types": [
-              "name"
-            ],
-            "type": "proposal"
-          },{
-            "name": "finishedpros",
-            "index_type": "i64",
-            "key_names": [
-              "proposer"
-            ],
-            "key_types": [
-              "name"
-            ],
-            "type": "proposal"
+      "name": "rejectedpros",
+      "index_type": "i64",
+      "key_names": [
+        "proposer"
+      ],
+      "key_types": [
+        "name"
+      ],
+      "type": "proposal"
+    },{
+      "name": "finishedpros",
+      "index_type": "i64",
+      "key_names": [
+        "proposer"
+      ],
+      "key_types": [
+        "name"
+      ],
+      "type": "proposal"
     },{
       "name": "proposers",
       "index_type": "i64",

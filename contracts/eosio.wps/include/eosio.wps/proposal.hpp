@@ -39,6 +39,8 @@ namespace eosiowps {
         vector<string> members;       // linkedin
         asset funding_goal;           // amount of EOS
         uint64_t total_votes;         // total votes
+        uint64_t agree_votes;         // agree votes
+        uint64_t disagree_votes;      // disagree votes
         uint8_t status;               // status
         uint64_t vote_start_time;     // time when voting starts (seconds)
         uint64_t fund_start_time;     // time when funding starts (seconds)
@@ -46,7 +48,7 @@ namespace eosiowps {
         uint64_t primary_key() const { return proposer; }
         uint64_t by_id() const { return static_cast<uint64_t>(id); }
         EOSLIB_SERIALIZE( proposal, (proposer)(id)(committee)(category)(subcategory)(title)(summary)(project_img_url)(description)(roadmap)(duration)(members)(funding_goal)
-            (total_votes)(status)(vote_start_time)(fund_start_time)(iteration_of_funding) )
+            (total_votes)(agree_votes)(disagree_votes)(status)(vote_start_time)(fund_start_time)(iteration_of_funding) )
     };
 
     typedef eosio::multi_index< N(proposals), proposal,

@@ -4,7 +4,7 @@
 namespace eosiowps {
 
 	// @abi action
-	void wps_contract::commitvote(account_name watchman, uint64_t proposal_id) {
+	void wps_contract::commitvote(account_name watchman, uint64_t proposal_id, uint64_t total_votes, uint64_t agree_votes, uint64_t disagree_votes) {
 		require_auth(watchman);
 
 		committee_table committees(_self, _self);
@@ -21,11 +21,14 @@ namespace eosiowps {
 
 		idx_index.modify(itr_proposal, 0, [&](auto& proposal){
 			proposal.status = PROPOSAL_STATUS::CHECKED_VOTE;
+			proposal.total_votes = total_votes;
+			proposal.agree_votes = agree_votes;
+			proposal.disagree_votes = disagree_votes;
 		});
 	}//action permission should be linked to a separate key
 
 	// @abi action
-	void wps_contract::rollbackvote(account_name watchman, uint64_t proposal_id){
+	void wps_contract::rollbackvote(account_name watchman, uint64_t proposal_id, uint64_t total_votes, uint64_t agree_votes, uint64_t disagree_votes){
 		require_auth(watchman);
 
 		committee_table committees(_self, _self);
@@ -41,6 +44,9 @@ namespace eosiowps {
 
 		idx_index.modify(itr_proposal, 0, [&](auto& proposal) {
 			proposal.status = PROPOSAL_STATUS::ON_VOTE; //roll back to on vote status
+			proposal.total_votes = total_votes;
+			proposal.agree_votes = agree_votes;
+			proposal.disagree_votes = disagree_votes;
 		});
 	}//action permission should be linked to a separate key
 

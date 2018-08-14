@@ -148,6 +148,8 @@ public:
       ("members", members)
       ("funding_goal", core_from_string("10.0000"))
       ("total_votes", 0)
+      ("agree_votes", 0)
+      ("disagree_votes", 0)
       ("status", 1)
       ("vote_start_time", 0)
       ("fund_start_time", 0)
@@ -168,6 +170,8 @@ public:
       ("members", members)
       ("funding_goal", core_from_string("10.0000"))
       ("total_votes", 0)
+      ("agree_votes", 0)
+      ("disagree_votes", 0)
       ("status", 1)
       ("vote_start_time", 0)
       ("fund_start_time", 0)
@@ -328,7 +332,8 @@ BOOST_FIXTURE_TEST_CASE( flow_wps, wps_tester ) try {
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::CHECK_VOTE);
 
-  BOOST_REQUIRE_EQUAL( success(), push_action(N(watchman1), N(commitvote), mvo()("watchman", "watchman1")("proposal_id", 1)));
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(watchman1), N(commitvote),
+    mvo()("watchman", "watchman1")("proposal_id", 1)("total_votes", 1000000000000ULL)("agree_votes", 1000000000000ULL)("disagree_votes", 1000000000000ULL)));
   produce_block();
   get_proposal(prop, N(proposer1));
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::CHECKED_VOTE);
