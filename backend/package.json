@@ -1,0 +1,45 @@
+{
+  "name": "wps-server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "deploy": "NODE_ENV=developer NODE_PATH=. node tools/deploy_front_end.js"
+  },
+  "dependencies": {
+    "binaryen": "^37.0.0",
+    "bluebird": "^3.5.1",
+    "config": "^2.0.0",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
+    "crypto": "^1.0.1",
+    "debug": "~2.6.9",
+    "eosjs": "^16.0.0",
+    "express": "~4.16.0",
+    "hashring": "^3.2.0",
+    "http-errors": "~1.6.2",
+    "jsonwebtoken": "^8.3.0",
+    "jszip": "^3.1.5",
+    "lodash": "^4.17.10",
+    "mime": "^2.3.1",
+    "moment": "^2.22.1",
+    "mongoose": "^5.2.5",
+    "morgan": "~1.9.0",
+    "multer": "^1.3.1",
+    "node-schedule": "^1.3.0",
+    "numeral": "^2.0.6",
+    "pug": "^2.0.3",
+    "redis": "^2.8.0",
+    "request": "^2.87.0",
+    "s3fs": "^2.5.0",
+    "socket.io": "^2.1.1",
+    "superagent": "^3.8.3",
+    "supertest": "^3.1.0",
+    "unzipper": "^0.8.14",
+    "winston": "^2.4.3",
+    "winston-daily-rotate-file": "^3.3.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2"
+  }
+}

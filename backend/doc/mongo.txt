@@ -1,0 +1,16 @@
+
+
+// initialize lib db
+
+db.libactions.drop();
+db.libactionstakes.drop();
+db.libactionunstakes.drop();
+db.libcommittees.drop();
+db.libproposals.drop();
+db.libproposers.drop();
+db.libreviewers.drop();
+db.libsummaries.drop();
+db.libupdateproposals.drop();
+db.libupdatevotings.drop();
+db.libvoterinfos.drop();
+db.libvotinginfos.drop();

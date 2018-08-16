@@ -1,0 +1,30 @@
+{
+    "apps" : [{
+        "name"      : "STATS-DEV-API",
+        "script"    : "bin/www",
+        "instances" : 1,
+        "exec_mode" : "cluster_mode",
+        "max_memory_restart" : "800M",
+        "env": {
+            "COMMON_VARIABLE": "true",
+            "PORT" : 3000,
+            "NODE_ENV": "development",
+            "NODE_PATH" : "."
+        }
+    }, {
+        "name"      : "STATS-DEV-BATCH-1001",
+        "script"    : "bin/www",
+        "instances" : 1,
+        "exec_mode" : "cluster_mode",
+        "env": {
+            "COMMON_VARIABLE": "true",
+            "PORT" : 3001,
+            "NODE_PATH": ".",
+            "NODE_ENV": "development",
+            "NODE_JOB_GROUP" : "block",
+            "NODE_BATCH_ID" : 1001
+        },
+        "env_development" : {
+        }
+    }]
+}

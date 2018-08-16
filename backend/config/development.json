@@ -1,0 +1,58 @@
+{
+    "timezone" : "+00:00",
+    "mongo" : {
+        "host" : "localhost:27017",
+        "dbName" : "devwps",
+        "account" : "devwps",
+        "passwd" : "devwps123!"
+    },
+    "redis" : {
+        "hosts" : "localhost", //["localhost", "localhost:16379", "localhost:26379"],
+        "port" : 6379,
+        "expire" : {
+            "default" : 86400
+        }
+    },
+    "eosNode" : {
+        "host" :"eosnet.eoseoul.io",
+        "protocol": "http",
+        "httpPort" : 8888,
+        "wpsAccount" : "eosio.wps",
+        "symbol" : "EOS",
+        "chainId" : "dc705acc12c68b0c3e996526389395ad28de05829e8dead9da918289f3b70ccd",
+    },
+    "webLog" : {
+        "level" : "info",
+        "filename" : "./log/web.log", // you must make log folder
+        "datepattern" : ".yyyy-MM-dd"
+    },
+    "dbLog" : {
+        "level" : "info",
+        "filename" : "./log/db.log", // you must make log folder
+        "datepattern" : ".yyyy-MM-dd"
+    },
+    "errLog" : {
+        "level" : "info",
+        "filename" : "./log/err.log", // you must make log floder
+        "datepattern" : ".yyyy-MM-dd"
+    },
+    "debugLog" : {
+        "level" : "debug",
+        "filename" : "./log/debug.log", // you must make log floder
+        "datepattern" : ".yyyy-MM-dd"
+    },
+    "batchLog" : {
+        "level" : "info",
+        "filename" : "./log/batch.log", // you must make log folder
+        "datepattern" : ".yyyy-MM-dd"
+    },
+    "batchErrorLog" : {
+        "level" : "info",
+        "filename" : "./log/batch_err.log", // you must make log folder
+        "datepattern" : ".yyyy-MM-dd"
+    },
+    "cors" : {
+        "whitelist" : "*" // ["*"]
+    },
+    "userAgent" : "eos|api|development"
+}

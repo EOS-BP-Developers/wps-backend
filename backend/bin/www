@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const http = require('http'),
+    _ = require('lodash'),
+    app = require('app'),
+    log = require('libs/log'),
+    batch = require('batch/index');
+
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+const server = http.createServer(app);
+
+server.listen(port);
+server.on('error', (err) => {
+    if (err.syscall !== 'listen') {
+        log.errLog.info(JSON.stringify(err));
+        throw err;
+    }
+    err.bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+    log.errLog.info(JSON.stringify(err));
+});
+
+server.on('listening', () => {
+    if (!_.isEmpty(batch)) {
+        batch.registerJobs();
+    }
+    const addr = server.address();
+    const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+    console.log('Listening on ' + bind);
+});
+
+function normalizePort(val) {
+    const port = parseInt(val, 10);
+    if (isNaN(port)) { // named pipe
+        return val;
+    }
+    if (port >= 0) { // port number
+        return port;
+    }
+    return false;
+}
