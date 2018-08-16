@@ -4,7 +4,7 @@
 The design of the EOSIO blockchain calls for a number of smart contracts that are run at a privileged permission level in order to support functions such as working proposal.  These smart contracts are referred to as the wps contract.
 
 Dependencies:
-* [eosio v1.1.4](https://github.com/eosio/eos/tree/v1.1.4)
+* [eosio v1.2.1](https://github.com/eosio/eos/tree/v1.2.1)
 * [eosio.wasmsdk v1.1.1](https://github.com/eosio/eosio.wasmsdk/tree/v1.1.1)
 
 To build the contracts and the unit tests:
@@ -177,7 +177,7 @@ Description: Request the database to verify that the proposal (ON VOTE) has pass
 
 Required authority: Committee (oversight)
 
-Parameters: `account_name watchman, uint64_t proposal_id`
+Parameters: `account_name watchman, uint64_t proposal_id, uint64_t total_votes, uint64_t agree_votes, uint64_t disagree_votes`
 
 Description: Oversight automatically checks proposals with the CHECK VOTES status using the database and verifies that the proposal passed the vote threshold through this action. The proposal status changes to CHECKED VOTES. All fields required.
 
@@ -185,7 +185,7 @@ Description: Oversight automatically checks proposals with the CHECK VOTES statu
 
 Required authority: Committee (oversight)
 
-Parameters: `account_name watchman, uint64_t proposal_id`
+Parameters: `account_name watchman, uint64_t proposal_id, uint64_t total_votes, uint64_t agree_votes, uint64_t disagree_votes`
 
 Description: Oversight automatically checks proposals with the CHECK VOTES status using the database. If the vote threshold hasn't been met, it rolls the status of the proposal back to ON VOTE. All fields required.
 
