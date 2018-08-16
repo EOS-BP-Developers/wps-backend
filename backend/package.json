@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "deploy": "NODE_ENV=developer NODE_PATH=. node tools/deploy_front_end.js"
+    "deploy": "NODE_ENV=developer NODE_PATH=. node tools/deploy_front_end.js",
+    "test": "NODE_ENV=developer NODE_PATH=. mocha --recursive -R list"
   },
   "dependencies": {
     "binaryen": "^37.0.0",
