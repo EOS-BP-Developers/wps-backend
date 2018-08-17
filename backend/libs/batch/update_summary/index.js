@@ -35,9 +35,9 @@ async function updateSummary() {
     }]);
 
     const summaryObj = {
-        total_projects : 0,
-        funded_projects : 0,
-        ongoing_projects : 0,
+        total_proposals : 0,
+        funded_proposals : 0,
+        ongoing_proposals : 0,
         total_voters : 0
     };
     _.forEach(statusCnts, function(status) {

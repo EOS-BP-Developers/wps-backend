@@ -6,8 +6,6 @@ const _ = require('lodash'),
 const UpdateProposal = mongo.LibUpdateProposal;
 
 async function commitvote(action) {
-    // console.log('commitvote =====> ');
-    // console.log(action);
     const data = action.data;
     if (_.isEmpty(data)) {
         return;

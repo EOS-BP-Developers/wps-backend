@@ -50,7 +50,7 @@ async function checkVoting(updateVoting) {
     if (_checkVoting(supplyAmount, proposal, totalPercent, agreePercent) === true) {
         await eosApi.commitVote(params, key, watchmanAccount);
     } else  {
-        await eosApi.collbackVote(params);
+        await eosApi.rollbackVote(params, key, watchmanAccount);
     }
     await updateVoting.remove();
 }
