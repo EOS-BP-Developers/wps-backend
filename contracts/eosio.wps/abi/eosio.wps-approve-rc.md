@@ -1,4 +1,4 @@
-# Action - `{{ acceptprop }}`
+# Action - `{{ approve }}`
 
 ## Description
 
