@@ -18,11 +18,11 @@
     npm install -g pm2
 
 ### edit nodeos, mongo, redis environment
-    edit config/developer.json
-    edit tools/create_wps_info.js
+    vi config/developer.json
+    vi tools/create_wps_info.js
+    NODE_ENV=developer NODE_PATH=. node tools/create_wps_info.js
 
 ### start pm2
-    NODE_ENV=developer NODE_PATH=. node tools/create_wps_info.js
     pm2 start deploy/{eco_xxx.json}
 
 ### stop pm2
@@ -129,7 +129,7 @@
 ### object
     summary
     {
-      _id (string) : mongo object id
+        _id (string) : mongo object id
         block_id (string) : block id
         block_num (number) : block number
         funded_proposals (number) : number of funded proposal
@@ -140,6 +140,7 @@
 
     committee
     {
+        _id (string) : mongo object id
         committeeman (string) : eos account of committee
         category (string) : category name of committee (ex. emergency)
         is_oversight (boolean) : if true, have oversight right, otherwise not oversight right
