@@ -18,7 +18,7 @@ namespace eosiowps {
 		auto wps_env = m_wps_env_global.get();
 		auto duration_of_voting = wps_env.duration_of_voting * seconds_per_day;
 
-		eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting, "The funding period for this proposal has expired.");
+		eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting, "The voting period for this proposal has expired.");
 
 		voting_table voting(_self, _self);
 		auto itr = voting.find(proposal_id);
@@ -68,7 +68,7 @@ namespace eosiowps {
 		auto current_time = now();
 		auto wps_env = m_wps_env_global.get();
 		auto duration_of_voting = wps_env.duration_of_voting * seconds_per_day;
-		eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting, "The funding period for this proposal has expired.");
+		eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting, "The voting period for this proposal has expired.");
 
 		voting_table voting(_self, _self);
 		auto itr = voting.find(proposal_id);
