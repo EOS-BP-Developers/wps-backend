@@ -42,15 +42,15 @@ async function updateSummary() {
     };
     _.forEach(statusCnts, function(status) {
         if (status._id !== SEnum.PROPOSAL_STATUS_REJECTED) {
-            summaryObj.total_projects += status.count;
+            summaryObj.total_proposals += status.count;
         }
         if (status._id === SEnum.PROPOSAL_STATUS_COMPLETED) {
-            summaryObj.funded_projects += status.count;
+            summaryObj.funded_proposals += status.count;
         }
         if (status._id === SEnum.PROPOSAL_STATUS_PENDING || status._id === SEnum.PROPOSAL_STATUS_ON_VOTE ||
             status._id === SEnum.PROPOSAL_STATUS_CHECK_VOTE || status._id === SEnum.PROPOSAL_STATUS_CHECKED_VOTE ||
             status._id === SEnum.PROPOSAL_STATUS_APPROVED) {
-            summaryObj.ongoing_projects += status.count;
+            summaryObj.ongoing_proposals += status.count;
         }
     });
     summaryObj.total_voters = await VotingInfo.distinct('account').countDocuments();

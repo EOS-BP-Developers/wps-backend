@@ -19,7 +19,7 @@ describe('[external_apis]', function() {
     });
 
     it('getVoterInfo', async function() {
-        return eosApi.getVoterInfo('useraaaaaaam')
+        return eosApi.getVoterInfo('useraaaaaabg')
         .then(function(result) {
             console.log(result);
         });
@@ -54,7 +54,7 @@ describe('[external_apis]', function() {
     });
 
     it.skip('getProposalByOwner', async function() {
-        return eosApi.getProposalByOwner('proposeraaab')
+        return eosApi.getProposalByOwner('proposeraaaa')
         .then(function(result) {
             console.log(result);
         });

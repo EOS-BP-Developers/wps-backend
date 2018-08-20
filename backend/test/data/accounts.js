@@ -3,7 +3,7 @@
 const _ = require('lodash');
 
 const user = {
-    eos_account : 'useraaaaaaam',
+    eos_account : 'useraaaaaabg',
     nick : 'yepps',
     img_url : 'https://i.amz.mshcdn.com/3NbrfEiECotKyhcUhgPJHbrL7zM=/950x534/filters:quality(90)/2014%2F06%2F02%2Fc0%2Fzuckheadsho.a33d0.jpg',
     bio : 'Rodney Erickson is a content marketing professional at HubSpot, an inbound marketing and sales platform that helps companies attract visitors, convert leads, and close customers. Previously, Rodney worked as a marketing manager for a tech software startup.',
@@ -26,8 +26,21 @@ const eosAccounts = [
     {'name':'proposeraaae', 'pvt':'5K4MmsY7Th8DqjEY2vbM7npaxSQ56XzvNULkJeqKmbYoVRmPPpB', 'pub':'EOS8FdMPpPxpG5QAqGLncY5kBrEQ9NXPKCKnLH6oWDMPR8q8BrEmT'},
     {'name':'proposeraaaf', 'pvt':'5K4d3ck3e36DoLDQDAqE2uHE6X831RYS8Ac5Hdir4CmT7WbvQJB', 'pub':'EOS6iwndPo58Y2ihWshfhnFbEBJHGkZtujR1bn7bVLngnTWFA8Hm3'},
     {'name':'proposeraaag', 'pvt':'5KWg3urAyLF2tt1Rz8ckuK7QSiKU1CvXKhhzBPfFQcT83vjyCD2', 'pub':'EOS6QBgrm2h5f9B2RxLVXeD3HrchTUgJLtuYWPDQvi5T73enWgvVC'},
-    {'name':'useraaaaaaam', 'pvt':'5HqgpWWpkRqfi3JSxsR3bsnVCvdgyf98msTRymZvQHTHNSHSXx2', 'pub':'EOS5LF56ZLEUAh3G9vRxbBHkFBZdx9F7bxmaARuiz54qvCAxT6Lmz'},
-    {'name':'useraaaaaaan', 'pvt':'5HrEMEE5dbNL1VZPhpedt7MvKaoKP9iaMGwLw6uu3LS9CXnsyGx', 'pub':'EOS5vs19cixeVh2LJ61moQwTSgeGBVj8rZqjE36tAXXF4tFcGdCJw'}
+    {'name':'proposeraaah', 'pvt':'5HqgpWWpkRqfi3JSxsR3bsnVCvdgyf98msTRymZvQHTHNSHSXx2', 'pub':'EOS5LF56ZLEUAh3G9vRxbBHkFBZdx9F7bxmaARuiz54qvCAxT6Lmz'},
+    {'name':'proposeraaai', 'pvt':'5HrEMEE5dbNL1VZPhpedt7MvKaoKP9iaMGwLw6uu3LS9CXnsyGx', 'pub':'EOS5vs19cixeVh2LJ61moQwTSgeGBVj8rZqjE36tAXXF4tFcGdCJw'},
+    {'name':'proposeraaaj', 'pvt':'5KjhQZ4YZ7mDRQ4ShRhdMn8CdnLBfvvrMjfKYsHoY4gnkRsYhoe', 'pub':'EOS5AdtgQReNDbWtSAJKj6sGh9839HFyCzF1N32MpFn7s7VjpU9jB'},
+    {'name':'proposeraaak', 'pvt':'5K8Q1g6fTFjafYLZiD8TejPyr5YUtF4AUZ2mVaZyDiPEEn6G6w1', 'pub':'EOS6BPyzLooPX2fA66smfjBiB68k4LcMLFaaHzL7Y7P8V8NCR3Ape'},
+    {'name':'proposeraaal', 'pvt':'5J13QzGvbwQPPS9NPbBsJ4fkkdGvvJkQodyd44NbB7NmNopsCDN', 'pub':'EOS7CUHjJGVxZc4xqDk9VCgRuKobh9vcLZ5gY6zrbrQDsR6xk8seu'},
+    {'name':'proposeraaam', 'pvt':'5KNUm4j8FqNkTsZgcVz4pMSJmie4f2PSNWkSKqWF8wKYv3pJrqp', 'pub':'EOS8Df8pHtYUQ4EqH6TQ3HZZdM7xrPz2yimohfDtZAsu1bEw9wKhK'},
+    {'name':'proposeraaan', 'pvt':'5JFNbt9acaHBPHzq3beSPLXbkPBetH5eHjEJ9dZmLgNPFArj7ah', 'pub':'EOS8JqnhR4uHvnyiJAZq9v6ZY9PM4BFvrXSm6mqMG3dxSQNKvgmFQ'},
+    {'name':'proposeraaao', 'pvt':'5Hpy3FqzfWBsAQpqZeo5xtUWbm2ffJ1d98Zg3e1BBwW7XiJ5d38', 'pub':'EOS5YcMqUvQBvhxyJYVUPGLYBJCGPwxzrC7GdzAt5qUm96LuMHRN1'},
+    {'name':'proposeraaap', 'pvt':'5Hs3htsi3qZb8mhnoeRwcKnpccs7KW7HWcjMjWye81KSMJFw2ek', 'pub':'EOS6QTcizAMGihkuePdCLfj9j2qHogieq1ZyeHkywbeWtJjAPCWPo'},
+    {'name':'proposeraaaq', 'pvt':'5KJpyXHR8tB9bwNBeRpcjLovPWH649Q2byUoikGrjUoVeMtQ2FV', 'pub':'EOS8FpYvn6euknrMeDviJ5T5JPVd4yykZdcGw7DsSkJkTaktsVMHj'},
+    {'name':'useraaaaaabg', 'pvt':'5KfNvqmns8MP9PSPavzFzuoahB4SdcTCbKnjYiu62kupnEW1Nx6', 'pub':'EOS7VoDqSyvd1zM4qm4mdjNsT5obSEnFRCuxzfybnsioWD4NkCmyw'},
+    {'name':'useraaaaaabh', 'pvt':'5JY2NoQEWEs2XXFGbxvVBe63paP8zVRwYVsieAJnobAug9bE42r', 'pub':'EOS5t4DQy3mnbyJmMtc53A8XbNvWrbj4hxBySxKNHP2YMU9QusoLQ'},
+    {'name':'useraaaaaabi', 'pvt':'5Kge6y6AznDGXwczw7My5gtW7dvs2qWBFx7FWtoLRn687s7JdLW', 'pub':'EOS8PGBfYXjn2Jws8zWeG8fHF9bVUs9P2tzfk69kbhKvYo8BHkfNN'},
+    {'name':'useraaaaaabj', 'pvt':'5KBCNAkLw85jTqqtwm9pompFVyLUCiYEzBMniho2xDhn1QMLY6g', 'pub':'EOS5khGjRq5WGwoybXUAhvPVYtbzeTyrhEaZgQnXesavwx4AtpYBE'},
+    {'name':'useraaaaaabk', 'pvt':'5KA799q8UPzfwK5c7qDL1YuSRRfFD7cdTquiM971BZfPdY6HqFi', 'pub':'EOS5iSsGmj6N56s855SPNgYT65GZpDwED4de7qGmDVjnnJa1Fm8nE'}
 ];
 
 const committees = [{
@@ -122,6 +135,106 @@ const proposers = [{
     telegram : '@yepp4you',
     website : 'http://www.block.one',
     linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaah',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaai',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaaj',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaak',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaal',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaam',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaan',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaao',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaap',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
+}, {
+    account : 'proposeraaaq',
+    first_name : 'Thomas',
+    last_name : 'Do',
+    img_url : 'http://www.google.com',
+    bio : 'hi~',
+    country : 'KR',
+    telegram : '@yepp4you',
+    website : 'http://www.block.one',
+    linkedin : 'thomas-do-01911516a',
 }];
 
 const proposals = _.map(proposers, (proposer) => {
@@ -136,7 +249,7 @@ const proposals = _.map(proposers, (proposer) => {
         roadmap : 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
         duration : 30,
         members : ['yepp4you1', 'yepp4you2', 'yepp4you3'],
-        funding_goal : '10.0000 EOS'
+        funding_goal : '100.0000 EOS'
     };
 });
 
