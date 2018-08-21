@@ -87,7 +87,8 @@ function getTableRows(code, scope, table, tableKey, lowerBound, limit, keyType, 
 
 function getVoterInfo(voter) {
     // console.log(format.encodeName(voter, false));
-    return getTableRows('eosio', 'eosio', 'voters', null, format.encodeName(voter, false), 1, 'i64', 1)
+    const systemAccount = eosNodeConfig.systemAccount;
+    return getTableRows(systemAccount, systemAccount, 'voters', null, format.encodeName(voter, false), 1, 'i64', 1)
         .then(function(result) {
             if (!_.isEmpty(result.rows)) {
                 return result.rows[0];
@@ -97,7 +98,8 @@ function getVoterInfo(voter) {
 }
 
 function getProposalById(proposalId) {
-    return getTableRows('eosio.wps', 'eosio.wps', 'proposals', null, proposalId, 1, 'i64', 2)
+    const wpsAccount = eosNodeConfig.wpsAccount;
+    return getTableRows(wpsAccount, wpsAccount, 'proposals', null, proposalId, 1, 'i64', 2)
         .then(function(result) {
             if (!_.isEmpty(result.rows)) {
                 return result.rows[0];
@@ -107,7 +109,8 @@ function getProposalById(proposalId) {
 }
 
 function getProposalByOwner(proposer) {
-    return getTableRows('eosio.wps', 'eosio.wps', 'proposals', null, format.encodeName(proposer, false), 1, 'i64', 1)
+    const wpsAccount = eosNodeConfig.wpsAccount;
+    return getTableRows(wpsAccount, wpsAccount, 'proposals', null, format.encodeName(proposer, false), 1, 'i64', 1)
         .then(function(result) {
             if (!_.isEmpty(result.rows)) {
                 return result.rows[0];
@@ -117,7 +120,8 @@ function getProposalByOwner(proposer) {
 }
 
 function getRejectedProposalById(proposalId) {
-    return getTableRows('eosio.wps', 'eosio.wps', 'rejectedpros', null, proposalId, 1, 'i64', 2)
+    const wpsAccount = eosNodeConfig.wpsAccount;
+    return getTableRows(wpsAccount, wpsAccount, 'rejectedpros', null, proposalId, 1, 'i64', 2)
         .then(function(result) {
             if (!_.isEmpty(result.rows)) {
                 return result.rows[0];
@@ -127,7 +131,8 @@ function getRejectedProposalById(proposalId) {
 }
 
 function getFinishedProposalById(proposalId) {
-    return getTableRows('eosio.wps', 'eosio.wps', 'finishedpros', null, proposalId, 1, 'i64', 2)
+    const wpsAccount = eosNodeConfig.wpsAccount;
+    return getTableRows(wpsAccount, wpsAccount, 'finishedpros', null, proposalId, 1, 'i64', 2)
         .then(function(result) {
             if (!_.isEmpty(result.rows)) {
                 return result.rows[0];
@@ -138,9 +143,10 @@ function getFinishedProposalById(proposalId) {
 
 
 function getCurrencyStats(endpoint) {
+    const tokenAccount = eosNodeConfig.tokenAccount;
     const options = getConfig(endpoint);
     const eos = Eos(options);
-    return eos.getCurrencyStats('eosio.token', 'EOS');
+    return eos.getCurrencyStats(tokenAccount, 'EOS');
 }
 
 function commitVote(params, key, authorization, endpoint) { // eosio.wps contract

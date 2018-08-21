@@ -16,7 +16,6 @@ const Summary = mongo.LibSummary;
 
 // sample
 const wpsInfo = {
-    system_account : 'eosio',
     watchman_account : 'committeeaab',
     watchman_prv : '5K6LU8aVpBq9vJsnpCvaHCcyYwzPPKXfDdyefYyAMMs3Qy42fUr',
     watchman_pub : 'EOS7WnhaKwHpbSidYuh2DF1qAExTRUtPEdZCaZqt75cKcixuQUtdA',

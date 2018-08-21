@@ -19,6 +19,7 @@
         "httpPort" : 8888,
         "systemAccount" : "eosio",
         "wpsAccount" : "eosio.wps",
+        "tokenAccount" : "eosio.token",
         "symbol" : "EOS",
         "chainId" : "a4fe43c897279a677025624555f3835b949f995f87923c97f0392dcff835bfd0",
     },
