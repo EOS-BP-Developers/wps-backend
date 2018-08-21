@@ -53,7 +53,7 @@ namespace eosiowps {
 		eosio_assert(funding_goal.amount > 0, "must request positive amount" );
 
 		eosio_assert(funding_goal.symbol == asset().symbol, "symbol precision mismatch" );
-		eosio_assert(funding_goal.symbol == string_to_symbol(4, "EOS"), "symbol must be EOS");
+		eosio_assert(funding_goal.symbol == eosio::string_to_symbol(4, "EOS"), "symbol must be EOS");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
@@ -151,7 +151,7 @@ namespace eosiowps {
         // eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
 		eosio_assert(funding_goal.symbol == asset().symbol, "symbol precision mismatch" );
-		eosio_assert(funding_goal.symbol == string_to_symbol(4, "EOS"), "symbol must be EOS");
+		eosio_assert(funding_goal.symbol == eosio::string_to_symbol(4, "EOS"), "symbol must be EOS");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
