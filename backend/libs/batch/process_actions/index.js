@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird'),
     _ = require('lodash'),
+    config = require('config'),
     eosApi = require('external_apis/eos_api'),
     mongo = require('models/mongo'),
     log = require('libs/log'),
@@ -18,12 +19,14 @@ const batchLog = log.batchLog;
 const Summary = mongo.LibSummary;
 const Action = mongo.LibAction;
 
+const eosNodeConfig = config.eosNode;
+
 function getAccountsFuncMap() {
     return [{
-        account : 'eosio',
+        account : eosNodeConfig.systemAccount, //'eosio',
         funcMap : delegate
     }, {
-        account : 'eosio.wps',
+        account : eosNodeConfig.wpsAccount,    //'eosio.wps',
         funcMap : _.extend(committee, reviewer, proposer, proposal, vote, watchman)
     }];
 }
@@ -32,9 +35,12 @@ async function processActions() {
     let blockNum = 0;
     let blockId = '';
     let summary = await Summary.findOne();
-    if (!_.isEmpty(summary)) {
-        blockNum = summary.block_num;
+    if (_.isEmpty(summary)) {
+        batchErrLog.info({reason : 'NOT_EXIST_SUMMARY'});
+        return;
     }
+    blockNum = summary.block_num;
+
     const chainInfo = await eosApi.getInfo();
     if (_.isEmpty(chainInfo)) {
         batchErrLog.info({reason : 'CANNOT_GET_CHAIN_INFO'});
@@ -52,12 +58,15 @@ async function processActions() {
     return Promise.each(_.range(blockNum + 1, blockNum + diff + 1), (_blockNum) => {
         return eosApi.getBlock(_blockNum)
             .catch((err) => {
-                const error = err.error || {};
-                if (error.code === 3100002) {
-                    err.reason = 'NOT_EXIST_BLOCK';
-                    err.blockNum = _blockNum;
-                    batchErrLog.info(err);
-                    return {};
+                if (!_.isEmpty(err.message)) {
+                    const message = JSON.parse(err.message);
+                    const error = message.error || {};
+                    if (error.code === 3100002) { // unknown_block_exception
+                        err.reason = 'NOT_EXIST_BLOCK';
+                        err.blockNum = _blockNum;
+                        batchErrLog.info(err);
+                        return {};
+                    }
                 }
                 err.blockNum = _blockNum;
                 throw err;

@@ -17,9 +17,10 @@
         "host" :"eosnet.eoseoul.io",
         "protocol": "http",
         "httpPort" : 8888,
+        "systemAccount" : "eosio",
         "wpsAccount" : "eosio.wps",
         "symbol" : "EOS",
-        "chainId" : "dc705acc12c68b0c3e996526389395ad28de05829e8dead9da918289f3b70ccd",
+        "chainId" : "a4fe43c897279a677025624555f3835b949f995f87923c97f0392dcff835bfd0",
     },
     "webLog" : {
         "level" : "info",

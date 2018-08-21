@@ -19,7 +19,12 @@ function getConfig(key, httpEndPoint) {
         broadcast: true,
         debug: false,
         sign: true,
-        chainId: eosNodeConfig.chainId
+        chainId: eosNodeConfig.chainId,
+        verbose: false,
+        logger: {
+            log: false ? console.log : null,  // null to disable
+            error: false ? console.error : null,
+        }
     };
 }
 
@@ -81,6 +86,7 @@ function getTableRows(code, scope, table, tableKey, lowerBound, limit, keyType, 
 }
 
 function getVoterInfo(voter) {
+    // console.log(format.encodeName(voter, false));
     return getTableRows('eosio', 'eosio', 'voters', null, format.encodeName(voter, false), 1, 'i64', 1)
         .then(function(result) {
             if (!_.isEmpty(result.rows)) {
