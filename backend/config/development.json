@@ -47,7 +47,7 @@
         "filename" : "./log/batch.log", // you must make log folder
         "datepattern" : ".yyyy-MM-dd"
     },
-    "batchErrorLog" : {
+    "batchErrLog" : {
         "level" : "info",
         "filename" : "./log/batch_err.log", // you must make log folder
         "datepattern" : ".yyyy-MM-dd"

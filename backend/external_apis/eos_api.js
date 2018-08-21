@@ -30,7 +30,7 @@ function getConfig(key, httpEndPoint) {
 
 function getEndpoint(endpoint) {
     if (_.isEmpty(endpoint)) {
-        endpoint = `http://${eosNodeConfig.host}:${eosNodeConfig.httpPort}`;
+        endpoint = `${eosNodeConfig.protocol}://${eosNodeConfig.host}:${eosNodeConfig.httpPort}`;
     }
     return endpoint;
 }
