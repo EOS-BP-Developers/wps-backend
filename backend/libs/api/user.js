@@ -24,7 +24,7 @@ async function deleteUser(eosAccount) {
     } else if (process.env.NODE_ENV !== 'developer') {
         throw SUtil.createErrObject('BAD_REQUEST', {reason : 'not support'});
     }
-    return User.remove({eos_account : eosAccount});
+    return User.deleteOne({eos_account : eosAccount});
 }
 
 module.exports = exports = {createUser, updateUser, getUser, deleteUser};

@@ -19,7 +19,7 @@ async function editproposer(action, trx) {
     if (_.isEmpty(data)) {
         return;
     }
-    return Proposer.update({account : data.account}, {$set : data});
+    return Proposer.updateOne({account : data.account}, {$set : data});
 }
 
 async function rmvproposer(action, trx) {
@@ -27,7 +27,7 @@ async function rmvproposer(action, trx) {
     if (_.isEmpty(data)) {
         return;
     }
-    return Proposer.remove({account: data.account});
+    return Proposer.deleteOne({account: data.account});
 }
 
 async function claimfunds(action, trx) {

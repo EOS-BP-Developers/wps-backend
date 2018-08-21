@@ -12,6 +12,7 @@ const Promise = require('bluebird'),
     stakeunstake = require('./stakeunstake');
 
 const batchErrLog = log.batchErrLog;
+const batchLog = log.batchLog;
 
 const UpdateVoting = mongo.LibUpdateVoting;
 const Proposal = mongo.LibProposal;
@@ -19,7 +20,7 @@ const VotingInfo = mongo.LibVotingInfo;
 const VoterInfo = mongo.LibVoterInfo;
 
 async function updateVotings() {
-    // console.log('updateVotings');
+    // batchLog.info('updateVotings');
     const chainInfo = await eosApi.getInfo();
     if (_.isEmpty(chainInfo)) {
         batchErrLog.info({reason : 'CANNOT_GET_CHAIN_INFO'});

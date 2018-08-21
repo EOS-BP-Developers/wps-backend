@@ -7,6 +7,9 @@ const mongoose = require('mongoose'),
 
 mongoose.Promise = require('bluebird');
 
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+
 const mongoConfig = config.mongo;
 const dbLog = log.dbLog;
 

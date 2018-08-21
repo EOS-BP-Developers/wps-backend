@@ -29,7 +29,7 @@ async function upsertWps() {
     if (_.isEmpty(wps)) {
         return WpsInfo.create(wpsInfo);
     } else {
-        return WpsInfo.update({_id : wps._id}, wpsInfo);
+        return WpsInfo.updateOne({_id : wps._id}, wpsInfo);
     }
 }
 
@@ -38,7 +38,7 @@ async function createSummary() {
     if (_.isEmpty(summary)) {
         return Summary.create({block_num : 100});
     } else {
-        // return Summary.update({block_num : 0});
+        // return Summary.updateOne({block_num : 0});
     }
 }
 

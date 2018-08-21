@@ -21,7 +21,7 @@ async function edcommittee(action, trx) {
     if (_.isEmpty(data)) {
         return;
     }
-    return Committee.update({committeeman: data.committeeman}, {$set : data});
+    return Committee.updateOne({committeeman: data.committeeman}, {$set : data});
 }
 
 async function rmvcommittee(action, trx) {
@@ -29,7 +29,7 @@ async function rmvcommittee(action, trx) {
     if (_.isEmpty(data)) {
         return;
     }
-    return Committee.remove({committeeman: data.committeeman});
+    return Committee.deleteOne({committeeman: data.committeeman});
 }
 
 async function rejectfund(action, trx) {
@@ -37,7 +37,7 @@ async function rejectfund(action, trx) {
     if (_.isEmpty(data)) {
         return;
     }
-    await Proposal.update({proposal_id : data.proposal_id}, {$set : {status : SEnum.PROPOSAL_STATUS_REJECT}});
+    await Proposal.updateOne({proposal_id : data.proposal_id}, {$set : {status : SEnum.PROPOSAL_STATUS_REJECT}});
 }
 
 module.exports = exports = {regcommittee, edcommittee, rmvcommittee, rejectfund};

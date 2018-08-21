@@ -2,10 +2,11 @@
 
 const _ = require('lodash'),
     mongo = require('models/mongo'),
-    SEnum = require('libs/enum');
-//  log = require('libs/log');
+    SEnum = require('libs/enum'),
+    log = require('libs/log');
+
 //  const errLog = log.errLog;
-//  const batchLog = log.batchLog;
+const batchLog = log.batchLog;
 
 const Summary = mongo.LibSummary;
 const Proposal = mongo.LibProposal;
@@ -22,7 +23,7 @@ const VotingInfo = mongo.LibVotingInfo;
 */
 
 async function updateSummary() {
-    // console.log('updateSummary');
+    // batchLog.info('updateSummary');
     const summary = await Summary.findOne();
     if (_.isEmpty(summary)) {
         return;
@@ -54,7 +55,7 @@ async function updateSummary() {
         }
     });
     summaryObj.total_voters = await VotingInfo.distinct('account').countDocuments();
-    return Summary.update({_id : summary._id}, {$set : summaryObj});
+    return Summary.updateOne({_id : summary._id}, {$set : summaryObj});
 }
 
 module.exports = exports = {updateSummary};

@@ -88,7 +88,7 @@ async function processActions() {
                 if (_.isEmpty(summary)) {
                     summary = await Summary.create({block_id : blockId, block_num : _blockNum});
                 }
-                return Summary.update({_id : summary._id}, {block_num : _blockNum, block_id : blockId});
+                return Summary.updateOne({_id : summary._id}, {block_num : _blockNum, block_id : blockId});
             })
             .catch((err) => {
                 batchErrLog.info(err);

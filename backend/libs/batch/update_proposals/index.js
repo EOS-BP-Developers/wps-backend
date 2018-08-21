@@ -8,12 +8,13 @@ const Promise = require('bluebird'),
     log = require('libs/log');
 
 const batchErrLog = log.batchErrLog;
+const batchLog = log.batchLog;
 
 const UpdateProposal = mongo.LibUpdateProposal;
 const Proposal = mongo.LibProposal;
 
 async function updateProposals() {
-    // console.log('updateProposals');
+    // batchLog.info('updateProposals');
     const chainInfo = await eosApi.getInfo();
     if (_.isEmpty(chainInfo)) {
         batchErrLog.info({reason : 'CANNOT_GET_CHAIN_INFO'});
@@ -41,8 +42,6 @@ async function _updateProposal(prop) {
             eosApi.getRejectedProposalById(proposalId),
             eosApi.getFinishedProposalById(proposalId),
             (proposal, rejectedProposal, finishedProposal) => {
-                // console.log(prop);
-                // console.log(proposal);
                 if (!_.isEmpty(proposal)) {
                     return proposal;
                 } else if (!_.isEmpty(rejectedProposal)) {
@@ -56,7 +55,7 @@ async function _updateProposal(prop) {
             delete proposal.total_votes;
             delete proposal.agree_votes;
             delete proposal.disagree_votes;
-            await Proposal.update({proposal_id : proposal.id}, {$set : proposal});
+            await Proposal.updateOne({proposal_id : proposal.id}, {$set : proposal});
         }
     } else {
         proposal = await eosApi.getProposalByOwner(prop.proposer);
@@ -66,7 +65,7 @@ async function _updateProposal(prop) {
             delete proposal.disagree_votes;
 
             proposal.proposal_id = proposal.id;
-            await Proposal.update({proposer : prop.proposer, status : SEnum.PROPOSAL_STATUS_PENDING}, {$set :proposal});
+            await Proposal.updateOne({proposer : prop.proposer, status : SEnum.PROPOSAL_STATUS_PENDING}, {$set :proposal});
         }
     }
     if (!_.isEmpty(prop)) {

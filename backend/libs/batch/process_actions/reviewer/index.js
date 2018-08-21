@@ -15,7 +15,7 @@ async function regreviewer(action) {
 
 async function editreviewer(action) {
     let data = Object.assign({}, action.data, {account : action.data.reviewer});
-    return Reviewer.update({account : data.account}, {$set : data});
+    return Reviewer.updateOne({account : data.account}, {$set : data});
 }
 
 async function rmvreviewer(action) {
@@ -23,7 +23,7 @@ async function rmvreviewer(action) {
     if (_.isEmpty(account)) {
         return;
     }
-    return Reviewer.remove({account : account});
+    return Reviewer.deleteOne({account : account});
 }
 
 async function acceptprop(action) {

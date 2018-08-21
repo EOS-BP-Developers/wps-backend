@@ -21,7 +21,7 @@ async function editproposal(action) {
     if (_.isEmpty(data)) {
         return;
     }
-    await Proposal.update({proposer : data.proposer}, {$set : data});
+    await Proposal.updateOne({proposer : data.proposer}, {$set : data});
     await UpdateProposal.create({proposer : data.proposer, proposal_id : 0});
 }
 
@@ -30,7 +30,7 @@ function rmvproposal(action) {
     if (_.isEmpty(data)) {
         return;
     }
-    return Proposal.remove({proposer : data.proposer, status : {$nin : [SEnum.PROPOSAL_STATUS_REJECT, SEnum.PROPOSAL_STATUS_COMPLETE]}});
+    return Proposal.deleteOne({proposer : data.proposer, status : {$nin : [SEnum.PROPOSAL_STATUS_REJECT, SEnum.PROPOSAL_STATUS_COMPLETE]}});
 }
 
 module.exports = exports = {regproposal, editproposal, rmvproposal};
