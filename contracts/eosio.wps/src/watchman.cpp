@@ -43,8 +43,8 @@ namespace eosiowps {
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::CHECK_VOTE, "Proposal's status is not CHECK_VOTE");
 
 		idx_index.modify(itr_proposal, 0, [&](auto& proposal) {
-			proposal.status = PROPOSAL_STATUS::ON_VOTE; //roll back to on vote status
-			proposal.total_votes = total_votes;
+			proposal.status = PROPOSAL_STATUS::REJECTED; //when vote tally proves that threshold wasn't reached
+			proposal.total_votes = total_votes; //send data to chain, proof of tally
 			proposal.agree_votes = agree_votes;
 			proposal.disagree_votes = disagree_votes;
 		});
