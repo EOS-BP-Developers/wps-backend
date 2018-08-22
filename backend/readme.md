@@ -7,7 +7,10 @@
     redis
     nodejs
 ### development server info
-    Coming soon
+    http://http://wps-test.hkeos.com
+
+    ex)
+    http://wps-test.hkeos.com/api/1/summary
 
 ### production server info
     Coming soon
@@ -31,8 +34,14 @@
 ## API
     The format of the returned value is json.
 
+### stats
+    GET /api/1/summary
+    Returns summary object
+    return
+        summary
+
 ### user
-    post /api/1/users
+    POST /api/1/users
     This method create user account.
 
     body parameter
@@ -67,7 +76,7 @@
         website : 'www.google.com',
         linkedin : 'yepp4you'
 
-    put /api/1/users/{eos_account}
+    PUT /api/1/users/{eos_account}
     This method update user account.
     params
         eos_account : eos account
@@ -82,21 +91,17 @@
     return
         user
 
-    get /api/1/users/{eos_account}
+    GET /api/1/users/{eos_account}
     Returns user object.
     params :
         eos_accout : eos account
     return
         user
 
-### stats
-    get /api/1/summary
-    Returns summary object
-    return
-        summary
+
 
 ### proposal
-    get /api/1/committees/{committee}/proposals/orders/{order}
+    GET /api/1/committees/{committee}/proposals/orders/{order}
     Returns proposal object list order by `order parameter`
     params :
         committee (string): eos acount of committee
@@ -104,7 +109,7 @@
     return
         proposals : [proposal object]
 
-    get /api/1/committees/{committee}/proposals/{proposal_id}
+    GET /api/1/committees/{committee}/proposals/{proposal_id}
     Returns proposal object
     params
         committee (string) : eos committee acount name
@@ -113,7 +118,7 @@
         proposal
 
 ### proposer
-    get /api/1/proposers/{proposer}/proposals
+    GET /api/1/proposers/{proposer}/proposals
     Returns proposal object list of proposer
     params
         proposer : eos account of proposer
@@ -121,7 +126,7 @@
         proposals : [proposal object]
 
 ### committee
-    get /api/1/committees
+    GET /api/1/committees
     Returns committee object list (you can get category list)
     return
         committees : [committee object]
