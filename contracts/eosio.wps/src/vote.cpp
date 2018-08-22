@@ -13,12 +13,17 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::ON_VOTE, "Proposal::status is not PROPOSAL_STATUS::ON_VOTE");
+		//eosio_assert((*itr_proposal).status != PROPOSAL_STATUS::FINISHED_VOTING, "The voting period for this proposal has expired.");
 
 		auto current_time = now();
 		auto wps_env = m_wps_env_global.get();
 		auto duration_of_voting = wps_env.duration_of_voting * seconds_per_day;
 
-		eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting, "The voting period for this proposal has expired.");
+		if(current_time - (*itr_proposal).vote_start_time >= duration_of_voting) {
+			proposals.modify(itr_proposal, 0, [&](auto &proposal) {
+				proposal.status = PROPOSAL_STATUS::FINISHED_VOTING;
+			});
+		}
 
 		voting_table voting(_self, _self);
 		auto itr = voting.find(proposal_id);
@@ -64,11 +69,17 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::ON_VOTE, "Proposal::status is not proposal_status::PROPOSAL_STATUS");
+		//eosio_assert((*itr_proposal).status != PROPOSAL_STATUS::FINISHED_VOTING, "The voting period for this proposal has expired.");
 
 		auto current_time = now();
 		auto wps_env = m_wps_env_global.get();
 		auto duration_of_voting = wps_env.duration_of_voting * seconds_per_day;
-		eosio_assert(current_time - (*itr_proposal).vote_start_time < duration_of_voting, "The voting period for this proposal has expired.");
+
+		if(current_time - (*itr_proposal).vote_start_time >= duration_of_voting) {
+			proposals.modify(itr_proposal, 0, [&](auto &proposal) {
+				proposal.status = PROPOSAL_STATUS::FINISHED_VOTING;
+			});
+		}
 
 		voting_table voting(_self, _self);
 		auto itr = voting.find(proposal_id);

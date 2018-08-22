@@ -169,7 +169,7 @@ namespace eosiowps {
 		auto itr_proposal = idx_index.find(proposal_id);
 		eosio_assert(itr_proposal != idx_index.end(), "Proposal not found in proposal table");
 		eosio_assert((*itr_proposal).committee == (*itr).committee, "Reviewer is not part of this proposal's responsible committee");
-		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::ON_VOTE, "Proposal's status is not ON_VOTE");
+		eosio_assert((*itr_proposal).status == PROPOSAL_STATUS::FINISHED_VOTING, "Proposal's status is not FINISHED_VOTING");
 
 		idx_index.modify(itr_proposal, 0, [&](auto& proposal){
 			proposal.status = PROPOSAL_STATUS::CHECK_VOTE;

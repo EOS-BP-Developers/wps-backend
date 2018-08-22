@@ -17,10 +17,11 @@ namespace eosiowps {
         const static uint8_t PENDING = 1;
         const static uint8_t REJECTED = 2;
         const static uint8_t ON_VOTE = 3;
-        const static uint8_t CHECK_VOTE = 4;     // check count of votes
-        const static uint8_t CHECKED_VOTE = 5;   // checked count of votes by platform
-        const static uint8_t APPROVED = 6;       // approve
-        const static uint8_t COMPLETED = 7;
+        const static uint8_t VOTING_FINISHED = 4;
+        const static uint8_t CHECK_VOTE = 5;     // check count of votes
+        const static uint8_t CHECKED_VOTE = 6;   // checked count of votes by platform
+        const static uint8_t APPROVED = 7;       // approve
+        const static uint8_t COMPLETED = 8;
     };
 
     //@abi table
