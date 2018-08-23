@@ -20,7 +20,7 @@ namespace eosiowps {
 		auto duration_of_voting = wps_env.duration_of_voting * seconds_per_day;
 
 		if(current_time - (*itr_proposal).vote_start_time >= duration_of_voting) {
-			proposals.modify(itr_proposal, 0, [&](auto &proposal) {
+			idx_index.modify(itr_proposal, 0, [&](auto &proposal) {
 				proposal.status = PROPOSAL_STATUS::FINISHED_VOTING;
 			});
 		}
@@ -76,7 +76,7 @@ namespace eosiowps {
 		auto duration_of_voting = wps_env.duration_of_voting * seconds_per_day;
 
 		if(current_time - (*itr_proposal).vote_start_time >= duration_of_voting) {
-			proposals.modify(itr_proposal, 0, [&](auto &proposal) {
+			idx_index.modify(itr_proposal, 0, [&](auto &proposal) {
 				proposal.status = PROPOSAL_STATUS::FINISHED_VOTING;
 			});
 		}

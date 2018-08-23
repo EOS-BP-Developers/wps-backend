@@ -17,7 +17,7 @@ namespace eosiowps {
         const static uint8_t PENDING = 1;
         const static uint8_t REJECTED = 2;
         const static uint8_t ON_VOTE = 3;
-        const static uint8_t VOTING_FINISHED = 4;
+        const static uint8_t FINISHED_VOTING = 4;
         const static uint8_t CHECK_VOTE = 5;     // check count of votes
         const static uint8_t CHECKED_VOTE = 6;   // checked count of votes by platform
         const static uint8_t APPROVED = 7;       // approve
