@@ -319,7 +319,8 @@ BOOST_FIXTURE_TEST_CASE( flow_wps, wps_tester ) try {
   produce_blocks(10);
   BOOST_REQUIRE_EQUAL( success(), push_action(N(voter24), N(vote), mvo()("voter", "voter24")("proposal_id", 1)("is_agree", true)));
   produce_blocks(10);
-  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter25), N(vote), mvo()("voter", "voter25")("proposal_id", 1)("is_agree", true)));
+  produce_block( fc::hours(30 * 24) );
+  BOOST_REQUIRE_EQUAL( success(), push_action(N(voter25), N(vote), mvo()("voter", "voter25")("proposal_id", 1)("is_agree", false)));
   produce_blocks(10);
 
 
@@ -335,7 +336,11 @@ BOOST_FIXTURE_TEST_CASE( flow_wps, wps_tester ) try {
   BOOST_REQUIRE_EQUAL( success(), push_action(N(watchman1), N(commitvote),
     mvo()("watchman", "watchman1")("proposal_id", 1)("total_votes", 1000000000000ULL)("agree_votes", 1000000000000ULL)("disagree_votes", 1000000000000ULL)));
   produce_block();
+
   get_proposal(prop, N(proposer1));
+  //get_rejected_proposal(prop, N(proposer1));
+  //BOOST_TEST_MESSAGE(fc::json::to_pretty_string(prop));
+
   BOOST_CHECK(prop.status == PROPOSAL_STATUS_T::CHECKED_VOTE);
 
   BOOST_REQUIRE_EQUAL( success(), push_action(N(reviewer1), N(approve), mvo()("reviewer", "reviewer1")("proposal_id", 1)));
