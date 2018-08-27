@@ -26,7 +26,8 @@ async function updateVotings() {
         batchErrLog.info({reason : 'CANNOT_GET_CHAIN_INFO'});
         return;
     }
-    let updateVotings = await UpdateVoting.find().limit(20).sort({_id : 1});
+
+    let updateVotings = await UpdateVoting.find().limit(30).sort({_id : 1});
     if (!_.isEmpty(updateVotings)) {
         return Promise.each(updateVotings, function(updateVoting) {
             return _updateVoting(updateVoting)

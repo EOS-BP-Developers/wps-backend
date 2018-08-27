@@ -10,10 +10,11 @@ module.exports = {
     PROPOSAL_STATUS_PENDING : 1,
     PROPOSAL_STATUS_REJECTED : 2,
     PROPOSAL_STATUS_ON_VOTE : 3,
-    PROPOSAL_STATUS_CHECK_VOTE : 4,     // check count of votes
-    PROPOSAL_STATUS_CHECKED_VOTE : 5,   // checked count of votes by platform
-    PROPOSAL_STATUS_APPROVED : 6,       // approve
-    PROPOSAL_STATUS_COMPLETED : 7,
+    PROPOSAL_STATUS_FINISHED_VOTING : 4,
+    PROPOSAL_STATUS_CHECK_VOTE : 5,     // check count of votes
+    PROPOSAL_STATUS_CHECKED_VOTE : 6,   // checked count of votes by platform
+    PROPOSAL_STATUS_APPROVED : 7,       // approve
+    PROPOSAL_STATUS_COMPLETED : 8,
 
     // Redis Type
     REDIS_TYPE_BATCH_STATUS : 1,

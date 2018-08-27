@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
-    "sinon": "^6.1.5"
+    "sinon": "^6.1.5",
+    "sinon-mongoose": "^2.2.1"
   }
 }

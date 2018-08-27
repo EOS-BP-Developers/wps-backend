@@ -141,7 +141,6 @@ function getFinishedProposalById(proposalId) {
         });
 }
 
-
 function getCurrencyStats(endpoint) {
     const tokenAccount = eosNodeConfig.tokenAccount;
     const options = getConfig(endpoint);

@@ -16,10 +16,11 @@ const VotingInfo = mongo.LibVotingInfo;
     PROPOSAL_STATUS_PENDING : 1,
     PROPOSAL_STATUS_REJECTED : 2,
     PROPOSAL_STATUS_ON_VOTE : 3,
-    PROPOSAL_STATUS_CHECK_VOTE : 4,     // check count of votes
-    PROPOSAL_STATUS_CHECKED_VOTE : 5,   // checked count of votes by platform
-    PROPOSAL_STATUS_APPROVED : 6,       // approve
-    PROPOSAL_STATUS_COMPLETED : 7
+    PROPOSAL_STATUS_FINISHED_VOTING : 4,
+    PROPOSAL_STATUS_CHECK_VOTE : 5,     // check count of votes
+    PROPOSAL_STATUS_CHECKED_VOTE : 6,   // checked count of votes by platform
+    PROPOSAL_STATUS_APPROVED : 7,       // approve
+    PROPOSAL_STATUS_COMPLETED : 8,
 */
 
 async function updateSummary() {
@@ -41,6 +42,7 @@ async function updateSummary() {
         ongoing_proposals : 0,
         total_voters : 0
     };
+
     _.forEach(statusCnts, function(status) {
         if (status._id !== SEnum.PROPOSAL_STATUS_REJECTED) {
             summaryObj.total_proposals += status.count;
@@ -48,7 +50,7 @@ async function updateSummary() {
         if (status._id === SEnum.PROPOSAL_STATUS_COMPLETED) {
             summaryObj.funded_proposals += status.count;
         }
-        if (status._id === SEnum.PROPOSAL_STATUS_PENDING || status._id === SEnum.PROPOSAL_STATUS_ON_VOTE ||
+        if (status._id === SEnum.PROPOSAL_STATUS_PENDING || status._id === SEnum.PROPOSAL_STATUS_ON_VOTE || status._id === SEnum.PROPOSAL_STATUS_FINISHED_VOTING ||
             status._id === SEnum.PROPOSAL_STATUS_CHECK_VOTE || status._id === SEnum.PROPOSAL_STATUS_CHECKED_VOTE ||
             status._id === SEnum.PROPOSAL_STATUS_APPROVED) {
             summaryObj.ongoing_proposals += status.count;

@@ -14,7 +14,7 @@ const user = {
 };
 
 const eosAccounts = [
-    {'name':'eosio.wps', 'pvt':'5JtUScZK2XEp3g9gh7F8bwtPTRAkASmNrrftmx4AxDKD5K4zDnr', 'pub':'EOS69X3383RzBZj41k73CSjUNXM5MYGpnDxyPnWUKPEtYQmTBWz4D', statked : '10.0000 EOS'},
+    {'name':'eosio.wps', 'pvt':'5JtUScZK2XEp3g9gh7F8bwtPTRAkASmNrrftmx4AxDKD5K4zDnr', 'pub':'EOS69X3383RzBZj41k73CSjUNXM5MYGpnDxyPnWUKPEtYQmTBWz4D', staked : '10.0000 EOS'},
     {'name':'committeeaaa', 'pvt':'5JUNYmkJ5wVmtVY8x9A1KKzYe9UWLZ4Fq1hzGZxfwfzJB8jkw6u', 'pub':'EOS7yBtksm8Kkg85r4in4uCbfN77uRwe82apM8jjbhFVDgEgz3w8S', staked : '10.0000 EOS'},
     {'name':'committeeaab', 'pvt':'5K6LU8aVpBq9vJsnpCvaHCcyYwzPPKXfDdyefYyAMMs3Qy42fUr', 'pub':'EOS7WnhaKwHpbSidYuh2DF1qAExTRUtPEdZCaZqt75cKcixuQUtdA', staked : '10.0000 EOS'},
     {'name':'revieweraaaa', 'pvt':'5KdRpt1juJfbPEryZsQYxyNxSTkXTdqEiL4Yx9cAjdgApt4ANce', 'pub':'EOS7Bn1YDeZ18w2N9DU4KAJxZDt6hk3L7eUwFRAc1hb5bp6xJwxNV', staked : '10.0000 EOS'},
