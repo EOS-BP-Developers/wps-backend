@@ -19,4 +19,6 @@ set_target_properties(eosio.wps.wasm
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/abi/eosio.wps.abi" "${CMAKE_CURRENT_SOURCE_DIR}/bin/eosio.wps/eosio.wps.abi" COPYONLY)
 
+include_directories(${EOSIO_ROOT}/include)
+
 # install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION ${WASM_ROOT}/eosio.wasmsdk/include)

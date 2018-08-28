@@ -12,7 +12,8 @@ endif()
 
 enable_testing()
 
-configure_file(${CMAKE_SOURCE_DIR}/contracts.hpp.in ${CMAKE_BINARY_DIR}/contracts.hpp)
+set(ROOT_DIR ${CMAKE_SOURCE_DIR}/..)
+configure_file(${CMAKE_SOURCE_DIR}/contracts.hpp.in ${CMAKE_SOURCE_DIR}/contracts.hpp)
 
 include_directories(${CMAKE_BINARY_DIR})
 
