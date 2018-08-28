@@ -1,4 +1,5 @@
 #include "test.hpp"
+#include <eosio/chain/core_symbol.hpp>
 
 class wps_tester : public tester {
 public:
@@ -46,7 +47,7 @@ public:
     produce_block();
     issue(N(eosio), core_from_string("100000000.0000"));
     produce_block();
-    transfer(N(eosio), N(eosio.wps), "100000.0000 EOS");
+    transfer(N(eosio), N(eosio.wps), "100000.0000 " CORE_SYMBOL_NAME);
     produce_block();
   }
 
@@ -353,7 +354,7 @@ BOOST_FIXTURE_TEST_CASE( flow_wps, wps_tester ) try {
   get_proposal(prop, N(proposer1));
   BOOST_TEST_MESSAGE(fc::json::to_pretty_string(prop));
 
-  // auto acc = get_account(N(proposer1), "4,EOS");
+  // auto acc = get_account(N(proposer1), "4," CORE_SYMBOL_NAME);
   // BOOST_TEST_MESSAGE(fc::json::to_pretty_string(acc));
   // 2 claimfunds success
   produce_block( fc::hours(30 * 24) );
@@ -410,7 +411,7 @@ BOOST_FIXTURE_TEST_CASE( flow_wps, wps_tester ) try {
   produce_blocks(1);
   BOOST_REQUIRE_EQUAL( wasm_assert_msg("Proposal not found in proposal table"), push_action(N(proposer1), N(claimfunds), mvo()("account", "proposer1")("proposal_id", 1)));
 
-  auto acc = get_account(N(proposer1), "4,EOS");
+  auto acc = get_account(N(proposer1), "4," CORE_SYMBOL_NAME);
   BOOST_TEST_MESSAGE(fc::json::to_pretty_string(acc));
 
   proposal_t prop_t;
