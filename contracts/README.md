@@ -171,7 +171,7 @@ Required authority: Reviewer
 
 Parameters: `account_name reviewer, uint64_t proposal_id`
 
-Description: Request the database to verify that the proposal (ON VOTE) has passed the vote threshold. Change its status to CHECK VOTES. All fields required.
+Description: Request the database to verify that the proposal with FINISHED VOTING status has passed the vote threshold. Change its status to CHECK VOTES. All fields required.
 
 #### commitvote
 
