@@ -5,7 +5,7 @@ The design of the EOSIO blockchain calls for a number of smart contracts that ar
 
 Dependencies:
 * [eosio v1.2.x](https://github.com/eosio/eos)
-* [eosio.cdt v1.1.x](https://github.com/eosio/eosio.cdt)
+* [eosio.cdt v1.2.x](https://github.com/eosio/eosio.cdt)
 
 To build the contracts and the unit tests:
 * First, ensure that your __eosio__ is compiled to the core symbol for the EOSIO blockchain that intend to deploy to.
