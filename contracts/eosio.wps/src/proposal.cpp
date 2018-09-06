@@ -2,7 +2,7 @@
 #include <eosio.wps/proposal.hpp>
 #include <eosio.wps/proposer.hpp>
 #include <eosio.wps/committee.hpp>
-#include <eosio/chain/core_symbol.hpp>
+// #include <eosiolib/core_symbol.hpp>
 // extern struct permission_level;
 // extern void require_auth(const permission_level& level);
 
@@ -52,8 +52,7 @@ namespace eosiowps {
 		eosio_assert(funding_goal.is_valid(), "invalid quantity" );
 		eosio_assert(funding_goal.amount > 0, "must request positive amount" );
 
-		eosio_assert(funding_goal.symbol == asset().symbol, "symbol precision mismatch" );
-		eosio_assert(funding_goal.symbol == eosio::string_to_symbol(4, CORE_SYMBOL_NAME), "symbol must be " CORE_SYMBOL_NAME);
+		eosio_assert(funding_goal.symbol == asset().symbol, "symbol precision mismatch");
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
@@ -151,7 +150,6 @@ namespace eosiowps {
         // eosio_assert(duration <= wps_env.duration_of_voting, "duration should be less than duration_of_voting days.");
 
 		eosio_assert(funding_goal.symbol == asset().symbol, "symbol precision mismatch" );
-		eosio_assert(funding_goal.symbol == eosio::string_to_symbol(4, CORE_SYMBOL_NAME), "symbol must be " CORE_SYMBOL_NAME);
 
 		//initializing the proposer table
 		proposer_table proposers(_self, _self);
