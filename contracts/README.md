@@ -1,11 +1,11 @@
 # eosio.wps
-## Version : 1.0.0
+## Version : 1.2.0
 
 The design of the EOSIO blockchain calls for a number of smart contracts that are run at a privileged permission level in order to support functions such as working proposal.  These smart contracts are referred to as the wps contract.
 
 Dependencies:
-* [eosio v1.2.1](https://github.com/eosio/eos/tree/v1.2.1)
-* [eosio.wasmsdk v1.1.1](https://github.com/eosio/eosio.wasmsdk/tree/v1.1.1)
+* [eosio v1.2.x](https://github.com/eosio/eos)
+* [eosio.cdt v1.1.x](https://github.com/eosio/eosio.cdt)
 
 To build the contracts and the unit tests:
 * First, ensure that your __eosio__ is compiled to the core symbol for the EOSIO blockchain that intend to deploy to.
