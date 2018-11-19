@@ -1,1 +1,1 @@
-# wps-backend
+# Worker Proposal System - Backend
